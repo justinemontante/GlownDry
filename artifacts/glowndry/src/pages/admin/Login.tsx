@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { WashingMachine, Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 
@@ -100,7 +100,19 @@ export default function AdminLogin() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="absolute top-8 left-8 z-10"
         >
-          <WashingMachine className="w-16 h-16 text-white" />
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <defs>
+              <linearGradient id="leftPanelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#00C6B5" />
+                <stop offset="100%" stopColor="#006D96" />
+              </linearGradient>
+            </defs>
+            <path d="M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="url(#leftPanelGrad)" />
+            <path d="M3 6h3" stroke="url(#leftPanelGrad)" />
+            <path d="M17 6h.01" stroke="url(#leftPanelGrad)" />
+            <path d="M17 13a5 5 0 11-10 0 5 5 0 0110 0z" stroke="url(#leftPanelGrad)" />
+            <path d="M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5" stroke="url(#leftPanelGrad)" />
+          </svg>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -109,7 +121,7 @@ export default function AdminLogin() {
           className="z-10 text-center max-w-md"
         >
           <h1 className="text-4xl 2xl:text-5xl font-bold tracking-tight mb-4">
-            <span style={{ color: "#18967f" }}>Glown</span><span style={{ color: "#fff" }}>Dry</span>
+            <span style={{ color: "#fff" }}>Glown</span><span style={{ color: "#00C6B5" }}>Dry</span>
           </h1>
           <p className="text-lg 2xl:text-xl text-white/80">
             Smart Laundry Service Management System
@@ -140,10 +152,21 @@ export default function AdminLogin() {
                 initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
-                className="inline-flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 rounded-xl mx-auto"
-                style={{ background: "linear-gradient(135deg, #00C6B5, #006D96)" }}
+                className="mx-auto"
               >
-                <WashingMachine className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <defs>
+                    <linearGradient id="adminIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#00C6B5" />
+                      <stop offset="100%" stopColor="#006D96" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="url(#adminIconGrad)" />
+                  <path d="M3 6h3" stroke="url(#adminIconGrad)" />
+                  <path d="M17 6h.01" stroke="url(#adminIconGrad)" />
+                  <path d="M17 13a5 5 0 11-10 0 5 5 0 0110 0z" stroke="url(#adminIconGrad)" />
+                  <path d="M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5" stroke="url(#adminIconGrad)" />
+                </svg>
               </motion.div>
               <div>
                 <motion.h1
@@ -151,10 +174,11 @@ export default function AdminLogin() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="text-lg lg:text-xl font-bold tracking-wide"
-                  style={{ color: "#1a2a3a" }}
+                  className="text-lg lg:text-xl tracking-wide space-x-1"
+                  style={{ fontFamily: "Inter, system-ui, sans-serif", fontWeight: 900 }}
                 >
-                  GLOWNDRY
+                  <span style={{ color: "#1a2a3a" }}>Glown</span>
+                  <span style={{ color: "#00C6B5" }}>Dry</span>
                 </motion.h1>
                 <motion.p
                   custom={0.3}
