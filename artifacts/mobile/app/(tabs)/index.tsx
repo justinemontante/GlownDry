@@ -6,6 +6,7 @@ import {
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
@@ -197,7 +198,14 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={["#e6f2fa", "#fef6ef", "#ffffff"]}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       {/* Brand Bar */}
       <View style={[styles.brandBar, { paddingTop: topPad + 8 }]}>
         <View style={styles.brandRow}>
@@ -275,13 +283,14 @@ const styles = StyleSheet.create({
   brandBar: {
     flexDirection: "row", justifyContent: "space-between",
     alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
+    backgroundColor: "#ffffff",
     borderBottomWidth: 1, borderBottomColor: "#e2e8f0",
   },
   brandRow: {
     flexDirection: "row", alignItems: "center", gap: 8,
   },
   brandName: {
-    fontSize: 20, fontFamily: "Inter_900Black",
+    fontSize: 18, fontFamily: "Inter_900Black",
     letterSpacing: 2,
   },
   notifBtn: {
