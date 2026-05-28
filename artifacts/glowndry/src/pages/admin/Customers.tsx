@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Search, Mail, Phone, ExternalLink } from "lucide-react";
+import { Search, Mail, Phone, ExternalLink, Calendar, Weight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Customer = {
   id: number;
@@ -14,10 +16,32 @@ type Customer = {
   createdAt: string;
 };
 
+type Booking = {
+  id: number;
+  serviceName: string | null;
+  weightKg: number | null;
+  totalAmount: number | null;
+  status: string;
+  scheduledDate: string;
+  createdAt: string;
+};
+
+const statusLabels: Record<string, string> = {
+  scheduled: "Scheduled", received: "Received", in_progress: "In Progress", ready: "Ready", claimed: "Claimed",
+};
+
+const statusColors: Record<string, string> = {
+  scheduled: "bg-blue-50 text-blue-700", received: "bg-purple-50 text-purple-700",
+  in_progress: "bg-amber-50 text-amber-700", ready: "bg-green-50 text-green-700", claimed: "bg-slate-100 text-slate-600",
+};
+
 export default function AdminCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [history, setHistory] = useState<Booking[]>([]);
 
   const token = () => localStorage.getItem("adminToken");
 
@@ -26,6 +50,15 @@ export default function AdminCustomers() {
       .then(r => r.json())
       .then(data => { setCustomers(data); setLoading(false); });
   }, []);
+
+  async function viewHistory(c: Customer) {
+    setSelectedCustomer(c);
+    setHistoryOpen(true);
+    const data = await fetch(`/api/bookings?customerId=${c.id}`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    }).then(r => r.json());
+    setHistory(data);
+  }
 
   const filtered = search
     ? customers.filter(c =>
@@ -83,7 +116,7 @@ export default function AdminCustomers() {
                 <TableCell className="text-center font-semibold text-primary">{c.totalOrders}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{new Date(c.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
+                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => viewHistory(c)}>
                     View History <ExternalLink className="w-4 h-4 ml-2" />
                   </Button>
                 </TableCell>
@@ -92,6 +125,40 @@ export default function AdminCustomers() {
           </TableBody>
         </Table>
       </Card>
+
+      <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{selectedCustomer?.fullName} — Booking History</DialogTitle>
+          </DialogHeader>
+          {history.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">No bookings yet</p>
+          ) : (
+            <div className="space-y-3 pt-2">
+              {history.map(b => (
+                <Card key={b.id} className="p-4 border-none shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">ORD-{String(b.id).padStart(4, "0")}</p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-3 mt-1">
+                        <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(b.scheduledDate).toLocaleDateString()}</span>
+                        {b.serviceName && <span>{b.serviceName}</span>}
+                        {b.weightKg && <span className="flex items-center gap-1"><Weight className="w-3 h-3" /> {b.weightKg}kg</span>}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">₱{b.totalAmount?.toFixed(2) ?? "0.00"}</p>
+                      <Badge variant="outline" className={`mt-1 ${statusColors[b.status] || ""}`}>
+                        {statusLabels[b.status] || b.status}
+                      </Badge>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

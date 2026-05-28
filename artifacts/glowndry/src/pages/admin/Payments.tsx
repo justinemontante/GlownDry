@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
-import { CreditCard, DollarSign, ReceiptText } from "lucide-react";
+import { CreditCard, DollarSign, ReceiptText, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Payment = {
   id: number;
@@ -17,70 +21,135 @@ type Payment = {
   createdAt: string;
 };
 
+type Booking = {
+  id: number;
+  customerName: string | null;
+  totalAmount: number | null;
+};
+
 export default function AdminPayments() {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ bookingId: "", amount: "", cashReceived: "" });
 
   const token = () => localStorage.getItem("adminToken");
 
-  useEffect(() => {
-    fetch("/api/payments", { headers: { Authorization: `Bearer ${token()}` } })
-      .then(r => r.json())
-      .then(data => { setPayments(data); setLoading(false); });
-  }, []);
+  function load() {
+    Promise.all([
+      fetch("/api/payments", { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
+      fetch("/api/bookings", { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
+    ]).then(([p, b]) => {
+      setPayments(p);
+      setBookings(b);
+      setLoading(false);
+    });
+  }
+
+  useEffect(() => { load(); }, []);
+
+  const change = Number(form.cashReceived) - Number(form.amount);
+
+  async function createPayment() {
+    await fetch("/api/payments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token()}` },
+      body: JSON.stringify({
+        bookingId: Number(form.bookingId),
+        amount: Number(form.amount),
+        cashReceived: Number(form.cashReceived),
+      }),
+    });
+    setOpen(false);
+    setForm({ bookingId: "", amount: "", cashReceived: "" });
+    load();
+  }
+
+  function selectBooking(id: string) {
+    const b = bookings.find(x => x.id === Number(id));
+    setForm({ bookingId: id, amount: b?.totalAmount ? String(b.totalAmount) : "", cashReceived: "" });
+  }
 
   const todayRevenue = payments
     .filter(p => p.status !== "refunded" && new Date(p.createdAt).toDateString() === new Date().toDateString())
     .reduce((s, p) => s + p.amount, 0);
-
-  const cardTotal = payments
-    .filter(p => p.method === "card" && p.status !== "refunded")
-    .reduce((s, p) => s + p.amount, 0);
-
-  const cashTotal = payments
-    .filter(p => p.method === "cash" && p.status !== "refunded")
-    .reduce((s, p) => s + p.amount, 0);
+  const cardTotal = payments.filter(p => p.method === "card" && p.status !== "refunded").reduce((s, p) => s + p.amount, 0);
+  const cashTotal = payments.filter(p => p.method === "cash" && p.status !== "refunded").reduce((s, p) => s + p.amount, 0);
 
   if (loading) return <div className="p-8 text-center text-muted-foreground">Loading payments...</div>;
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-primary text-primary-foreground border-none shadow-md">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <DollarSign className="w-6 h-6" />
+      <div className="flex items-center justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
+          <Card className="bg-primary text-primary-foreground border-none shadow-md">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center"><DollarSign className="w-6 h-6" /></div>
+              <div>
+                <p className="text-primary-foreground/80 text-sm font-medium">Today's Revenue</p>
+                <h3 className="text-2xl font-bold">₱{todayRevenue.toFixed(2)}</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center"><CreditCard className="w-6 h-6 text-slate-600" /></div>
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">Card Payments</p>
+                <h3 className="text-2xl font-bold">₱{cardTotal.toFixed(2)}</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center"><DollarSign className="w-6 h-6 text-slate-600" /></div>
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">Cash Payments</p>
+                <h3 className="text-2xl font-bold">₱{cashTotal.toFixed(2)}</h3>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="ml-4"><Plus className="w-4 h-4 mr-2" /> New Payment</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-sm">
+            <DialogHeader><DialogTitle>Record Payment</DialogTitle></DialogHeader>
+            <div className="space-y-4 pt-2">
+              <div>
+                <Label>Booking</Label>
+                <Select value={form.bookingId} onValueChange={selectBooking}>
+                  <SelectTrigger><SelectValue placeholder="Select booking" /></SelectTrigger>
+                  <SelectContent>
+                    {bookings.filter(b => b.totalAmount).map(b => (
+                      <SelectItem key={b.id} value={String(b.id)}>
+                        ORD-{String(b.id).padStart(4, "0")} — {b.customerName || `#${b.id}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Amount (₱)</Label>
+                <Input type="number" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} />
+              </div>
+              <div>
+                <Label>Cash Received (₱)</Label>
+                <Input type="number" value={form.cashReceived} onChange={e => setForm({ ...form, cashReceived: e.target.value })} />
+              </div>
+              {form.cashReceived && Number(form.cashReceived) > 0 && (
+                <div className={`p-3 rounded-lg text-center text-lg font-bold ${change >= 0 ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+                  {change >= 0 ? `Change: ₱${change.toFixed(2)}` : `Short: ₱${Math.abs(change).toFixed(2)}`}
+                </div>
+              )}
+              <Button className="w-full" onClick={createPayment} disabled={!form.bookingId || !form.amount || !form.cashReceived}>
+                Record Payment
+              </Button>
             </div>
-            <div>
-              <p className="text-primary-foreground/80 text-sm font-medium">Today's Revenue</p>
-              <h3 className="text-2xl font-bold">₱{todayRevenue.toFixed(2)}</h3>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-sm">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-slate-600" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">Card Payments</p>
-              <h3 className="text-2xl font-bold">₱{cardTotal.toFixed(2)}</h3>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-sm">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-slate-600" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">Cash Payments</p>
-              <h3 className="text-2xl font-bold">₱{cashTotal.toFixed(2)}</h3>
-            </div>
-          </CardContent>
-        </Card>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Card className="border-none shadow-sm overflow-hidden">
