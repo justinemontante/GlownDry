@@ -69,7 +69,7 @@ export default function RegisterScreen() {
 
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.foreground }]}>Create account</Text>
-        <Text style={[styles.sub, { color: colors.mutedForeground }]}>Join GLOWNDRY today</Text>
+        <Text style={[styles.sub, { color: colors.mutedForeground }]}>Join GlownDry today</Text>
       </View>
 
       <View style={styles.form}>

@@ -22,7 +22,7 @@ export default function CustomerRegister() {
       >
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold tracking-tight mb-2">Create Account</h1>
-          <p className="text-primary-foreground/80 font-medium text-sm">Join GLOWNDRY today</p>
+          <p className="text-primary-foreground/80 font-medium text-sm">Join GlownDry today</p>
         </div>
 
         <div className="w-full bg-background text-foreground p-6 rounded-3xl shadow-2xl space-y-5 mb-8">

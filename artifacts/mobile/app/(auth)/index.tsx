@@ -20,7 +20,7 @@ export default function WelcomeScreen() {
         <View style={styles.iconWrap}>
           <Feather name="wind" size={40} color="#fff" />
         </View>
-        <Text style={styles.brand}>GLOWNDRY</Text>
+        <Text style={styles.brand}>GlownDry</Text>
         <Text style={styles.tagline}>Premium Laundry, Delivered</Text>
       </View>
 

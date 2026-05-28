@@ -47,7 +47,7 @@ export default function AdminLogin() {
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
         <div className="z-10 text-center max-w-md">
           <WashingMachine className="w-24 h-24 mx-auto mb-8 text-primary-foreground" />
-          <h1 className="text-5xl font-bold tracking-tight mb-4">GLOWNDRY Admin</h1>
+          <h1 className="text-5xl font-bold tracking-tight mb-4">GlownDry Admin</h1>
           <p className="text-xl text-primary-foreground/80">
             Professional laundry management platform. Control orders, inventory, and insights from one place.
           </p>
@@ -58,7 +58,7 @@ export default function AdminLogin() {
         <div className="w-full max-w-sm">
           <div className="mb-8 lg:hidden text-center">
             <WashingMachine className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-foreground">GLOWNDRY</h1>
+            <h1 className="text-3xl font-bold text-foreground">GlownDry</h1>
           </div>
 
           <Card className="border-none shadow-none bg-transparent">

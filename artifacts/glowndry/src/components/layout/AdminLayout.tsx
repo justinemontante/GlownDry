@@ -27,7 +27,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       <aside className="w-64 bg-sidebar flex-shrink-0 flex flex-col shadow-xl z-20">
         <div className="h-16 flex items-center px-6 border-b border-sidebar-border gap-3">
           <WashingMachine className="w-8 h-8 text-sidebar-primary-foreground" />
-          <span className="text-xl font-bold text-sidebar-foreground tracking-tight">GLOWNDRY</span>
+          <span className="text-xl font-bold text-sidebar-foreground tracking-tight">GlownDry</span>
         </div>
 
         <div className="flex-1 overflow-y-auto py-6 px-3 flex flex-col gap-1">

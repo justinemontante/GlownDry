@@ -11,7 +11,7 @@ export default function Landing() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-primary">
             <WashingMachine className="w-6 h-6" />
-            <span className="text-xl font-bold tracking-tight">GLOWNDRY</span>
+            <span className="text-xl font-bold tracking-tight">GlownDry</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/admin/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
@@ -88,7 +88,7 @@ export default function Landing() {
       <footer className="py-12 border-t bg-card text-center text-muted-foreground">
         <div className="container mx-auto px-4 flex items-center justify-center gap-2">
           <WashingMachine className="w-5 h-5 text-primary" />
-          <span className="font-semibold text-foreground">GLOWNDRY</span>
+          <span className="font-semibold text-foreground">GlownDry</span>
           <span>© 2025 All rights reserved.</span>
         </div>
       </footer>

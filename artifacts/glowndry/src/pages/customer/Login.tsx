@@ -21,7 +21,7 @@ export default function CustomerLogin() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-md mb-4 shadow-lg">
             <WashingMachine className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2">GLOWNDRY</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2">GlownDry</h1>
           <p className="text-primary-foreground/80 font-medium">Premium Laundry, Delivered</p>
         </div>
 

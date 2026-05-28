@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "GLOWNDRY"
+title = "GlownDry"
 version = "1.0.0"
 id = "artifacts/glowndry"
 router = "path"
