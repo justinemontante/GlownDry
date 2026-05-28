@@ -10,19 +10,19 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { BookingCard } from "@/components/BookingCard";
-import { useListBookings, getListBookingsQueryKey } from "@workspace/api-client-react";
+import { useListBookings, getListBookingsQueryKey, useListServices } from "@workspace/api-client-react";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
 const WASHING_MACHINE_D = "M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M3 6h3 M17 6h.01 M17 13a5 5 0 11-10 0 5 5 0 0110 0z M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5";
 
-const SERVICES = [
-  { icon: "washing-machine" as const, name: "Wash & Fold", desc: "Machine wash & dry fold", price: "₱120/kg" },
-  { icon: "wind" as const, name: "Dry Clean", desc: "Professional dry cleaning", price: "₱200/kg" },
-  { icon: "star" as const, name: "Premium Care", desc: "Hand wash & delicate care", price: "₱250/kg" },
-  { icon: "clock" as const, name: "Express", desc: "Same-day service", price: "₱180/kg" },
-  { icon: "package" as const, name: "Wash & Iron", desc: "Wash & press finish", price: "₱150/kg" },
-];
+const SERVICE_ICONS: Record<string, string> = {
+  "wash": "washing-machine",
+  "dry": "wind",
+  "express": "clock",
+  "delicate": "star",
+  "regular": "washing-machine",
+};
 
 function GradientWashingMachine({ size = 28 }: { size?: number }) {
   return (
@@ -59,6 +59,14 @@ export default function HomeScreen() {
     { customerId: customer?.id },
     { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
   );
+
+  const { data: services } = useListServices();
+
+  function getServiceIcon(name: string) {
+    const lower = name.toLowerCase();
+    const key = Object.keys(SERVICE_ICONS).find(k => lower.includes(k));
+    return SERVICE_ICONS[key ?? "washing-machine"];
+  }
 
   const activeBooking = bookings?.find(b =>
     ["scheduled", "received", "in_progress", "ready"].includes(b.status),
@@ -109,20 +117,20 @@ export default function HomeScreen() {
             snapToInterval={SCREEN_W * 0.55 + 12}
             decelerationRate="fast"
           >
-            {SERVICES.map(s => (
+            {(services ?? []).map(s => (
               <TouchableOpacity
-                key={s.name}
+                key={s.id}
                 style={[styles.serviceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
                 onPress={() => router.push("/(tabs)/booking")}
                 activeOpacity={0.85}
               >
                 <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
-                  <FlaticonIcon name={s.icon} size={28} color={colors.primary} />
+                  <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />
                 </View>
                 <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
-                <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]}>{s.desc}</Text>
+                <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]}>{s.description}</Text>
                 <View style={styles.servicePriceRow}>
-                  <Text style={[styles.servicePrice, { color: colors.primary }]}>{s.price}</Text>
+                  <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
                   <FlaticonIcon name="arrow-left" size={12} color={colors.primary} style={{ transform: [{ rotate: "180deg" }], marginLeft: 4 }} />
                 </View>
               </TouchableOpacity>
