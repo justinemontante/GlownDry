@@ -1,16 +1,48 @@
+import { useState, useEffect } from "react";
 import { CreditCard, DollarSign, ReceiptText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
-const TRANSACTIONS = [
-  { id: "TXN-9982", order: "ORD-4829", customer: "Sarah Jenkins", amount: "$20.00", method: "Credit Card", date: "Oct 12, 2023", status: "Success" },
-  { id: "TXN-9981", order: "ORD-4830", customer: "Michael Chen", amount: "$45.00", method: "Cash", date: "Oct 12, 2023", status: "Success" },
-  { id: "TXN-9980", order: "ORD-4831", customer: "Emma Wilson", amount: "$30.00", method: "Credit Card", date: "Oct 11, 2023", status: "Refunded" },
-];
+type Payment = {
+  id: number;
+  bookingId: number;
+  amount: number;
+  cashReceived: number;
+  change: number;
+  customerName: string | null;
+  method: string;
+  status: string;
+  createdAt: string;
+};
 
 export default function AdminPayments() {
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const token = () => localStorage.getItem("adminToken");
+
+  useEffect(() => {
+    fetch("/api/payments", { headers: { Authorization: `Bearer ${token()}` } })
+      .then(r => r.json())
+      .then(data => { setPayments(data); setLoading(false); });
+  }, []);
+
+  const todayRevenue = payments
+    .filter(p => p.status !== "refunded" && new Date(p.createdAt).toDateString() === new Date().toDateString())
+    .reduce((s, p) => s + p.amount, 0);
+
+  const cardTotal = payments
+    .filter(p => p.method === "card" && p.status !== "refunded")
+    .reduce((s, p) => s + p.amount, 0);
+
+  const cashTotal = payments
+    .filter(p => p.method === "cash" && p.status !== "refunded")
+    .reduce((s, p) => s + p.amount, 0);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading payments...</div>;
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -21,11 +53,11 @@ export default function AdminPayments() {
             </div>
             <div>
               <p className="text-primary-foreground/80 text-sm font-medium">Today's Revenue</p>
-              <h3 className="text-2xl font-bold">$485.00</h3>
+              <h3 className="text-2xl font-bold">₱{todayRevenue.toFixed(2)}</h3>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="border-none shadow-sm">
           <CardContent className="p-6 flex items-center gap-4">
             <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
@@ -33,7 +65,7 @@ export default function AdminPayments() {
             </div>
             <div>
               <p className="text-muted-foreground text-sm font-medium">Card Payments</p>
-              <h3 className="text-2xl font-bold">$320.00</h3>
+              <h3 className="text-2xl font-bold">₱{cardTotal.toFixed(2)}</h3>
             </div>
           </CardContent>
         </Card>
@@ -45,7 +77,7 @@ export default function AdminPayments() {
             </div>
             <div>
               <p className="text-muted-foreground text-sm font-medium">Cash Payments</p>
-              <h3 className="text-2xl font-bold">$165.00</h3>
+              <h3 className="text-2xl font-bold">₱{cashTotal.toFixed(2)}</h3>
             </div>
           </CardContent>
         </Card>
@@ -68,18 +100,23 @@ export default function AdminPayments() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {TRANSACTIONS.map((t) => (
+            {payments.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">No payments recorded</TableCell>
+              </TableRow>
+            )}
+            {payments.map((t) => (
               <TableRow key={t.id}>
-                <TableCell className="font-medium text-slate-600">{t.id}</TableCell>
-                <TableCell className="text-primary font-medium">{t.order}</TableCell>
-                <TableCell>{t.customer}</TableCell>
-                <TableCell className="font-bold">{t.amount}</TableCell>
-                <TableCell className="text-muted-foreground">{t.method}</TableCell>
+                <TableCell className="font-medium text-slate-600">TXN-{String(t.id).padStart(4, "0")}</TableCell>
+                <TableCell className="text-primary font-medium">ORD-{String(t.bookingId).padStart(4, "0")}</TableCell>
+                <TableCell>{t.customerName || "—"}</TableCell>
+                <TableCell className="font-bold">₱{t.amount.toFixed(2)}</TableCell>
+                <TableCell className="text-muted-foreground capitalize">{t.method}</TableCell>
                 <TableCell>
-                  {t.status === "Success" ? (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Success</Badge>
-                  ) : (
+                  {t.status === "refunded" ? (
                     <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Refunded</Badge>
+                  ) : (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Success</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
