@@ -91,7 +91,7 @@ export default function AdminLogin() {
         initial="hidden"
         animate="visible"
         className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative overflow-hidden"
-        style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#18967f" }}
+        style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#00C6B5" }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
         <motion.div

@@ -57,8 +57,8 @@ export default function WelcomeScreen() {
 
         <View style={styles.bottomSection}>
           <Animated.Text style={[styles.brand, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>
-            <Text style={{ color: "#18967f" }}>Glown</Text>
-            <Text style={{ color: "#fff" }}>Dry</Text>
+            <Text style={{ color: "#fff" }}>Glown</Text>
+            <Text style={{ color: "#00C6B5" }}>Dry</Text>
           </Animated.Text>
           <Animated.Text style={[styles.tagline, { opacity: taglineOpacity }]}>
             Smart Laundry Service Management System
@@ -118,13 +118,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingVertical: 16, borderRadius: 24,
     alignItems: "center",
-    shadowColor: "#18967f",
+    shadowColor: "#00C6B5",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 8,
   },
-  btnPrimaryText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#18967f" },
+  btnPrimaryText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#00C6B5" },
   btnSecondary: {
     borderWidth: 1.5, borderColor: "rgba(255,255,255,0.5)",
     paddingVertical: 16, borderRadius: 24,
