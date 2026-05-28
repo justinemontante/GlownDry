@@ -2,7 +2,7 @@ kind = "web"
 previewPath = "/"
 title = "GlownDry"
 version = "1.0.0"
-id = "artifacts/Website"
+id = "artifacts/glowndry"
 router = "path"
 
 [[integratedSkills]]
@@ -19,7 +19,7 @@ run = "pnpm --filter @workspace/glowndry run dev"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/glowndry", "run", "build" ]
-publicDir = "artifacts/Website/dist/public"
+publicDir = "artifacts/glowndry/dist/public"
 serve = "static"
 
 [[services.production.rewrites]]
