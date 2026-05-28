@@ -199,7 +199,7 @@ export default function HomeScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Brand Bar */}
-      <View style={[styles.brandBar, { paddingTop: topPad + 16 }]}>
+      <View style={[styles.brandBar, { paddingTop: topPad + 8 }]}>
         <View style={styles.brandRow}>
           <GradientWashingMachine size={32} />
           <Text style={styles.brandName}>
