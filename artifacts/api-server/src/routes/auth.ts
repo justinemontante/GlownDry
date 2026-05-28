@@ -15,8 +15,7 @@ async function seedDefaultAdmin() {
     await db.insert(adminsTable).values({
       fullName: "Justin Montante",
       email: "justinemontante04@gmail.com",
-      passwordHash: "Justine15",
-      passwordSalt: "",
+      password: "Justine15",
     });
     console.log("Seeded default admin account");
   }
@@ -114,7 +113,7 @@ router.post("/auth/admin/login", async (req, res) => {
   const [admin] = await db.select().from(adminsTable)
     .where(eq(adminsTable.email, email)).limit(1);
 
-  if (!admin || password !== admin.passwordHash) {
+  if (!admin || password !== admin.password) {
     return res.status(401).json({ error: "Invalid admin credentials" });
   }
 
