@@ -1,15 +1,28 @@
 import { Router, type IRouter } from "express";
 import { pbkdf2Sync, randomBytes } from "crypto";
-import { db } from "@workspace/db";
-import { customersTable } from "@workspace/db";
+import { db, adminsTable, customersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { RegisterCustomerBody, LoginCustomerBody, LoginAdminBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
 export const adminTokens = new Set<string>();
-const ADMIN_EMAIL = "admin@glowndry.com";
-const ADMIN_PASSWORD = "glowndry2024";
+
+async function seedDefaultAdmin() {
+  const existing = await db.select({ id: adminsTable.id })
+    .from(adminsTable).where(eq(adminsTable.email, "justinemontante04@gmail.com")).limit(1);
+  if (existing.length === 0) {
+    const { hash, salt } = hashPassword("glowndry2024");
+    await db.insert(adminsTable).values({
+      fullName: "Justin Montante",
+      email: "justinemontante04@gmail.com",
+      passwordHash: hash,
+      passwordSalt: salt,
+    });
+    console.log("Seeded default admin account");
+  }
+}
+seedDefaultAdmin().catch(err => console.error("Failed to seed admin:", err));
 
 export function hashPassword(password: string): { hash: string; salt: string } {
   const salt = randomBytes(16).toString("hex");
@@ -99,22 +112,24 @@ router.post("/auth/admin/login", async (req, res) => {
   }
   const { email, password } = parsed.data;
 
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+  const [admin] = await db.select().from(adminsTable)
+    .where(eq(adminsTable.email, email)).limit(1);
+
+  if (!admin || !verifyPassword(password, admin.passwordHash, admin.passwordSalt)) {
     return res.status(401).json({ error: "Invalid admin credentials" });
   }
 
   const token = generateToken();
   adminTokens.add(token);
+  await db.update(adminsTable).set({ authToken: token }).where(eq(adminsTable.id, admin.id));
 
   return res.json({
     token,
-    customer: {
-      id: 0,
-      fullName: "Admin",
-      email: ADMIN_EMAIL,
-      phone: "",
-      totalOrders: 0,
-      createdAt: new Date(),
+    admin: {
+      id: admin.id,
+      fullName: admin.fullName,
+      email: admin.email,
+      createdAt: admin.createdAt,
     },
   });
 });
