@@ -22,20 +22,23 @@ function AdminRouter() {
   return (
     <Switch>
       <Route path="/admin/login" component={AdminLogin} />
+      {[
+        { path: "/admin/dashboard", Component: AdminDashboard },
+        { path: "/admin/bookings", Component: AdminBookings },
+        { path: "/admin/services", Component: AdminServices },
+        { path: "/admin/inventory", Component: AdminInventory },
+        { path: "/admin/customers", Component: AdminCustomers },
+        { path: "/admin/payments", Component: AdminPayments },
+        { path: "/admin/reports", Component: AdminReports },
+      ].map(({ path, Component }) => (
+        <Route key={path} path={path}>
+          <AdminLayout><Component /></AdminLayout>
+        </Route>
+      ))}
       <Route path="/admin">
-        <AdminLayout>
-          <Switch>
-            <Route path="/admin/dashboard" component={AdminDashboard} />
-            <Route path="/admin/bookings" component={AdminBookings} />
-            <Route path="/admin/services" component={AdminServices} />
-            <Route path="/admin/inventory" component={AdminInventory} />
-            <Route path="/admin/customers" component={AdminCustomers} />
-            <Route path="/admin/payments" component={AdminPayments} />
-            <Route path="/admin/reports" component={AdminReports} />
-            <Route component={NotFound} />
-          </Switch>
-        </AdminLayout>
+        <Redirect to="/admin/dashboard" />
       </Route>
+      <Route component={NotFound} />
     </Switch>
   );
 }
