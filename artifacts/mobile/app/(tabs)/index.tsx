@@ -5,11 +5,31 @@ import {
   ActivityIndicator, FlatList, Platform, RefreshControl,
   StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
+import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { BookingCard } from "@/components/BookingCard";
 import { useListBookings, getListBookingsQueryKey } from "@workspace/api-client-react";
+
+const WASHING_MACHINE_D = "M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M3 6h3 M17 6h.01 M17 13a5 5 0 11-10 0 5 5 0 0110 0z M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5";
+
+function GradientWashingMachine({ size = 28 }: { size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <Defs>
+        <SvgGradient id="homeIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <Stop offset="0%" stopColor="#00C6B5" />
+          <Stop offset="100%" stopColor="#006D96" />
+        </SvgGradient>
+      </Defs>
+      {WASHING_MACHINE_D.split("M").map((seg, i) => {
+        if (!seg) return null;
+        return <Path key={i} d={`M${seg}`} stroke="url(#homeIconGrad)" />;
+      })}
+    </Svg>
+  );
+}
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -37,13 +57,12 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { paddingTop: topPad + 16 }]}>
-        <View>
-          <Text style={[styles.greeting, { color: colors.mutedForeground }]}>
-            {getGreeting()},
-          </Text>
-          <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
-            {customer?.fullName?.split(" ")[0] ?? "there"}
+      <View style={[styles.brandBar, { paddingTop: topPad + 16 }]}>
+        <View style={styles.brandRow}>
+          <GradientWashingMachine size={32} />
+          <Text style={styles.brandName}>
+            <Text style={{ color: "#1a2a3a" }}>Glown</Text>
+            <Text style={{ color: "#00C6B5" }}>Dry</Text>
           </Text>
         </View>
         <TouchableOpacity
@@ -53,6 +72,15 @@ export default function HomeScreen() {
         >
           <FlaticonIcon name="bell" size={20} color={colors.foreground} />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.greetingSection}>
+        <Text style={[styles.greeting, { color: colors.mutedForeground }]}>
+          {getGreeting()},
+        </Text>
+        <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
+          {customer?.fullName?.split(" ")[0] ?? "there"}
+        </Text>
       </View>
 
       {activeBooking && (
@@ -157,14 +185,24 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: {
+  brandBar: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "flex-start", paddingHorizontal: 20, paddingBottom: 16,
+    alignItems: "center", paddingHorizontal: 20, paddingBottom: 4,
+  },
+  brandRow: {
+    flexDirection: "row", alignItems: "center", gap: 8,
+  },
+  brandName: {
+    fontSize: 20, fontFamily: "Inter_900Black",
+    letterSpacing: 2,
+  },
+  greetingSection: {
+    paddingHorizontal: 20, paddingBottom: 20, paddingTop: 4,
   },
   greeting: { fontSize: 14, fontFamily: "Inter_400Regular" },
-  name: { fontSize: 24, fontFamily: "Inter_700Bold" },
+  name: { fontSize: 26, fontFamily: "Inter_700Bold" },
   notifBtn: {
-    width: 42, height: 42, borderRadius: 12,
+    width: 40, height: 40, borderRadius: 12,
     alignItems: "center", justifyContent: "center",
     borderWidth: 1,
   },
