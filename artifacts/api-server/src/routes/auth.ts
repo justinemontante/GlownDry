@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { pbkdf2Sync, randomBytes } from "crypto";
+import { randomBytes } from "crypto";
 import { db, adminsTable, customersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { RegisterCustomerBody, LoginCustomerBody, LoginAdminBody } from "@workspace/api-zod";
@@ -22,17 +22,6 @@ async function seedDefaultAdmin() {
 }
 seedDefaultAdmin().catch(err => console.error("Failed to seed admin:", err));
 
-export function hashPassword(password: string): { hash: string; salt: string } {
-  const salt = randomBytes(16).toString("hex");
-  const hash = pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
-  return { hash, salt };
-}
-
-export function verifyPassword(password: string, hash: string, salt: string): boolean {
-  const derived = pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
-  return derived === hash;
-}
-
 export function generateToken(): string {
   return randomBytes(32).toString("hex");
 }
@@ -50,13 +39,10 @@ router.post("/auth/register", async (req, res) => {
     return res.status(409).json({ error: "Email already in use" });
   }
 
-  const { hash, salt } = hashPassword(password);
   const token = generateToken();
 
   const [customer] = await db.insert(customersTable).values({
-    fullName, email, phone,
-    passwordHash: hash,
-    passwordSalt: salt,
+    fullName, email, phone, password,
     authToken: token,
   }).returning();
 
@@ -83,7 +69,7 @@ router.post("/auth/login", async (req, res) => {
   const [customer] = await db.select().from(customersTable)
     .where(eq(customersTable.email, email)).limit(1);
 
-  if (!customer || !verifyPassword(password, customer.passwordHash, customer.passwordSalt)) {
+  if (!customer || password !== customer.password) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
