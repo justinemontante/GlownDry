@@ -1,21 +1,10 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
-import Landing from "@/pages/Landing";
-import { MobileFrame } from "@/components/layout/MobileFrame";
 import { AdminLayout } from "@/components/layout/AdminLayout";
-
-// Customer App Pages
-import CustomerLogin from "@/pages/customer/Login";
-import CustomerRegister from "@/pages/customer/Register";
-import CustomerDashboard from "@/pages/customer/Dashboard";
-import CustomerBooking from "@/pages/customer/Booking";
-import CustomerTracker from "@/pages/customer/Tracker";
-import CustomerNotifications from "@/pages/customer/Notifications";
-import CustomerProfile from "@/pages/customer/Profile";
 
 // Admin App Pages
 import AdminLogin from "@/pages/admin/Login";
@@ -29,26 +18,6 @@ import AdminReports from "@/pages/admin/Reports";
 
 const queryClient = new QueryClient();
 
-// Customer App Router
-function CustomerRouter() {
-  return (
-    <MobileFrame>
-      <Switch>
-        <Route path="/app" component={CustomerLogin} />
-        <Route path="/app/login" component={CustomerLogin} />
-        <Route path="/app/register" component={CustomerRegister} />
-        <Route path="/app/dashboard" component={CustomerDashboard} />
-        <Route path="/app/booking" component={CustomerBooking} />
-        <Route path="/app/tracker" component={CustomerTracker} />
-        <Route path="/app/notifications" component={CustomerNotifications} />
-        <Route path="/app/profile" component={CustomerProfile} />
-        <Route component={NotFound} />
-      </Switch>
-    </MobileFrame>
-  );
-}
-
-// Admin App Router
 function AdminRouter() {
   return (
     <Switch>
@@ -74,8 +43,9 @@ function AdminRouter() {
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/app/*" component={CustomerRouter} />
+      <Route path="/">
+        <Redirect to="/admin/login" />
+      </Route>
       <Route path="/admin/*" component={AdminRouter} />
       <Route component={NotFound} />
     </Switch>
