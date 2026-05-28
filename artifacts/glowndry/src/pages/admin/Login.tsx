@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WashingMachine, Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+
+const CRED_KEY = "adminSavedCredentials";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -36,6 +38,18 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
 
+  useEffect(() => {
+    const saved = localStorage.getItem(CRED_KEY);
+    if (saved) {
+      try {
+        const { email: savedEmail, password: savedPassword } = JSON.parse(saved);
+        setEmail(savedEmail || "");
+        setPassword(savedPassword || "");
+        setRemember(true);
+      } catch { /* ignore */ }
+    }
+  }, []);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -56,6 +70,11 @@ export default function AdminLogin() {
       const data = await res.json();
       localStorage.setItem("adminToken", data.token);
       localStorage.setItem("adminUser", JSON.stringify(data.admin));
+      if (remember) {
+        localStorage.setItem(CRED_KEY, JSON.stringify({ email, password }));
+      } else {
+        localStorage.removeItem(CRED_KEY);
+      }
       navigate("/admin/dashboard");
     } catch (err: any) {
       setError(err.message);
