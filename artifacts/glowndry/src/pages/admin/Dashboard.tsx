@@ -13,6 +13,7 @@ type DashboardStats = {
   totalBookings: number;
   recentBookings: {
     id: number;
+    customerId: number;
     customerName: string | null;
     weightKg: number | null;
     totalAmount: number | null;

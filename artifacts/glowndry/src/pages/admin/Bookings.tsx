@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 type Booking = {
   id: number;
+  customerId: number;
   customerName: string | null;
   serviceName: string | null;
   weightKg: number | null;

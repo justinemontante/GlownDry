@@ -19,7 +19,7 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
 
   return (
     <div className="min-h-screen w-full flex bg-background">
@@ -42,7 +42,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
         <div className="p-4 border-t border-sidebar-border flex flex-col gap-1">
           <NavItem href="/admin/settings" icon={<Settings />} label="Settings" active={location === "/admin/settings"} />
-          <NavItem href="/admin/login" icon={<LogOut />} label="Logout" active={false} />
+          <button onClick={() => { localStorage.clear(); navigate("/admin/login"); }} className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors duration-200 w-full"><LogOut className="w-5 h-5" /> Logout</button>
         </div>
       </aside>
 
