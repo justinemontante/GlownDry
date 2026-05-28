@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { WashingMachine } from "lucide-react";
+import { WashingMachine, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function AdminLogin() {
@@ -11,6 +11,7 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -80,14 +81,23 @@ export default function AdminLogin() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Password</label>
-                  <Input
-                    type="password"
-                    placeholder="••••••••"
-                    className="h-12"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className="h-12 pr-10"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
                 </div>
                 {error && (
                   <p className="text-sm text-destructive font-medium">{error}</p>
