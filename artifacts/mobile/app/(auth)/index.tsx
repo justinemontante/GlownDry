@@ -13,6 +13,7 @@ export default function WelcomeScreen() {
   return (
     <ImageBackground
       source={require("@/assets/images/loginImage.png")}
+      resizeMode="contain"
       style={[styles.container, { paddingTop: topPad + 24, paddingBottom: bottomPad + 24 }]}
     >
       <View style={styles.overlay} />
