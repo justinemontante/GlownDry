@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   heroSection: {
     marginHorizontal: 16, marginTop: 4, marginBottom: 8,
     padding: 20, borderRadius: 20,
-    backgroundColor: "#00C6B5",
+    backgroundColor: "#0A7474",
   },
   greetingLabel: {
     fontSize: 22, fontFamily: "Inter_700Bold",
