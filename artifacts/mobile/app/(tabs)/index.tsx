@@ -216,11 +216,11 @@ export default function HomeScreen() {
           </Text>
         </View>
         <TouchableOpacity
-          style={[styles.notifBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+          style={styles.notifBtn}
           onPress={() => router.push("/(tabs)/notifications")}
           testID="btn-notifications"
         >
-          <FlaticonIcon name="bell" size={20} color="#1a2a3a" />
+          <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
         </TouchableOpacity>
       </View>
 
@@ -280,10 +280,9 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  brandBar: {
+    brandBar: {
     flexDirection: "row", justifyContent: "space-between",
     alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
-    backgroundColor: "#ffffff",
     borderBottomWidth: 1, borderBottomColor: "#e2e8f0",
   },
   brandRow: {
@@ -294,9 +293,10 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   notifBtn: {
-    width: 40, height: 40, borderRadius: 12,
+    width: 38, height: 38, borderRadius: 10,
     alignItems: "center", justifyContent: "center",
-    borderWidth: 1,
+    backgroundColor: "#fff",
+    borderWidth: 1, borderColor: "#e2e8f0",
   },
 
   // Hero Section
