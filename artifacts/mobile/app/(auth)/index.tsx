@@ -9,7 +9,7 @@ export default function WelcomeScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const iconScale = useRef(new Animated.Value(0)).current;
+  const iconScale = useRef(new Animated.Value(0.8)).current;
   const iconOpacity = useRef(new Animated.Value(0)).current;
   const textOpacity = useRef(new Animated.Value(0)).current;
   const textY = useRef(new Animated.Value(40)).current;
@@ -51,8 +51,8 @@ export default function WelcomeScreen() {
       >
         <View style={styles.overlay} />
 
-        <Animated.View style={[styles.iconWrap, { opacity: iconOpacity, transform: [{ scale: iconScale }] }]}>
-          <FlaticonIcon name="washing-machine" size={36} color="#fff" />
+        <Animated.View style={{ position: "absolute", top: 60, left: 24, opacity: iconOpacity, transform: [{ scale: iconScale }] }}>
+          <FlaticonIcon name="washing-machine" size={64} color="#fff" />
         </Animated.View>
 
         <View style={styles.bottomSection}>
@@ -97,13 +97,6 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.45)",
-  },
-  iconWrap: {
-    position: "absolute",
-    top: 60, left: 24,
-    width: 64, height: 64, borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    alignItems: "center", justifyContent: "center",
   },
   bottomSection: {
     flex: 1,
