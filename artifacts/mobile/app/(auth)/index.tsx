@@ -1,7 +1,8 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import React, { useEffect, useRef } from "react";
-import { Animated, ImageBackground, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function WelcomeScreen() {
@@ -43,7 +44,7 @@ export default function WelcomeScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar hidden />
+      <StatusBar style="light" />
       <ImageBackground
         source={require("@/assets/images/loginImage.png")}
         resizeMode="cover"
