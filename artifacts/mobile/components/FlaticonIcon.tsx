@@ -69,6 +69,7 @@ interface FlaticonIconProps {
   name: string;
   size?: number;
   color?: string;
+  filled?: boolean;
   style?: any;
 }
 
@@ -76,6 +77,7 @@ export function FlaticonIcon({
   name,
   size = 24,
   color = "#212529",
+  filled = false,
   style,
 }: FlaticonIconProps) {
   const iconName = ICON_MAP[name] || name;
@@ -88,9 +90,9 @@ export function FlaticonIcon({
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={filled ? color : "none"}
       stroke={color}
-      strokeWidth={2}
+      strokeWidth={filled ? 1.5 : 2}
       strokeLinecap="round"
       strokeLinejoin="round"
       style={style}
