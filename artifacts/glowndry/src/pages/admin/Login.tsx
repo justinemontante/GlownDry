@@ -106,24 +106,24 @@ export default function AdminLogin() {
         className="flex-1 flex items-center justify-center p-4 lg:p-8 h-full"
         style={{ backgroundColor: "#f0f4f8" }}
       >
-        <div className="w-full max-w-md max-h-full overflow-y-auto py-4 scrollbar-none">
-          <div className="bg-white rounded-2xl shadow-xl shadow-black/5 p-6 lg:p-10 space-y-6 lg:space-y-8">
+        <div className="w-full max-w-md max-h-full py-2">
+          <div className="bg-white rounded-2xl shadow-2xl shadow-black/15 p-5 lg:p-8 space-y-4 lg:space-y-6">
             {/* Branding */}
             <motion.div
               custom={0}
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="text-center space-y-4"
+              className="text-center space-y-3"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
-                className="inline-flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 rounded-xl mx-auto"
+                className="inline-flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 rounded-xl mx-auto"
                 style={{ background: "linear-gradient(135deg, #00C6B5, #006D96)" }}
               >
-                <WashingMachine className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
+                <WashingMachine className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
               </motion.div>
               <div>
                 <motion.h1
@@ -131,7 +131,7 @@ export default function AdminLogin() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="text-xl lg:text-2xl font-bold tracking-wide"
+                  className="text-lg lg:text-xl font-bold tracking-wide"
                   style={{ color: "#1a2a3a" }}
                 >
                   GLOWNDRY
@@ -141,7 +141,7 @@ export default function AdminLogin() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="text-xs lg:text-sm tracking-[0.25em] font-semibold mt-1"
+                  className="text-[10px] lg:text-xs tracking-[0.25em] font-semibold mt-0.5"
                   style={{ color: "#00C6B5" }}
                 >
                   A D M I N
@@ -155,10 +155,10 @@ export default function AdminLogin() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="space-y-1"
+              className="text-center space-y-1"
             >
-              <h2 className="text-xl lg:text-2xl font-bold" style={{ color: "#1a2a3a" }}>Welcome back</h2>
-              <p className="text-sm" style={{ color: "#8a94a6" }}>Sign in to your admin account to continue.</p>
+              <h2 className="text-lg lg:text-xl font-bold" style={{ color: "#1a2a3a" }}>Welcome back</h2>
+              <p className="text-xs lg:text-sm" style={{ color: "#8a94a6" }}>Sign in to your admin account to continue.</p>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: 32 }}
@@ -169,23 +169,23 @@ export default function AdminLogin() {
             </motion.div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
               <motion.div
                 custom={0.5}
                 variants={fadeUp}
                 initial="hidden"
                 animate="visible"
-                className="space-y-1.5"
+                className="space-y-1"
               >
-                <label className="text-xs lg:text-sm font-semibold" style={{ color: "#1a2a3a" }}>Email Address</label>
+                <label className="text-[11px] lg:text-sm font-semibold" style={{ color: "#1a2a3a" }}>Email Address</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#e8f4f4" }}>
-                    <Mail className="w-3.5 h-3.5 lg:w-4 lg:h-4" style={{ color: "#00C6B5" }} />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#e8f4f4" }}>
+                    <Mail className="w-3 h-3 lg:w-3.5 lg:h-3.5" style={{ color: "#00C6B5" }} />
                   </div>
                   <input
                     type="email"
                     placeholder="admin@glowndry.com"
-                    className="w-full h-10 lg:h-12 pl-12 lg:pl-14 pr-4 rounded-xl border text-xs lg:text-sm outline-none transition-all duration-300 focus:shadow-lg focus:shadow-teal-100"
+                    className="w-full h-9 lg:h-10 pl-10 lg:pl-12 pr-3 rounded-xl border text-[11px] lg:text-sm outline-none transition-all duration-300 focus:shadow-lg focus:shadow-teal-100"
                     style={{ borderColor: "#e2e8f0", backgroundColor: "#fff", color: "#1a2a3a" }}
                     value={email}
                     onChange={e => setEmail(e.target.value)}
@@ -201,17 +201,17 @@ export default function AdminLogin() {
                 variants={fadeUp}
                 initial="hidden"
                 animate="visible"
-                className="space-y-1.5"
+                className="space-y-1"
               >
-                <label className="text-xs lg:text-sm font-semibold" style={{ color: "#1a2a3a" }}>Password</label>
+                <label className="text-[11px] lg:text-sm font-semibold" style={{ color: "#1a2a3a" }}>Password</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#e8f4f4" }}>
-                    <Lock className="w-3.5 h-3.5 lg:w-4 lg:h-4" style={{ color: "#00C6B5" }} />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#e8f4f4" }}>
+                    <Lock className="w-3 h-3 lg:w-3.5 lg:h-3.5" style={{ color: "#00C6B5" }} />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full h-10 lg:h-12 pl-12 lg:pl-14 pr-10 lg:pr-12 rounded-xl border text-xs lg:text-sm outline-none transition-all duration-300 focus:shadow-lg focus:shadow-teal-100"
+                    className="w-full h-9 lg:h-10 pl-10 lg:pl-12 pr-9 lg:pr-10 rounded-xl border text-[11px] lg:text-sm outline-none transition-all duration-300 focus:shadow-lg focus:shadow-teal-100"
                     style={{ borderColor: "#e2e8f0", backgroundColor: "#fff", color: "#1a2a3a" }}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
@@ -225,7 +225,7 @@ export default function AdminLogin() {
                     className="absolute right-3 top-1/2 -translate-y-1/2"
                     style={{ color: "#8a94a6" }}
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4 lg:w-5 lg:h-5" /> : <Eye className="w-4 h-4 lg:w-5 lg:h-5" />}
+                    {showPassword ? <EyeOff className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> : <Eye className="w-3.5 h-3.5 lg:w-4 lg:h-4" />}
                   </button>
                 </div>
               </motion.div>
@@ -235,31 +235,31 @@ export default function AdminLogin() {
                 variants={fadeUp}
                 initial="hidden"
                 animate="visible"
-                className="flex items-center gap-2.5"
+                className="flex items-center gap-2"
               >
                 <button
                   type="button"
                   onClick={() => setRemember(!remember)}
-                  className="w-4 h-4 lg:w-5 lg:h-5 rounded-md flex items-center justify-center transition-all duration-200 border"
+                  className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded flex items-center justify-center transition-all duration-200 border"
                   style={{
                     backgroundColor: remember ? "#00C6B5" : "transparent",
                     borderColor: remember ? "#00C6B5" : "#d1d5db",
                   }}
                 >
                   {remember && (
-                    <svg className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <svg className="w-2.5 h-2.5 lg:w-3 lg:h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}
                 </button>
-                <span className="text-xs lg:text-sm" style={{ color: "#8a94a6" }}>Remember me</span>
+                <span className="text-[11px] lg:text-sm" style={{ color: "#8a94a6" }}>Remember me</span>
               </motion.div>
 
               {error && (
                 <motion.p
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-xs lg:text-sm font-medium"
+                  className="text-[11px] lg:text-sm font-medium"
                   style={{ color: "#dc2626" }}
                 >
                   {error}
@@ -275,16 +275,16 @@ export default function AdminLogin() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl flex items-center justify-center gap-2 lg:gap-3 text-white font-bold text-sm lg:text-base transition-all duration-300 hover:shadow-xl hover:shadow-teal-200/50 active:scale-[0.98] disabled:opacity-70"
-                  style={{ background: "linear-gradient(135deg, #00C6B5, #006D96)", padding: "12px 0" }}
+                  className="w-full rounded-xl flex items-center justify-center gap-2 lg:gap-2.5 text-white font-bold text-xs lg:text-sm transition-all duration-300 hover:shadow-xl hover:shadow-teal-200/50 active:scale-[0.98] disabled:opacity-70"
+                  style={{ background: "linear-gradient(135deg, #00C6B5, #006D96)", padding: "10px 0" }}
                 >
-                  <Lock className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                  <Lock className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
                   {loading ? "Signing in..." : "Sign In"}
                   <motion.div
                     animate={{ x: loading ? 0 : [0, 5, 0] }}
                     transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 2 }}
                   >
-                    <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                    <ArrowRight className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
                   </motion.div>
                 </button>
               </motion.div>
@@ -296,20 +296,20 @@ export default function AdminLogin() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="relative flex items-center justify-center pt-2"
+              className="relative flex items-center justify-center"
             >
               <div className="absolute w-full border-t" style={{ borderColor: "#f0f0f0" }}></div>
-              <div className="relative flex flex-col items-center gap-1 lg:gap-2" style={{ backgroundColor: "#fff", padding: "0 16px" }}>
+              <div className="relative flex flex-col items-center gap-1" style={{ backgroundColor: "#fff", padding: "0 12px" }}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: 1.2, type: "spring" }}
-                  className="w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center"
+                  className="w-5 h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: "#f0fdfa" }}
                 >
-                  <ShieldCheck className="w-3 h-3 lg:w-4 lg:h-4" style={{ color: "#00C6B5" }} />
+                  <ShieldCheck className="w-2.5 h-2.5 lg:w-3 lg:h-3" style={{ color: "#00C6B5" }} />
                 </motion.div>
-                <p className="text-xs" style={{ color: "#c0c8d4" }}>Protected by GlownDry System</p>
+                <p className="text-[10px] lg:text-xs" style={{ color: "#c0c8d4" }}>Protected by GlownDry System</p>
               </div>
             </motion.div>
           </div>
