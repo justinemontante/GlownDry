@@ -280,8 +280,7 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 10,
     alignItems: "center", justifyContent: "center",
     backgroundColor: "#fff",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+    borderWidth: 1, borderColor: "#e2e8f0",
   },
 
   // Profile Header
@@ -291,9 +290,7 @@ const styles = StyleSheet.create({
   avatarOuter: {
     width: 92, height: 92, borderRadius: 46,
     backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
-    marginBottom: 4,
-    shadowColor: "#000", shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1, shadowRadius: 10, elevation: 5,
+    marginBottom: 4, borderWidth: 2, borderColor: "#e2e8f0",
   },
   avatar: {
     width: 84, height: 84, borderRadius: 42,
@@ -327,8 +324,7 @@ const styles = StyleSheet.create({
   sectionCard: {
     backgroundColor: "#fff", borderRadius: 18,
     marginBottom: 16, padding: 4,
-    shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,
+    borderWidth: 1, borderColor: "#e2e8f0",
   },
   cardHeader: {
     flexDirection: "row", justifyContent: "space-between",
@@ -435,10 +431,8 @@ const styles = StyleSheet.create({
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
     gap: 8, paddingVertical: 16, borderRadius: 16,
-    backgroundColor: "#fff", marginTop: 8,
-    borderWidth: 1.5, borderColor: "#fecaca",
-    shadowColor: "#ef4444", shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
+    backgroundColor: "#fef2f2", marginTop: 8,
+    borderWidth: 1.5, borderColor: "#ef4444",
   },
   logoutText: {
     fontSize: 15, fontFamily: "Inter_600SemiBold",
