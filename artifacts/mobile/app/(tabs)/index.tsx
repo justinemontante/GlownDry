@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
     brandBar: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
+    alignItems: "center", paddingHorizontal: 20, paddingBottom: 8,
     borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
   },
   brandRow: {

@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   // Brand Bar
   brandBar: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
+    alignItems: "center", paddingHorizontal: 20, paddingBottom: 8,
     backgroundColor: "#f7fafa",
     borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
   },
