@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     brandBar: {
     flexDirection: "row", justifyContent: "space-between",
     alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
-    borderBottomWidth: 1, borderBottomColor: "#e2e8f0",
+    borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
   },
   brandRow: {
     flexDirection: "row", alignItems: "center", gap: 8,
