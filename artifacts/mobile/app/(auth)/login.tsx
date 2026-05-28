@@ -43,8 +43,6 @@ export default function LoginScreen() {
   const [passFocused, setPassFocused] = useState(false);
 
   const backOpacity = useRef(new Animated.Value(0)).current;
-  const cardOpacity = useRef(new Animated.Value(0)).current;
-  const cardY = useRef(new Animated.Value(40)).current;
   const logoScale = useRef(new Animated.Value(0.5)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const dividerW = useRef(new Animated.Value(0)).current;
@@ -53,14 +51,11 @@ export default function LoginScreen() {
   const formOpacity = useRef(new Animated.Value(0)).current;
   const formY = useRef(new Animated.Value(20)).current;
   const badgeOpacity = useRef(new Animated.Value(0)).current;
+  const arrowAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.sequence([
       Animated.timing(backOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-      Animated.parallel([
-        Animated.timing(cardOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
-        Animated.timing(cardY, { toValue: 0, duration: 500, useNativeDriver: true }),
-      ]),
       Animated.parallel([
         Animated.spring(logoScale, { toValue: 1, useNativeDriver: true, friction: 5 }),
         Animated.timing(logoOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
@@ -76,6 +71,15 @@ export default function LoginScreen() {
       ]),
       Animated.timing(badgeOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
     ]).start();
+
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(arrowAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.timing(arrowAnim, { toValue: 0, duration: 800, useNativeDriver: true }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
   }, []);
 
   async function handleLogin() {
@@ -96,7 +100,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAwareScrollViewCompat
-      style={{ flex: 1, backgroundColor: "#f0f4f8" }}
+      style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={[styles.container, { paddingTop: topPad + 16 }]}
       keyboardShouldPersistTaps="handled"
       bottomOffset={20}
@@ -107,143 +111,133 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      <Animated.View style={[styles.card, { opacity: cardOpacity, transform: [{ translateY: cardY }] }]}>
-        <View style={styles.brandSection}>
-          <Animated.View style={{ opacity: logoOpacity, transform: [{ scale: logoScale }] }}>
-            <GradientWashingMachine size={48} />
-          </Animated.View>
-          <Text style={styles.brandName}>GlownDry</Text>
-          <Text style={styles.brandLabel}>C U S T O M E R</Text>
-        </View>
+      <View style={styles.brandSection}>
+        <Animated.View style={{ opacity: logoOpacity, transform: [{ scale: logoScale }] }}>
+          <GradientWashingMachine size={56} />
+        </Animated.View>
+        <Text style={styles.brandName}>GlownDry</Text>
+        <Text style={styles.brandLabel}>C U S T O M E R</Text>
+      </View>
 
-        <Animated.View style={{ width: dividerW, height: 2, borderRadius: 1, backgroundColor: "#00C6B5", alignSelf: "center", marginVertical: 16 }} />
+      <Animated.View style={{ width: dividerW, height: 2, borderRadius: 1, backgroundColor: "#00C6B5", alignSelf: "center", marginVertical: 20 }} />
 
-        <Animated.Text style={[styles.greeting, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>Welcome back</Animated.Text>
-        <Animated.Text style={[styles.subtitle, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>Sign in to your account</Animated.Text>
+      <Animated.Text style={[styles.greeting, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>Welcome back</Animated.Text>
+      <Animated.Text style={[styles.subtitle, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>Sign in to your account</Animated.Text>
 
-        <Animated.View style={{ opacity: formOpacity, transform: [{ translateY: formY }] }}>
-          <View style={styles.form}>
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>Email Address</Text>
-              <View style={[styles.field, { borderColor: emailFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#fff" }]}>
-                <View style={styles.iconBox}>
-                  <FlaticonIcon name="mail" size={14} color="#00C6B5" />
-                </View>
-                <TextInput
-                  style={[styles.input, { color: "#1a2a3a" }]}
-                  placeholder="admin@glowndry.com"
-                  placeholderTextColor="#c0c8d4"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  onFocus={() => setEmailFocused(true)}
-                  onBlur={() => setEmailFocused(false)}
-                  testID="input-email"
-                />
+      <Animated.View style={{ opacity: formOpacity, transform: [{ translateY: formY }] }}>
+        <View style={styles.form}>
+          <View style={styles.fieldGroup}>
+            <Text style={styles.fieldLabel}>Email Address</Text>
+            <View style={[styles.field, { borderColor: emailFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#f7fafa" }]}>
+              <View style={styles.iconBox}>
+                <FlaticonIcon name="mail" size={14} color="#00C6B5" />
               </View>
+              <TextInput
+                style={[styles.input, { color: "#1a2a3a" }]}
+                placeholder="admin@glowndry.com"
+                placeholderTextColor="#c0c8d4"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onFocus={() => setEmailFocused(true)}
+                onBlur={() => setEmailFocused(false)}
+                testID="input-email"
+              />
             </View>
+          </View>
 
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>Password</Text>
-              <View style={[styles.field, { borderColor: passFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#fff" }]}>
-                <View style={styles.iconBox}>
-                  <FlaticonIcon name="lock" size={14} color="#00C6B5" />
-                </View>
-                <TextInput
-                  style={[styles.input, { color: "#1a2a3a", flex: 1 }]}
-                  placeholder="••••••••"
-                  placeholderTextColor="#c0c8d4"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPass}
-                  onFocus={() => setPassFocused(true)}
-                  onBlur={() => setPassFocused(false)}
-                  testID="input-password"
-                />
-                <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
-                  <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={16} color="#8a94a6" />
-                </TouchableOpacity>
+          <View style={styles.fieldGroup}>
+            <Text style={styles.fieldLabel}>Password</Text>
+            <View style={[styles.field, { borderColor: passFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#f7fafa" }]}>
+              <View style={styles.iconBox}>
+                <FlaticonIcon name="lock" size={14} color="#00C6B5" />
               </View>
+              <TextInput
+                style={[styles.input, { color: "#1a2a3a", flex: 1 }]}
+                placeholder="••••••••"
+                placeholderTextColor="#c0c8d4"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPass}
+                onFocus={() => setPassFocused(true)}
+                onBlur={() => setPassFocused(false)}
+                testID="input-password"
+              />
+              <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
+                <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={16} color="#8a94a6" />
+              </TouchableOpacity>
             </View>
+          </View>
 
-            <TouchableOpacity
-              style={styles.checkboxRow}
-              onPress={() => setRemember(!remember)}
-              activeOpacity={0.7}
+          <TouchableOpacity
+            style={styles.checkboxRow}
+            onPress={() => setRemember(!remember)}
+            activeOpacity={0.7}
+          >
+            <View
+              style={[styles.checkbox, {
+                backgroundColor: remember ? "#00C6B5" : "transparent",
+                borderColor: remember ? "#00C6B5" : "#d1d5db",
+              }]}
             >
-              <View
-                style={[styles.checkbox, {
-                  backgroundColor: remember ? "#00C6B5" : "transparent",
-                  borderColor: remember ? "#00C6B5" : "#d1d5db",
-                }]}
-              >
-                {remember && (
-                  <FlaticonIcon name="check" size={10} color="#fff" />
-                )}
-              </View>
-              <Text style={styles.checkboxLabel}>Remember me</Text>
-            </TouchableOpacity>
+              {remember && (
+                <FlaticonIcon name="check" size={10} color="#fff" />
+              )}
+            </View>
+            <Text style={styles.checkboxLabel}>Remember me</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={handleLogin}
-              disabled={mutation.isPending}
-              activeOpacity={0.85}
-              testID="btn-login"
+          <TouchableOpacity
+            onPress={handleLogin}
+            disabled={mutation.isPending}
+            activeOpacity={0.85}
+            testID="btn-login"
+          >
+            <LinearGradient
+              colors={["#00C6B5", "#006D96"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[styles.btnLogin, { opacity: mutation.isPending ? 0.7 : 1 }]}
             >
-              <LinearGradient
-                colors={["#00C6B5", "#006D96"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={[styles.btnLogin, { opacity: mutation.isPending ? 0.7 : 1 }]}
-              >
-                <FlaticonIcon name="lock" size={14} color="#fff" style={{ marginRight: 8 }} />
-                <Text style={styles.btnLoginText}>{mutation.isPending ? "Signing in..." : "Sign In"}</Text>
+              <FlaticonIcon name="lock" size={14} color="#fff" style={{ marginRight: 8 }} />
+              <Text style={styles.btnLoginText}>{mutation.isPending ? "Signing in..." : "Sign In"}</Text>
+              <Animated.View style={{ transform: [{ translateX: arrowAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 6] }) }] }}>
                 <FlaticonIcon name="arrow-left" size={14} color="#fff" style={{ marginLeft: 8, transform: [{ rotate: "180deg" }] }} />
-              </LinearGradient>
-            </TouchableOpacity>
+              </Animated.View>
+            </LinearGradient>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.link}
-              onPress={() => router.push("/(auth)/register")}
-              testID="link-register"
-            >
-              <Text style={styles.linkText}>
-                Don't have an account?{" "}
-                <Text style={{ color: "#00C6B5", fontFamily: "Inter_600SemiBold" }}>Register</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => router.push("/(auth)/register")}
+            testID="link-register"
+          >
+            <Text style={styles.linkText}>
+              Don't have an account?{" "}
+              <Text style={{ color: "#00C6B5", fontFamily: "Inter_600SemiBold" }}>Register</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
 
-        <Animated.View style={[styles.securityBadge, { opacity: badgeOpacity }]}>
-          <View style={styles.shieldIcon}>
-            <FlaticonIcon name="check-circle" size={12} color="#00C6B5" />
-          </View>
-          <Text style={styles.shieldText}>Protected by GlownDry System</Text>
-        </Animated.View>
+      <Animated.View style={[styles.securityBadge, { opacity: badgeOpacity }]}>
+        <View style={styles.shieldIcon}>
+          <FlaticonIcon name="check-circle" size={12} color="#00C6B5" />
+        </View>
+        <Text style={styles.shieldText}>Protected by GlownDry System</Text>
       </Animated.View>
     </KeyboardAwareScrollViewCompat>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 40 },
+  container: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
   back: { marginBottom: 16, width: 40 },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.06,
-    shadowRadius: 24,
-    elevation: 6,
-  },
-  brandSection: { alignItems: "center", gap: 6 },
+  brandSection: { alignItems: "center", gap: 8, marginBottom: 4 },
   brandName: {
-    fontSize: 20, fontFamily: "Inter_700Bold",
-    color: "#1a2a3a", letterSpacing: 4,
+    fontSize: 24, fontFamily: "Inter_700Bold",
+    color: "#1a2a3a", letterSpacing: 5,
   },
   brandLabel: {
     fontSize: 10, fontFamily: "Inter_700Bold",
@@ -256,7 +250,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 13, fontFamily: "Inter_400Regular",
     color: "#8a94a6", textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 24,
   },
   form: { gap: 14 },
   fieldGroup: { gap: 6 },
@@ -299,7 +293,7 @@ const styles = StyleSheet.create({
   linkText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#8a94a6" },
   securityBadge: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 6, marginTop: 20, paddingTop: 16,
+    gap: 6, marginTop: 28, paddingTop: 16,
     borderTopWidth: 1, borderTopColor: "#f0f0f0",
   },
   shieldIcon: {
