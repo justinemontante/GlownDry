@@ -1,0 +1,136 @@
+Here is the exact, fully arranged documentation formatted specifically as a strict prompt for Replit. I have integrated all your rules (modern UX/animations, online icons only, strict separation of mobile and desktop previews, and NO CODE in this response). 
+
+Copy everything below the line and paste it directly into Replit:
+
+***
+
+**SYSTEM ROLE & STRICT INSTRUCTIONS FOR REPLIT AI**
+You are an Expert Senior Frontend Developer and UI/UX Designer. Your task is to generate the complete HTML, CSS, and JS frontend architecture for a premium laundry management platform called "GLOWNDRY". 
+
+**🔴 CRITICAL SYSTEM RULES (READ CAREFULLY):**
+1. **NO BACKEND CODE:** Focus entirely on building a stunning, functional UI prototype.
+2. **DUAL-VIEW PREVIEW REQUIREMENT:** You MUST create two completely separate and visually distinct layouts in the preview:
+   - **Customer App View (`/app`):** This MUST be forced into a mobile-sized container (e.g., `max-width: 400px; margin: auto; height: 100vh; overflow-x: hidden; border-radius: 30px; box-shadow: 0 0 20px rgba(0,0,0,0.2);`). It must look and feel EXACTLY like a native iOS/Android mobile application.
+   - **Admin Web View (`/admin`):** This MUST be a full-width (`100vw`) desktop layout. It should look like a professional, spacious business SaaS platform.
+3. **USE ONLINE ICONS ONLY (NO HARDCODED SVGs):** DO NOT write manual code/shapes for icons. You MUST import and use external icon libraries via CDN (e.g., Flaticon, FontAwesome, Boxicons, or Material Icons) for all graphical elements and UI icons.
+4. **MODERN ANIMATIONS & UX ELEMENTS:** The UI must feel modern and alive. You must implement modern CSS transitions, smooth fade-ins for page loads, hover-lift effects on cards/buttons, glassmorphism where appropriate, interactive floating labels, and visually pleasing step-trackers. 
+5. **THIS IS A BUSINESS WEB APP:** Do not use Canvas or game engines. Use standard HTML DOM elements and modern CSS (Flexbox/Grid).
+
+---
+
+### GLOWNDRY FINAL UI/UX FEATURES & DESIGN SPECIFICATION
+
+#### 1. OVERALL DESIGN STYLE & THEME
+Glowndry should have a:
+- Clean modern aesthetic
+- Premium laundry app vibe
+- Soft teal and white color palette
+- Minimalist interface
+- Smooth rounded corners
+- Soft shadows
+- Light mode only
+
+**MAIN COLOR PALETTE**
+- **Primary:** Teal
+- **Secondary:** White
+- **Accent:** Soft Sky Blue
+- **Background:** Very Light Gray
+- **Buttons:** Gradient Teal
+- **Cards:** White with soft shadows
+
+---
+
+#### 2. CUSTOMER SIDE (MOBILE APP DESIGN)
+**App Style:** The customer interface should feel like a modern mobile application, featuring smooth animations, friendly UI, easy to use, clean and aesthetic.
+
+**A. SPLASH SCREEN**
+- **Features:** Fullscreen welcome screen, smooth fade animation, teal gradient background.
+- **Top:** Glowndry Logo.
+- **Center:** Large aesthetic laundry image (folded clothes, washing machine, soft pastel background).
+- **Bottom:** Login and Register buttons.
+
+**B. CUSTOMER LOGIN SCREEN**
+- **Design:** Mobile-first layout, rounded input boxes, white card container, background image blur (glassmorphism).
+- **Inputs:** Email, Password (with floating labels).
+- **Buttons:** Teal Login button, Register Redirect.
+
+**C. CUSTOMER REGISTRATION SCREEN**
+*IMPORTANT: Customer registration UI should be completely DIFFERENT from admin website.*
+- **Style:** More colorful, mobile app style, soft rounded forms, animated transitions.
+- **Fields:** Full Name, Email, Phone Number, Password, Confirm Password.
+- **Features:** Large welcome text, small laundry illustration, teal gradient button.
+
+**D. CUSTOMER DASHBOARD**
+- **Layout:** Hamburger sidebar, optional Bottom Navigation.
+- **Cards:** Current Laundry Status, Upcoming Schedule, Notifications.
+- **Action:** Quick Booking Button (Floating Action Button).
+
+**E. CUSTOMER BOOKING SCREEN**
+- **Features:** Select laundry service, Calendar picker, Time picker, Weight input, Notes section.
+- **UI Style:** White cards, soft teal borders, rounded dropdowns, modern calendar UI.
+
+**F. LIVE ORDER TRACKER**
+- **Design:** Visual progress tracker using a teal progress line, animated online icons, and step circles.
+- **Status Steps:** Scheduled ➔ Received ➔ In Progress ➔ Ready for Pickup ➔ Claimed.
+
+**G. NOTIFICATIONS & TRANSACTION HISTORY**
+- **Notifications:** Modern notification cards, read/unread indicators, timestamp labels.
+- **Transaction History:** List cards, Order number, Total payment, Status badges.
+
+**H. CUSTOMER PROFILE & PDF RECEIPT**
+- **Profile:** Profile picture placeholder, Edit profile, Change password, Logout button.
+- **Receipt Viewer:** Clean receipt preview layout, Download button, Print button.
+
+---
+
+#### 3. ADMIN SIDE (WEB DASHBOARD)
+*IMPORTANT: Admin interface should look professional, be a clean business dashboard, desktop-optimized, and look completely different from the customer mobile app.*
+
+**A. ADMIN LOGIN PAGE**
+- **Design:** Split-screen layout.
+- **Left Side:** Laundry business illustration (washing machines, baskets) with Teal overlay.
+- **Right Side:** Clean Login Card (Email, Password, Login button).
+
+**B. ADMIN DASHBOARD LAYOUT**
+- **Layout:** Fixed left sidebar, large desktop workspace, analytics cards.
+- **Sidebar Menu:** Dashboard, Bookings, Queue, Services, Inventory, Customers, Payments, Reports, Settings, Logout.
+- **Design:** Teal sidebar, white online icons, smooth hover animations.
+
+**C. DASHBOARD MAIN CONTENT**
+- **Top Cards:** Active Orders, Daily Revenue, Expected Drop-offs, Low Stock Alerts.
+- **Analytics Charts:** UI Placeholders for Monthly sales, Popular services, Peak hours.
+
+**D. BOOKING MANAGEMENT & ORDER PROCESSING**
+- **Booking Page:** Large booking table, search bar, filter dropdowns, status badges.
+- **Order Processing:** Laundry weight input, Auto total calculator UI, Laundry itemizer table (Clothing Type, Quantity, Notes).
+- **Status Stepper:** Action buttons (Received ➔ In Progress ➔ Ready for Pickup ➔ Claimed). Must use Teal action buttons with animated transitions.
+
+**E. MANAGEMENT MODULES**
+- **Services:** Add Service button, editable service pricing cards.
+- **Inventory:** Inventory table, stock counters, low stock warning banners.
+- **Customers:** Customer table, Search customer, View order history.
+- **Payments:** Payment modal, cash input, auto change calculator UI, Generate receipt button.
+- **Reports:** Sales charts UI, Revenue summaries, Export report button.
+
+---
+
+#### 4. WEBSITE DESIGN SPECIFICATION (LANDING PAGE)
+**Hero Section:**
+- Large laundry background image.
+- Text: “Smart Laundry Management Made Easy”
+- Buttons: Get Started, Login
+
+**Features Section:**
+- Cards using online icons: Smart Booking, Live Tracking, Inventory Management, Digital Receipts.
+
+**About & Contact Section:**
+- Modern laundry shop showcase.
+- Includes: Phone number, Email, Location map UI.
+
+---
+
+**FINAL DESIGN GOALS & RULES TO EXECUTE:**
+1. **CUSTOMER SIDE:** Must have a mobile app look, teal aesthetic, smooth animations, splash screen with image, rounded UI, friendly interface.
+2. **ADMIN SIDE:** Must be a desktop dashboard, professional business UI, fixed sidebar, analytics focused.
+3. **VIBE:** A premium startup app, modern laundry SaaS platform, professional yet simple, smooth and responsive.
+4. **EXECUTION:** Generate the full HTML/CSS/JS files immediately based on this spec. Remember the strict rule: Use CDN for icons, and strictly enforce the visual size difference between the mobile customer app and the desktop admin dashboard.
