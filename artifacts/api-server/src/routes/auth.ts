@@ -12,7 +12,7 @@ async function seedDefaultAdmin() {
   const existing = await db.select({ id: adminsTable.id })
     .from(adminsTable).where(eq(adminsTable.email, "justinemontante04@gmail.com")).limit(1);
   if (existing.length === 0) {
-    const { hash, salt } = hashPassword("glowndry2024");
+    const { hash, salt } = hashPassword("Justine15");
     await db.insert(adminsTable).values({
       fullName: "Justin Montante",
       email: "justinemontante04@gmail.com",
