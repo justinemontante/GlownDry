@@ -6,10 +6,30 @@ import {
   Alert, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from "react-native";
+import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useUpdateCustomer } from "@workspace/api-client-react";
+
+const WASHING_MACHINE_D = "M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M3 6h3 M17 6h.01 M17 13a5 5 0 11-10 0 5 5 0 0110 0z M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5";
+
+function GradientWashingMachine({ size = 28 }: { size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <Defs>
+        <SvgGradient id="profileIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <Stop offset="0%" stopColor="#00C6B5" />
+          <Stop offset="100%" stopColor="#006D96" />
+        </SvgGradient>
+      </Defs>
+      {WASHING_MACHINE_D.split("M").map((seg, i) => {
+        if (!seg) return null;
+        return <Path key={i} d={`M${seg}`} stroke="url(#profileIconGrad)" />;
+      })}
+    </Svg>
+  );
+}
 
 export default function ProfileScreen() {
   const colors = useColors();
@@ -29,6 +49,10 @@ export default function ProfileScreen() {
     .join("")
     .toUpperCase()
     .slice(0, 2) ?? "?";
+
+  const joinDate = customer?.createdAt
+    ? new Date(customer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long" })
+    : null;
 
   async function handleSave() {
     if (!customer) return;
@@ -58,109 +82,180 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1, backgroundColor: "#f7fafa" }}
       contentContainerStyle={[styles.container, { paddingTop: topPad + 16, paddingBottom: bottomPad + 40 }]}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.avatarSection}>
-        <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-          <Text style={styles.initials}>{initials}</Text>
-        </View>
-        <Text style={[styles.name, { color: colors.foreground }]}>{customer?.fullName}</Text>
-        <Text style={[styles.email, { color: colors.mutedForeground }]}>{customer?.email}</Text>
-        <View style={[styles.badge, { backgroundColor: colors.tealLight }]}>
-          <Text style={[styles.badgeText, { color: colors.primary }]}>
-            {customer?.totalOrders ?? 0} orders
+      {/* Brand Bar */}
+      <View style={styles.brandBar}>
+        <View style={styles.brandRow}>
+          <GradientWashingMachine size={28} />
+          <Text style={styles.brandName}>
+            <Text style={{ color: "#1a2a3a" }}>Glown</Text>
+            <Text style={{ color: "#00C6B5" }}>Dry</Text>
           </Text>
+        </View>
+        <TouchableOpacity
+          style={[styles.notifBtn]}
+          onPress={() => router.push("/(tabs)/notifications")}
+          testID="btn-notifications"
+        >
+          <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Profile Header */}
+      <View style={styles.profileHeader}>
+        <View style={styles.avatarOuter}>
+          <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
+            <Text style={styles.initials}>{initials}</Text>
+          </View>
+        </View>
+        <Text style={styles.name}>{customer?.fullName}</Text>
+        <Text style={styles.email}>{customer?.email}</Text>
+        <View style={styles.badgeRow}>
+          <View style={styles.badge}>
+            <FlaticonIcon name="check-circle" size={12} color="#0A7474" />
+            <Text style={styles.badgeText}>{customer?.totalOrders ?? 0} orders</Text>
+          </View>
+          {joinDate && (
+            <View style={styles.badge}>
+              <FlaticonIcon name="calendar" size={12} color="#0A7474" />
+              <Text style={styles.badgeText}>Since {joinDate}</Text>
+            </View>
+          )}
         </View>
       </View>
 
-      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {/* Personal Info Card */}
+      <View style={styles.sectionCard}>
         <View style={styles.cardHeader}>
-          <Text style={[styles.cardTitle, { color: colors.foreground }]}>Personal Info</Text>
+          <View style={styles.cardHeaderLeft}>
+            <View style={[styles.cardIconWrap, { backgroundColor: "#e8f4f4" }]}>
+              <FlaticonIcon name="user" size={16} color="#0A7474" />
+            </View>
+            <Text style={styles.cardTitle}>Personal Information</Text>
+          </View>
           {!editing ? (
             <TouchableOpacity
+              style={styles.editBtn}
               onPress={() => setEditing(true)}
               testID="btn-edit-profile"
             >
-              <FlaticonIcon name="edit-2" size={18} color={colors.primary} />
+              <FlaticonIcon name="edit-2" size={14} color="#0A7474" />
+              <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
           ) : (
             <View style={styles.editActions}>
-              <TouchableOpacity onPress={() => setEditing(false)} testID="btn-cancel-edit">
-                <FlaticonIcon name="x" size={18} color={colors.mutedForeground} />
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setEditing(false)} testID="btn-cancel-edit">
+                <Text style={styles.cancelBtnText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleSave} testID="btn-save-profile">
-                <FlaticonIcon name="check" size={18} color={colors.primary} />
+              <TouchableOpacity style={styles.saveBtn} onPress={handleSave} testID="btn-save-profile">
+                <FlaticonIcon name="check" size={14} color="#fff" />
+                <Text style={styles.saveBtnText}>Save</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
 
-        {[
-          { label: "Full Name", value: fullName, setter: setFullName, icon: "user" as const },
-          { label: "Phone", value: phone, setter: setPhone, icon: "phone" as const, type: "phone" },
-        ].map(f => (
-          <View key={f.label} style={styles.fieldRow}>
-            <View style={[styles.fieldIconWrap, { backgroundColor: colors.tealLight }]}>
-              <FlaticonIcon name={f.icon} size={16} color={colors.primary} />
+        <View style={styles.divider} />
+
+        <View style={styles.fieldsContainer}>
+          <View style={styles.fieldRow}>
+            <View style={[styles.fieldIconWrap, { backgroundColor: "#e8f4f4" }]}>
+              <FlaticonIcon name="user" size={16} color="#0A7474" />
             </View>
             <View style={styles.fieldContent}>
-              <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{f.label}</Text>
+              <Text style={styles.fieldLabel}>Full Name</Text>
               {editing ? (
                 <TextInput
-                  style={[styles.fieldInput, { color: colors.foreground, borderBottomColor: colors.primary }]}
-                  value={f.value}
-                  onChangeText={f.setter}
-                  keyboardType={f.type === "phone" ? "phone-pad" : "default"}
-                  testID={`input-${f.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  style={styles.fieldInput}
+                  value={fullName}
+                  onChangeText={setFullName}
+                  testID="input-full-name"
                 />
               ) : (
-                <Text style={[styles.fieldValue, { color: colors.foreground }]}>{f.value || "—"}</Text>
+                <Text style={styles.fieldValue}>{fullName || "—"}</Text>
               )}
             </View>
           </View>
-        ))}
-
-        <View style={styles.fieldRow}>
-          <View style={[styles.fieldIconWrap, { backgroundColor: colors.tealLight }]}>
-            <FlaticonIcon name="mail" size={16} color={colors.primary} />
+          <View style={styles.fieldDivider} />
+          <View style={styles.fieldRow}>
+            <View style={[styles.fieldIconWrap, { backgroundColor: "#e8f4f4" }]}>
+              <FlaticonIcon name="phone" size={16} color="#0A7474" />
+            </View>
+            <View style={styles.fieldContent}>
+              <Text style={styles.fieldLabel}>Phone</Text>
+              {editing ? (
+                <TextInput
+                  style={styles.fieldInput}
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                  testID="input-phone"
+                />
+              ) : (
+                <Text style={styles.fieldValue}>{phone || "—"}</Text>
+              )}
+            </View>
           </View>
-          <View style={styles.fieldContent}>
-            <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email</Text>
-            <Text style={[styles.fieldValue, { color: colors.mutedForeground }]}>{customer?.email}</Text>
+          <View style={styles.fieldDivider} />
+          <View style={styles.fieldRow}>
+            <View style={[styles.fieldIconWrap, { backgroundColor: "#e8f4f4" }]}>
+              <FlaticonIcon name="mail" size={16} color="#0A7474" />
+            </View>
+            <View style={styles.fieldContent}>
+              <Text style={styles.fieldLabel}>Email</Text>
+              <Text style={[styles.fieldValue, { color: "#8a94a6" }]}>{customer?.email}</Text>
+            </View>
           </View>
         </View>
       </View>
 
-      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {/* Quick Links Card */}
+      <View style={styles.sectionCard}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardHeaderLeft}>
+            <View style={[styles.cardIconWrap, { backgroundColor: "#e8f4f4" }]}>
+              <FlaticonIcon name="clock" size={16} color="#0A7474" />
+            </View>
+            <Text style={styles.cardTitle}>Quick Links</Text>
+          </View>
+        </View>
+        <View style={styles.divider} />
         {[
-          { label: "Booking History", icon: "clock" as const, onPress: () => router.push("/(tabs)/notifications") },
-          { label: "Track Current Order", icon: "map-pin" as const, onPress: () => router.push("/(tabs)/track") },
-          { label: "New Booking", icon: "plus-circle" as const, onPress: () => router.push("/(tabs)/booking") },
-        ].map(item => (
+          { label: "Booking History", icon: "archive" as const, desc: "View all your past bookings", route: "/(tabs)/notifications" as const },
+          { label: "Track Current Order", icon: "map-pin" as const, desc: "See real-time order status", route: "/(tabs)/track" as const },
+          { label: "New Booking", icon: "plus-circle" as const, desc: "Schedule a new laundry service", route: "/(tabs)/booking" as const },
+        ].map((item, i) => (
           <TouchableOpacity
             key={item.label}
-            style={[styles.menuItem, { borderBottomColor: colors.border }]}
-            onPress={item.onPress}
+            style={styles.menuItem}
+            onPress={() => router.push(item.route)}
             activeOpacity={0.7}
             testID={`menu-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
           >
-            <FlaticonIcon name={item.icon} size={18} color={colors.foreground} />
-            <Text style={[styles.menuText, { color: colors.foreground }]}>{item.label}</Text>
-            <FlaticonIcon name="chevron-right" size={16} color={colors.mutedForeground} />
+            <View style={[styles.menuIconWrap, { backgroundColor: "#f0fdfa" }]}>
+              <FlaticonIcon name={item.icon} size={18} color="#0A7474" />
+            </View>
+            <View style={styles.menuContent}>
+              <Text style={styles.menuLabel}>{item.label}</Text>
+              <Text style={styles.menuDesc}>{item.desc}</Text>
+            </View>
+            <FlaticonIcon name="chevron-right" size={16} color="#c0c8d4" />
           </TouchableOpacity>
         ))}
       </View>
 
+      {/* Logout */}
       <TouchableOpacity
-        style={[styles.logoutBtn, { borderColor: colors.destructive }]}
+        style={styles.logoutBtn}
         onPress={handleLogout}
         activeOpacity={0.8}
         testID="btn-logout"
       >
-        <FlaticonIcon name="log-out" size={18} color={colors.destructive} />
-        <Text style={[styles.logoutText, { color: colors.destructive }]}>Logout</Text>
+        <FlaticonIcon name="log-out" size={18} color="#ef4444" />
+        <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -168,51 +263,185 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 20 },
-  avatarSection: { alignItems: "center", paddingBottom: 28, gap: 8 },
-  avatar: {
-    width: 80, height: 80, borderRadius: 40,
-    alignItems: "center", justifyContent: "center", marginBottom: 4,
+
+  // Brand Bar
+  brandBar: {
+    flexDirection: "row", justifyContent: "space-between",
+    alignItems: "center", marginBottom: 20,
   },
-  initials: { fontSize: 28, fontFamily: "Inter_700Bold", color: "#fff" },
-  name: { fontSize: 22, fontFamily: "Inter_700Bold" },
-  email: { fontSize: 14, fontFamily: "Inter_400Regular" },
-  badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20 },
-  badgeText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
-  card: {
-    borderRadius: 16, padding: 4, borderWidth: 1, marginBottom: 16,
+  brandRow: {
+    flexDirection: "row", alignItems: "center", gap: 8,
+  },
+  brandName: {
+    fontSize: 18, fontFamily: "Inter_900Black",
+    letterSpacing: 2,
+  },
+  notifBtn: {
+    width: 38, height: 38, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+    backgroundColor: "#fff",
     shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05, shadowRadius: 4, elevation: 1,
+    shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  },
+
+  // Profile Header
+  profileHeader: {
+    alignItems: "center", paddingBottom: 24, gap: 6,
+  },
+  avatarOuter: {
+    width: 92, height: 92, borderRadius: 46,
+    backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
+    marginBottom: 4,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1, shadowRadius: 10, elevation: 5,
+  },
+  avatar: {
+    width: 84, height: 84, borderRadius: 42,
+    alignItems: "center", justifyContent: "center",
+  },
+  initials: {
+    fontSize: 30, fontFamily: "Inter_700Bold", color: "#fff",
+  },
+  name: {
+    fontSize: 22, fontFamily: "Inter_700Bold",
+    color: "#1a2a3a",
+  },
+  email: {
+    fontSize: 14, fontFamily: "Inter_400Regular",
+    color: "#8a94a6",
+  },
+  badgeRow: {
+    flexDirection: "row", gap: 8, marginTop: 6,
+  },
+  badge: {
+    flexDirection: "row", alignItems: "center", gap: 4,
+    backgroundColor: "#e8f4f4", paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: 16,
+  },
+  badgeText: {
+    fontSize: 12, fontFamily: "Inter_600SemiBold",
+    color: "#0A7474",
+  },
+
+  // Cards
+  sectionCard: {
+    backgroundColor: "#fff", borderRadius: 18,
+    marginBottom: 16, padding: 4,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,
   },
   cardHeader: {
-    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
-    paddingHorizontal: 14, paddingVertical: 14,
+    flexDirection: "row", justifyContent: "space-between",
+    alignItems: "center", paddingHorizontal: 16, paddingVertical: 16,
   },
-  cardTitle: { fontSize: 15, fontFamily: "Inter_700Bold" },
-  editActions: { flexDirection: "row", gap: 14 },
-  fieldRow: {
-    flexDirection: "row", alignItems: "center", gap: 12,
-    paddingHorizontal: 14, paddingVertical: 12,
+  cardHeaderLeft: {
+    flexDirection: "row", alignItems: "center", gap: 10,
   },
-  fieldIconWrap: {
+  cardIconWrap: {
     width: 32, height: 32, borderRadius: 8,
     alignItems: "center", justifyContent: "center",
   },
+  cardTitle: {
+    fontSize: 15, fontFamily: "Inter_700Bold",
+    color: "#1a2a3a",
+  },
+  editBtn: {
+    flexDirection: "row", alignItems: "center", gap: 4,
+    backgroundColor: "#e8f4f4", paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: 8,
+  },
+  editBtnText: {
+    fontSize: 12, fontFamily: "Inter_600SemiBold",
+    color: "#0A7474",
+  },
+  editActions: {
+    flexDirection: "row", gap: 8,
+  },
+  cancelBtn: {
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+    backgroundColor: "#f1f5f9",
+  },
+  cancelBtnText: {
+    fontSize: 12, fontFamily: "Inter_600SemiBold",
+    color: "#8a94a6",
+  },
+  saveBtn: {
+    flexDirection: "row", alignItems: "center", gap: 4,
+    backgroundColor: "#0A7474", paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: 8,
+  },
+  saveBtnText: {
+    fontSize: 12, fontFamily: "Inter_600SemiBold",
+    color: "#fff",
+  },
+  divider: {
+    height: 1, backgroundColor: "#f0f0f0",
+    marginHorizontal: 16,
+  },
+
+  // Fields
+  fieldsContainer: {
+    paddingVertical: 4,
+  },
+  fieldRow: {
+    flexDirection: "row", alignItems: "center", gap: 12,
+    paddingHorizontal: 16, paddingVertical: 14,
+  },
+  fieldDivider: {
+    height: 1, backgroundColor: "#f7fafa",
+    marginLeft: 64, marginRight: 16,
+  },
+  fieldIconWrap: {
+    width: 36, height: 36, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+  },
   fieldContent: { flex: 1 },
-  fieldLabel: { fontSize: 11, fontFamily: "Inter_500Medium", textTransform: "uppercase", letterSpacing: 0.4 },
-  fieldValue: { fontSize: 15, fontFamily: "Inter_500Medium", marginTop: 2 },
+  fieldLabel: {
+    fontSize: 11, fontFamily: "Inter_500Medium",
+    textTransform: "uppercase", letterSpacing: 0.5,
+    color: "#8a94a6",
+  },
+  fieldValue: {
+    fontSize: 15, fontFamily: "Inter_500Medium",
+    color: "#1a2a3a", marginTop: 2,
+  },
   fieldInput: {
     fontSize: 15, fontFamily: "Inter_500Medium",
-    borderBottomWidth: 1.5, paddingBottom: 2, marginTop: 2,
+    color: "#1a2a3a", marginTop: 2,
+    borderBottomWidth: 1.5, borderBottomColor: "#0A7474",
+    paddingBottom: 2,
   },
+
+  // Menu
   menuItem: {
     flexDirection: "row", alignItems: "center", gap: 12,
-    paddingHorizontal: 14, paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16, paddingVertical: 14,
   },
-  menuText: { flex: 1, fontSize: 15, fontFamily: "Inter_500Medium" },
+  menuIconWrap: {
+    width: 40, height: 40, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+  },
+  menuContent: { flex: 1 },
+  menuLabel: {
+    fontSize: 15, fontFamily: "Inter_600SemiBold",
+    color: "#1a2a3a",
+  },
+  menuDesc: {
+    fontSize: 11, fontFamily: "Inter_400Regular",
+    color: "#8a94a6", marginTop: 1,
+  },
+
+  // Logout
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 10, paddingVertical: 16, borderRadius: 14, borderWidth: 1.5,
+    gap: 8, paddingVertical: 16, borderRadius: 16,
+    backgroundColor: "#fff", marginTop: 8,
+    borderWidth: 1.5, borderColor: "#fecaca",
+    shadowColor: "#ef4444", shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
   },
-  logoutText: { fontSize: 16, fontFamily: "Inter_600SemiBold" },
+  logoutText: {
+    fontSize: 15, fontFamily: "Inter_600SemiBold",
+    color: "#ef4444",
+  },
 });
