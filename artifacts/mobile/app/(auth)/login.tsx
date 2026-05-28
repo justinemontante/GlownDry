@@ -1,6 +1,7 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
@@ -110,6 +111,7 @@ export default function LoginScreen() {
       keyboardShouldPersistTaps="handled"
       bottomOffset={20}
     >
+      <StatusBar style="dark" />
       <Animated.View style={{ opacity: backOpacity }}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()} testID="btn-back">
           <FlaticonIcon name="arrow-left" size={22} color="#1a2a3a" />
