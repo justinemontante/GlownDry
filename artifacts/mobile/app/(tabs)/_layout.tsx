@@ -17,7 +17,7 @@ function NativeTabLayout() {
         <Label>Home</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="booking">
-        <Icon sf={{ default: "calendar", selected: "calendar.fill" }} />
+        <Icon sf={{ default: "calendar", selected: "calendar" }} />
         <Label>Book</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="track">
@@ -61,14 +61,29 @@ function ClassicTabLayout() {
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.mutedForeground,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontFamily: "Inter_600SemiBold",
+          marginTop: 2,
+        },
+        tabBarItemStyle: {
+          paddingTop: 6,
+          paddingBottom: 4,
+        },
         headerShown: false,
         tabBarStyle: {
           position: "absolute",
           backgroundColor: isIOS ? "transparent" : colors.background,
-          borderTopWidth: isWeb ? 1 : 0,
-          borderTopColor: colors.border,
-          elevation: 0,
-          ...(isWeb ? { height: 84 } : {}),
+          borderTopWidth: 0,
+          elevation: isWeb ? 0 : 12,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          overflow: "visible",
+          ...(isWeb ? { height: 84 } : { height: 70 }),
         },
         tabBarBackground: () =>
           isIOS ? (
@@ -88,11 +103,11 @@ function ClassicTabLayout() {
           name={screen.name}
           options={{
             title: screen.title,
-            tabBarIcon: ({ color, focused }) =>
+            tabBarIcon: ({ color }) =>
               isIOS ? (
-                <SymbolView name={(focused ? screen.sfSymbol + ".fill" : screen.sfSymbol) as any} tintColor={color} size={24} />
+                <SymbolView name={screen.sfSymbol as any} tintColor={color} size={24} />
               ) : (
-                                <FlaticonIcon name={screen.featherIcon} size={22} color={color} filled={focused} />
+                                <FlaticonIcon name={screen.featherIcon} size={22} color={color} />
               ),
           }}
         />
