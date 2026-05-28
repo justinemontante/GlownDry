@@ -23,21 +23,19 @@ export default function WelcomeScreen() {
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.spring(iconScale, { toValue: 1, useNativeDriver: true, friction: 6 }),
-        Animated.timing(iconOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.spring(iconScale, { toValue: 1, useNativeDriver: true, friction: 7 }),
+        Animated.timing(iconOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
       ]),
       Animated.parallel([
-        Animated.timing(textOpacity, { toValue: 1, duration: 700, useNativeDriver: true }),
-        Animated.timing(textY, { toValue: 0, duration: 700, useNativeDriver: true }),
-      ]),
-      Animated.timing(taglineOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.parallel([
-        Animated.timing(btn1Opacity, { toValue: 1, duration: 500, useNativeDriver: true }),
-        Animated.timing(btn1Y, { toValue: 0, duration: 500, useNativeDriver: true }),
+        Animated.timing(textOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(textY, { toValue: 0, duration: 600, useNativeDriver: true }),
       ]),
       Animated.parallel([
-        Animated.timing(btn2Opacity, { toValue: 1, duration: 500, useNativeDriver: true }),
-        Animated.timing(btn2Y, { toValue: 0, duration: 500, useNativeDriver: true }),
+        Animated.timing(taglineOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(btn1Opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(btn1Y, { toValue: 0, duration: 400, useNativeDriver: true }),
+        Animated.timing(btn2Opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(btn2Y, { toValue: 0, duration: 400, useNativeDriver: true }),
       ]),
     ]).start();
   }, []);
