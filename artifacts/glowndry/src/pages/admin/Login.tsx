@@ -43,7 +43,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen w-full flex">
-      <div className="hidden lg:flex flex-1 flex-col items-center justify-start pt-48 text-white p-12 relative overflow-hidden" style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#18967f" }}>
+      <div className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative overflow-hidden" style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#18967f" }}>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="z-10 text-center max-w-md">
           <h1 className="text-5xl font-bold tracking-tight mb-4">
