@@ -209,7 +209,7 @@ export default function HomeScreen() {
       {/* Brand Bar */}
       <View style={[styles.brandBar, { paddingTop: topPad + 8 }]}>
         <View style={styles.brandRow}>
-          <GradientWashingMachine size={32} />
+          <GradientWashingMachine size={28} />
           <Text style={styles.brandName}>
             <Text style={{ color: "#1a2a3a" }}>Glown</Text>
             <Text style={{ color: "#00C6B5" }}>Dry</Text>
@@ -358,9 +358,7 @@ const styles = StyleSheet.create({
   },
   serviceCard: {
     width: SCREEN_W * 0.55, borderRadius: 18,
-    padding: 18, borderWidth: 1,
-    shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,
+    padding: 18, borderWidth: 1, borderColor: "#e2e8f0",
   },
   serviceIconWrap: {
     width: 52, height: 52, borderRadius: 14,
