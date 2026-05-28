@@ -46,9 +46,11 @@ export default function AdminLogin() {
       <div className="hidden lg:flex flex-1 flex-col items-center justify-center text-white p-12 relative overflow-hidden" style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#18967f" }}>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="z-10 text-center max-w-md">
-          <h1 className="text-5xl font-bold tracking-tight mb-4">GlownDry Admin</h1>
+          <h1 className="text-5xl font-bold tracking-tight mb-4">
+            <span style={{ color: "#18967f" }}>Glown</span><span style={{ color: "#fff" }}>Dry</span>
+          </h1>
           <p className="text-xl text-white/80">
-            Professional laundry management platform. Control orders, inventory, and insights from one place.
+            Smart Laundry Service Management System
           </p>
         </div>
       </div>
@@ -56,7 +58,7 @@ export default function AdminLogin() {
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-sm">
           <div className="mb-8 lg:hidden text-center">
-            <h1 className="text-3xl font-bold text-foreground">GlownDry</h1>
+            <h1 className="text-3xl font-bold"><span style={{ color: "#18967f" }}>Glown</span><span className="text-foreground">Dry</span></h1>
           </div>
 
           <Card className="border-none shadow-none bg-transparent">
