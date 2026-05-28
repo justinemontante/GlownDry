@@ -115,7 +115,7 @@ export default function LoginScreen() {
         <Animated.View style={{ opacity: logoOpacity, transform: [{ scale: logoScale }] }}>
           <GradientWashingMachine size={56} />
         </Animated.View>
-        <Text style={styles.brandName}>GlownDry</Text>
+          <Text style={styles.brandName}><Text style={{ color: "#1a2a3a" }}>Glown</Text><Text style={{ color: "#00C6B5" }}>Dry</Text></Text>
         <Text style={styles.brandLabel}>C U S T O M E R</Text>
       </View>
 
@@ -236,8 +236,8 @@ const styles = StyleSheet.create({
   back: { marginBottom: 16, width: 40 },
   brandSection: { alignItems: "center", gap: 8, marginBottom: 4 },
   brandName: {
-    fontSize: 24, fontFamily: "Inter_700Bold",
-    color: "#1a2a3a", letterSpacing: 5,
+    fontSize: 26, fontFamily: "Inter_700Bold",
+    letterSpacing: 5,
   },
   brandLabel: {
     fontSize: 10, fontFamily: "Inter_700Bold",
