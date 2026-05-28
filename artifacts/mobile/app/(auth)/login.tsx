@@ -2,7 +2,7 @@ import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Animated, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Animated, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
@@ -41,6 +41,7 @@ export default function LoginScreen() {
   const [remember, setRemember] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passFocused, setPassFocused] = useState(false);
+  const [error, setError] = useState("");
 
   const backOpacity = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.5)).current;
@@ -83,8 +84,9 @@ export default function LoginScreen() {
   }, []);
 
   async function handleLogin() {
+    setError("");
     if (!email || !password) {
-      Alert.alert("Missing fields", "Please enter email and password.");
+      setError("Please enter email and password.");
       return;
     }
     try {
@@ -94,7 +96,7 @@ export default function LoginScreen() {
       router.replace("/(tabs)/");
     } catch {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      Alert.alert("Login Failed", "Invalid email or password.");
+      setError("Invalid email or password.");
     }
   }
 
@@ -128,7 +130,7 @@ export default function LoginScreen() {
         <View style={styles.form}>
           <View style={styles.fieldGroup}>
             <Text style={styles.fieldLabel}>Email Address</Text>
-            <View style={[styles.field, { borderColor: emailFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#f7fafa" }]}>
+            <View style={[styles.field, { borderColor: error ? "#dc2626" : emailFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#f7fafa" }]}>
               <View style={styles.iconBox}>
                 <FlaticonIcon name="mail" size={14} color="#00C6B5" />
               </View>
@@ -137,7 +139,7 @@ export default function LoginScreen() {
                 placeholder="admin@glowndry.com"
                 placeholderTextColor="#c0c8d4"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={v => { setEmail(v); if (error) setError(""); }}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 onFocus={() => setEmailFocused(true)}
@@ -149,7 +151,7 @@ export default function LoginScreen() {
 
           <View style={styles.fieldGroup}>
             <Text style={styles.fieldLabel}>Password</Text>
-            <View style={[styles.field, { borderColor: passFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#f7fafa" }]}>
+            <View style={[styles.field, { borderColor: error ? "#dc2626" : passFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#f7fafa" }]}>
               <View style={styles.iconBox}>
                 <FlaticonIcon name="lock" size={14} color="#00C6B5" />
               </View>
@@ -158,7 +160,7 @@ export default function LoginScreen() {
                 placeholder="••••••••"
                 placeholderTextColor="#c0c8d4"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={v => { setPassword(v); if (error) setError(""); }}
                 secureTextEntry={!showPass}
                 onFocus={() => setPassFocused(true)}
                 onBlur={() => setPassFocused(false)}
@@ -169,6 +171,10 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
           </View>
+
+          {error ? (
+            <Text style={styles.errorText}>{error}</Text>
+          ) : null}
 
           <TouchableOpacity
             style={styles.checkboxRow}
@@ -270,6 +276,10 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   input: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular", paddingVertical: 2 },
+  errorText: {
+    fontSize: 12, fontFamily: "Inter_500Medium",
+    color: "#dc2626", textAlign: "left",
+  },
   checkboxRow: {
     flexDirection: "row", alignItems: "center", gap: 10,
   },

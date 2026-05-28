@@ -223,13 +223,13 @@ export default function AdminLogin() {
                   <input
                     type="email"
                     placeholder="admin@glowndry.com"
-                    className="w-full h-9 lg:h-10 pl-10 lg:pl-12 pr-3 rounded-xl border text-[11px] lg:text-sm outline-none transition-all duration-300 focus:shadow-lg focus:shadow-teal-100"
-                    style={{ borderColor: "#e2e8f0", backgroundColor: "#fff", color: "#1a2a3a" }}
+                    className="w-full h-9 lg:h-10 pl-10 lg:pl-12 pr-3 rounded-xl border text-[11px] lg:text-sm outline-none transition-all duration-300"
+                    style={{ borderColor: error ? "#dc2626" : "#e2e8f0", backgroundColor: "#fff", color: "#1a2a3a" }}
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={e => { setEmail(e.target.value); if (error) setError(""); }}
                     required
-                    onFocus={e => { e.target.style.borderColor = "#00C6B5"; e.target.style.boxShadow = "0 0 0 3px rgba(0,198,181,0.15)"; }}
-                    onBlur={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.boxShadow = "none"; }}
+                    onFocus={e => { if (!error) { e.target.style.borderColor = "#00C6B5"; e.target.style.boxShadow = "0 0 0 3px rgba(0,198,181,0.15)"; } }}
+                    onBlur={e => { if (!error) { e.target.style.borderColor = "#e2e8f0"; e.target.style.boxShadow = "none"; } }}
                   />
                 </div>
               </motion.div>
@@ -249,13 +249,13 @@ export default function AdminLogin() {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full h-9 lg:h-10 pl-10 lg:pl-12 pr-9 lg:pr-10 rounded-xl border text-[11px] lg:text-sm outline-none transition-all duration-300 focus:shadow-lg focus:shadow-teal-100"
-                    style={{ borderColor: "#e2e8f0", backgroundColor: "#fff", color: "#1a2a3a" }}
+                    className="w-full h-9 lg:h-10 pl-10 lg:pl-12 pr-9 lg:pr-10 rounded-xl border text-[11px] lg:text-sm outline-none transition-all duration-300"
+                    style={{ borderColor: error ? "#dc2626" : "#e2e8f0", backgroundColor: "#fff", color: "#1a2a3a" }}
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={e => { setPassword(e.target.value); if (error) setError(""); }}
                     required
-                    onFocus={e => { e.target.style.borderColor = "#00C6B5"; e.target.style.boxShadow = "0 0 0 3px rgba(0,198,181,0.15)"; }}
-                    onBlur={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.boxShadow = "none"; }}
+                    onFocus={e => { if (!error) { e.target.style.borderColor = "#00C6B5"; e.target.style.boxShadow = "0 0 0 3px rgba(0,198,181,0.15)"; } }}
+                    onBlur={e => { if (!error) { e.target.style.borderColor = "#e2e8f0"; e.target.style.boxShadow = "none"; } }}
                   />
                   <button
                     type="button"
@@ -266,6 +266,16 @@ export default function AdminLogin() {
                     {showPassword ? <EyeOff className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> : <Eye className="w-3.5 h-3.5 lg:w-4 lg:h-4" />}
                   </button>
                 </div>
+                {error && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-[11px] lg:text-sm font-medium"
+                    style={{ color: "#dc2626" }}
+                  >
+                    {error}
+                  </motion.p>
+                )}
               </motion.div>
 
               <motion.div
@@ -292,17 +302,6 @@ export default function AdminLogin() {
                 </button>
                 <span className="text-[11px] lg:text-sm" style={{ color: "#8a94a6" }}>Remember me</span>
               </motion.div>
-
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-[11px] lg:text-sm font-medium"
-                  style={{ color: "#dc2626" }}
-                >
-                  {error}
-                </motion.p>
-              )}
 
               <motion.div
                 custom={0.8}
