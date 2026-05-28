@@ -47,7 +47,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+
   const [showPass, setShowPass] = useState(false);
   const [focused, setFocused] = useState("");
 
@@ -90,12 +90,8 @@ export default function RegisterScreen() {
   }, []);
 
   async function handleRegister() {
-    if (!fullName || !email || !phone || !password || !confirm) {
+    if (!fullName || !email || !phone || !password) {
       Alert.alert("Missing fields", "Please fill in all fields.");
-      return;
-    }
-    if (password !== confirm) {
-      Alert.alert("Password mismatch", "Passwords do not match.");
       return;
     }
     if (password.length < 6) {
@@ -119,7 +115,7 @@ export default function RegisterScreen() {
     { label: "Email address", icon: "mail", value: email, setter: setEmail, type: "email" },
     { label: "Phone number", icon: "phone", value: phone, setter: setPhone, type: "phone" },
     { label: "Password", icon: "lock", value: password, setter: setPassword, type: "password" },
-    { label: "Confirm password", icon: "lock", value: confirm, setter: setConfirm, type: "password" },
+
   ];
 
   return (
