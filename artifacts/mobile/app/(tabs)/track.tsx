@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import React from "react";
 import {
   ActivityIndicator, Platform, RefreshControl,
@@ -43,7 +43,7 @@ export default function TrackScreen() {
 
       {!isLoading && !activeBooking && (
         <View style={styles.empty}>
-          <Feather name="package" size={48} color={colors.mutedForeground} />
+          <FlaticonIcon name="package" size={48} color={colors.mutedForeground} />
           <Text style={[styles.emptyTitle, { color: colors.foreground }]}>No active orders</Text>
           <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
             Book a laundry service to track your order here

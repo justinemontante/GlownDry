@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
@@ -48,7 +48,7 @@ export default function RegisterScreen() {
     }
   }
 
-  const fields: { label: string; icon: keyof typeof Feather.glyphMap; value: string; setter: (v: string) => void; type?: string }[] = [
+  const fields: { label: string; icon: string; value: string; setter: (v: string) => void; type?: string }[] = [
     { label: "Full Name", icon: "user", value: fullName, setter: setFullName },
     { label: "Email address", icon: "mail", value: email, setter: setEmail, type: "email" },
     { label: "Phone number", icon: "phone", value: phone, setter: setPhone, type: "phone" },
@@ -64,7 +64,7 @@ export default function RegisterScreen() {
       bottomOffset={20}
     >
       <TouchableOpacity style={styles.back} onPress={() => router.back()} testID="btn-back">
-        <Feather name="arrow-left" size={22} color={colors.foreground} />
+        <FlaticonIcon name="arrow-left" size={22} color={colors.foreground} />
       </TouchableOpacity>
 
       <View style={styles.header}>
@@ -75,7 +75,7 @@ export default function RegisterScreen() {
       <View style={styles.form}>
         {fields.map(f => (
           <View key={f.label} style={[styles.field, { borderColor: colors.border, backgroundColor: colors.card }]}>
-            <Feather name={f.icon} size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
+            <FlaticonIcon name={f.icon} size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
             <TextInput
               style={[styles.input, { color: colors.foreground, flex: 1 }]}
               placeholder={f.label}
@@ -89,8 +89,8 @@ export default function RegisterScreen() {
             />
             {f.type === "password" && f.label === "Password" && (
               <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
-                <Feather name={showPass ? "eye-off" : "eye"} size={18} color={colors.mutedForeground} />
-              </TouchableOpacity>
+                  <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={18} color={colors.mutedForeground} />
+                </TouchableOpacity>
             )}
           </View>
         ))}

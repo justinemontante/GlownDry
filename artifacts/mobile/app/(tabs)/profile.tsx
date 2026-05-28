@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -83,15 +83,15 @@ export default function ProfileScreen() {
               onPress={() => setEditing(true)}
               testID="btn-edit-profile"
             >
-              <Feather name="edit-2" size={18} color={colors.primary} />
+              <FlaticonIcon name="edit-2" size={18} color={colors.primary} />
             </TouchableOpacity>
           ) : (
             <View style={styles.editActions}>
               <TouchableOpacity onPress={() => setEditing(false)} testID="btn-cancel-edit">
-                <Feather name="x" size={18} color={colors.mutedForeground} />
+                <FlaticonIcon name="x" size={18} color={colors.mutedForeground} />
               </TouchableOpacity>
               <TouchableOpacity onPress={handleSave} testID="btn-save-profile">
-                <Feather name="check" size={18} color={colors.primary} />
+                <FlaticonIcon name="check" size={18} color={colors.primary} />
               </TouchableOpacity>
             </View>
           )}
@@ -103,7 +103,7 @@ export default function ProfileScreen() {
         ].map(f => (
           <View key={f.label} style={styles.fieldRow}>
             <View style={[styles.fieldIconWrap, { backgroundColor: colors.tealLight }]}>
-              <Feather name={f.icon} size={16} color={colors.primary} />
+              <FlaticonIcon name={f.icon} size={16} color={colors.primary} />
             </View>
             <View style={styles.fieldContent}>
               <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{f.label}</Text>
@@ -124,7 +124,7 @@ export default function ProfileScreen() {
 
         <View style={styles.fieldRow}>
           <View style={[styles.fieldIconWrap, { backgroundColor: colors.tealLight }]}>
-            <Feather name="mail" size={16} color={colors.primary} />
+            <FlaticonIcon name="mail" size={16} color={colors.primary} />
           </View>
           <View style={styles.fieldContent}>
             <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email</Text>
@@ -146,9 +146,9 @@ export default function ProfileScreen() {
             activeOpacity={0.7}
             testID={`menu-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
           >
-            <Feather name={item.icon} size={18} color={colors.foreground} />
+            <FlaticonIcon name={item.icon} size={18} color={colors.foreground} />
             <Text style={[styles.menuText, { color: colors.foreground }]}>{item.label}</Text>
-            <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+            <FlaticonIcon name="chevron-right" size={16} color={colors.mutedForeground} />
           </TouchableOpacity>
         ))}
       </View>
@@ -159,7 +159,7 @@ export default function ProfileScreen() {
         activeOpacity={0.8}
         testID="btn-logout"
       >
-        <Feather name="log-out" size={18} color={colors.destructive} />
+        <FlaticonIcon name="log-out" size={18} color={colors.destructive} />
         <Text style={[styles.logoutText, { color: colors.destructive }]}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>

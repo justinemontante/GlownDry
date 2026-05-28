@@ -3,7 +3,7 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Redirect, Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import React from "react";
 import { Platform, StyleSheet, View, useColorScheme } from "react-native";
 import { useColors } from "@/hooks/useColors";
@@ -47,7 +47,7 @@ function ClassicTabLayout() {
     name: string;
     title: string;
     sfSymbol: string;
-    featherIcon: keyof typeof Feather.glyphMap;
+    featherIcon: string;
   }[] = [
     { name: "index", title: "Home", sfSymbol: "house", featherIcon: "home" },
     { name: "booking", title: "Book", sfSymbol: "calendar", featherIcon: "calendar" },
@@ -92,7 +92,7 @@ function ClassicTabLayout() {
               isIOS ? (
                 <SymbolView name={screen.sfSymbol} tintColor={color} size={24} />
               ) : (
-                <Feather name={screen.featherIcon} size={22} color={color} />
+                                <FlaticonIcon name={screen.featherIcon} size={22} color={color} />
               ),
           }}
         />

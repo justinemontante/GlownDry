@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -44,7 +44,7 @@ export default function LoginScreen() {
       bottomOffset={20}
     >
       <TouchableOpacity style={styles.back} onPress={() => router.back()} testID="btn-back">
-        <Feather name="arrow-left" size={22} color={colors.foreground} />
+        <FlaticonIcon name="arrow-left" size={22} color={colors.foreground} />
       </TouchableOpacity>
 
       <View style={styles.header}>
@@ -54,7 +54,7 @@ export default function LoginScreen() {
 
       <View style={styles.form}>
         <View style={[styles.field, { borderColor: colors.border, backgroundColor: colors.card }]}>
-          <Feather name="mail" size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
+          <FlaticonIcon name="mail" size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
           <TextInput
             style={[styles.input, { color: colors.foreground }]}
             placeholder="Email address"
@@ -68,7 +68,7 @@ export default function LoginScreen() {
         </View>
 
         <View style={[styles.field, { borderColor: colors.border, backgroundColor: colors.card }]}>
-          <Feather name="lock" size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
+          <FlaticonIcon name="lock" size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
           <TextInput
             style={[styles.input, { color: colors.foreground, flex: 1 }]}
             placeholder="Password"
@@ -79,7 +79,7 @@ export default function LoginScreen() {
             testID="input-password"
           />
           <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
-            <Feather name={showPass ? "eye-off" : "eye"} size={18} color={colors.mutedForeground} />
+            <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={18} color={colors.mutedForeground} />
           </TouchableOpacity>
         </View>
 

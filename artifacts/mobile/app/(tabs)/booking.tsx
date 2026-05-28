@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
 import {
@@ -86,7 +86,7 @@ export default function BookingScreen() {
               activeOpacity={0.75}
               testID={`btn-service-${svc.id}`}
             >
-              <Feather
+              <FlaticonIcon
                 name="wind"
                 size={22}
                 color={selectedService === svc.id ? colors.primary : colors.mutedForeground}
@@ -102,7 +102,7 @@ export default function BookingScreen() {
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Schedule Date</Text>
       <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
-        <Feather name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
+        <FlaticonIcon name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
         <TextInput
           style={[styles.input, { color: colors.foreground }]}
           placeholder="YYYY-MM-DD"
@@ -132,7 +132,7 @@ export default function BookingScreen() {
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Weight (kg)</Text>
       <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
-        <Feather name="package" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
+        <FlaticonIcon name="package" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
         <TextInput
           style={[styles.input, { color: colors.foreground }]}
           placeholder="Estimated weight"
@@ -171,7 +171,7 @@ export default function BookingScreen() {
         activeOpacity={0.85}
         testID="btn-confirm-booking"
       >
-        <Feather name="check-circle" size={18} color="#fff" />
+        <FlaticonIcon name="check-circle" size={18} color="#fff" />
         <Text style={styles.btnBookText}>
           {createBooking.isPending ? "Booking…" : "Confirm Booking"}
         </Text>

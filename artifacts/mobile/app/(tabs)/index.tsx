@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -51,7 +51,7 @@ export default function HomeScreen() {
           onPress={() => router.push("/(tabs)/notifications")}
           testID="btn-notifications"
         >
-          <Feather name="bell" size={20} color={colors.foreground} />
+          <FlaticonIcon name="bell" size={20} color={colors.foreground} />
         </TouchableOpacity>
       </View>
 
@@ -68,7 +68,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/(tabs)/track")}
               testID="btn-track-order"
             >
-              <Feather name="map-pin" size={16} color={colors.primary} />
+              <FlaticonIcon name="map-pin" size={16} color={colors.primary} />
               <Text style={[styles.trackBtnText, { color: colors.primary }]}>Track</Text>
             </TouchableOpacity>
           </View>
@@ -90,7 +90,7 @@ export default function HomeScreen() {
             testID={`btn-quick-${a.label.toLowerCase().replace(/\s+/g, "-")}`}
           >
             <View style={[styles.quickIcon, { backgroundColor: colors.tealLight }]}>
-              <Feather name={a.icon} size={20} color={colors.primary} />
+              <FlaticonIcon name={a.icon} size={20} color={colors.primary} />
             </View>
             <Text style={[styles.quickLabel, { color: colors.foreground }]}>{a.label}</Text>
           </TouchableOpacity>
@@ -127,7 +127,7 @@ export default function HomeScreen() {
           }
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Feather name="inbox" size={40} color={colors.mutedForeground} />
+              <FlaticonIcon name="inbox" size={40} color={colors.mutedForeground} />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>No bookings yet</Text>
               <TouchableOpacity
                 style={[styles.emptyBtn, { backgroundColor: colors.primary }]}
@@ -149,7 +149,7 @@ export default function HomeScreen() {
         activeOpacity={0.85}
         testID="fab-book"
       >
-        <Feather name="plus" size={24} color="#fff" />
+        <FlaticonIcon name="plus" size={24} color="#fff" />
       </TouchableOpacity>
     </View>
   );

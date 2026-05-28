@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,7 +18,7 @@ export default function WelcomeScreen() {
     >
       <View style={styles.logoSection}>
         <View style={styles.iconWrap}>
-          <Feather name="wind" size={40} color="#fff" />
+          <FlaticonIcon name="wind" size={40} color="#fff" />
         </View>
         <Text style={styles.brand}>GlownDry</Text>
         <Text style={styles.tagline}>Premium Laundry, Delivered</Text>
@@ -32,7 +32,7 @@ export default function WelcomeScreen() {
         ].map(f => (
           <View key={f.text} style={styles.featureRow}>
             <View style={styles.featureDot}>
-              <Feather name={f.icon} size={16} color="#fff" />
+              <FlaticonIcon name={f.icon} size={16} color="#fff" />
             </View>
             <Text style={styles.featureText}>{f.text}</Text>
           </View>

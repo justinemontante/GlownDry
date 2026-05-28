@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
 import {
@@ -92,7 +92,11 @@ export default function NotificationsScreen() {
               >
                 <View style={styles.notifRow}>
                   <View style={[styles.notifIcon, { backgroundColor: colors.primary + "20" }]}>
-                    <Feather name="bell" size={16} color={colors.primary} />
+                    <FlaticonIcon
+  name="bell"
+  size={16}
+  color={colors.primary}
+/>
                   </View>
                   <View style={styles.notifContent}>
                     <Text style={[styles.notifTitle, { color: colors.foreground }]}>{item.title}</Text>
@@ -113,7 +117,7 @@ export default function NotificationsScreen() {
             }
             ListEmptyComponent={
               <View style={styles.empty}>
-                <Feather name="bell-off" size={40} color={colors.mutedForeground} />
+                <FlaticonIcon name="bell-off" size={40} color={colors.mutedForeground} />
                 <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>No notifications yet</Text>
               </View>
             }
@@ -143,7 +147,7 @@ export default function NotificationsScreen() {
             }
             ListEmptyComponent={
               <View style={styles.empty}>
-                <Feather name="inbox" size={40} color={colors.mutedForeground} />
+                <FlaticonIcon name="inbox" size={40} color={colors.mutedForeground} />
                 <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>No bookings yet</Text>
               </View>
             }

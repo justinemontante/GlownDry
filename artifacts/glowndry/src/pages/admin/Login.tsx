@@ -107,7 +107,8 @@ export default function AdminLogin() {
         style={{ backgroundColor: "#f0f4f8" }}
       >
         <div className="w-full max-w-md max-h-full">
-          <div className="bg-white rounded-2xl shadow-2xl shadow-black/25 p-5 lg:p-8 space-y-4 lg:space-y-6">
+          <div className="bg-white rounded-2xl p-5 lg:p-8 space-y-4 lg:space-y-6"
+            style={{ boxShadow: "0 8px 20px -5px rgba(0,0,0,0.06), 12px 24px 60px 15px rgba(0, 0, 0, 0.1)" }}>
             {/* Branding */}
             <motion.div
               custom={0}

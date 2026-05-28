@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useColors } from "@/hooks/useColors";
@@ -41,13 +41,13 @@ export function BookingCard({ id, serviceName, scheduledDate, status, totalAmoun
           <Text style={[styles.orderNum, { color: colors.mutedForeground }]}>Order #{id}</Text>
           <Text style={[styles.service, { color: colors.foreground }]}>{serviceName ?? "Laundry Service"}</Text>
           <View style={styles.dateRow}>
-            <Feather name="calendar" size={12} color={colors.mutedForeground} />
+            <FlaticonIcon name="calendar" size={12} color={colors.mutedForeground} />
             <Text style={[styles.date, { color: colors.mutedForeground }]}>{date}</Text>
           </View>
         </View>
         <View style={styles.right}>
           <View style={[styles.badge, { backgroundColor: cfg.color + "20" }]}>
-            <Feather name={cfg.icon as keyof typeof Feather.glyphMap} size={12} color={cfg.color} />
+            <FlaticonIcon name={cfg.icon} size={12} color={cfg.color} />
             <Text style={[styles.badgeText, { color: cfg.color }]}>{cfg.label}</Text>
           </View>
           <Text style={[styles.amount, { color: colors.primary }]}>

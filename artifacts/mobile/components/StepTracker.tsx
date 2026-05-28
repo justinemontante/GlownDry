@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { FlaticonIcon } from "@/components/FlaticonIcon";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/useColors";
@@ -39,7 +39,7 @@ export function StepTracker({ currentStatus }: StepTrackerProps) {
                 { backgroundColor: circleColor, borderColor: circleColor },
                 isActive && { shadowColor: colors.primary, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.4, shadowRadius: 6, elevation: 4 },
               ]}>
-                <Feather
+                <FlaticonIcon
                   name={isDone ? "check" : step.icon}
                   size={14}
                   color={isDone || isActive ? "#fff" : colors.mutedForeground}
