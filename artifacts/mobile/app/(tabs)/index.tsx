@@ -207,7 +207,7 @@ export default function HomeScreen() {
         style={StyleSheet.absoluteFill}
       />
       {/* Brand Bar */}
-      <View style={[styles.brandBar, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.brandBar, { paddingTop: topPad }]}>
         <View style={styles.brandRow}>
           <GradientWashingMachine size={28} />
           <Text style={styles.brandName}>

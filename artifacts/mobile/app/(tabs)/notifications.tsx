@@ -71,7 +71,7 @@ export default function NotificationsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Brand Bar */}
-      <View style={[styles.brandBar, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.brandBar, { paddingTop: topPad }]}>
         <View style={styles.brandRow}>
           <GradientWashingMachine size={28} />
           <Text style={styles.brandName}>
