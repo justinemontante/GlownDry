@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   back: { marginBottom: 16, width: 40 },
   brandSection: { alignItems: "center", gap: 8, marginBottom: 4 },
   brandName: {
-    fontSize: 26, fontFamily: "Inter_700Bold",
+    fontSize: 28, fontFamily: "Inter_900Black",
     letterSpacing: 5,
   },
   brandLabel: {
