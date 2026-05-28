@@ -7,6 +7,7 @@ import bookingsRouter from "./bookings";
 import itemsRouter from "./items";
 import paymentsRouter from "./payments";
 import notificationsRouter from "./notifications";
+import inventoryRouter from "./inventory";
 import dashboardRouter from "./dashboard";
 
 const router: IRouter = Router();
@@ -19,6 +20,7 @@ router.use(bookingsRouter);
 router.use(itemsRouter);
 router.use(paymentsRouter);
 router.use(notificationsRouter);
+router.use(inventoryRouter);
 router.use(dashboardRouter);
 
 export default router;

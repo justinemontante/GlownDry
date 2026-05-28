@@ -5,3 +5,4 @@ export * from "./bookings";
 export * from "./booking_items";
 export * from "./payments";
 export * from "./notifications";
+export * from "./inventory";
