@@ -254,7 +254,7 @@ export default function ProfileScreen() {
         activeOpacity={0.8}
         testID="btn-logout"
       >
-        <FlaticonIcon name="log-out" size={18} color="#ef4444" />
+        <FlaticonIcon name="log-out" size={18} color="#fff" />
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -329,9 +329,11 @@ const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: "row", justifyContent: "space-between",
     alignItems: "center", paddingHorizontal: 16, paddingVertical: 16,
+    flexWrap: "wrap", gap: 8,
   },
   cardHeaderLeft: {
     flexDirection: "row", alignItems: "center", gap: 10,
+    flexShrink: 1,
   },
   cardIconWrap: {
     width: 32, height: 32, borderRadius: 8,
@@ -343,7 +345,7 @@ const styles = StyleSheet.create({
   },
   editBtn: {
     flexDirection: "row", alignItems: "center", gap: 4,
-    backgroundColor: "#e8f4f4", paddingHorizontal: 12, paddingVertical: 6,
+    backgroundColor: "#e8f4f4", paddingHorizontal: 10, paddingVertical: 5,
     borderRadius: 8,
   },
   editBtnText: {
@@ -351,10 +353,10 @@ const styles = StyleSheet.create({
     color: "#0A7474",
   },
   editActions: {
-    flexDirection: "row", gap: 8,
+    flexDirection: "row", gap: 6,
   },
   cancelBtn: {
-    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8,
     backgroundColor: "#f1f5f9",
   },
   cancelBtnText: {
@@ -362,8 +364,8 @@ const styles = StyleSheet.create({
     color: "#8a94a6",
   },
   saveBtn: {
-    flexDirection: "row", alignItems: "center", gap: 4,
-    backgroundColor: "#0A7474", paddingHorizontal: 12, paddingVertical: 6,
+    flexDirection: "row", alignItems: "center", gap: 3,
+    backgroundColor: "#0A7474", paddingHorizontal: 10, paddingVertical: 5,
     borderRadius: 8,
   },
   saveBtnText: {
@@ -431,11 +433,10 @@ const styles = StyleSheet.create({
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
     gap: 8, paddingVertical: 16, borderRadius: 16,
-    backgroundColor: "#fef2f2", marginTop: 8,
-    borderWidth: 1.5, borderColor: "#ef4444",
+    backgroundColor: "#ef4444", marginTop: 8,
   },
   logoutText: {
     fontSize: 15, fontFamily: "Inter_600SemiBold",
-    color: "#ef4444",
+    color: "#fff",
   },
 });
