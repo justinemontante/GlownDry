@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
+import { WashingMachine, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function AdminLogin() {
@@ -45,6 +45,7 @@ export default function AdminLogin() {
     <div className="min-h-screen w-full flex">
       <div className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative overflow-hidden" style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#18967f" }}>
         <div className="absolute inset-0 bg-black/40"></div>
+        <WashingMachine className="absolute top-8 left-8 w-12 h-12 text-white z-10" />
         <div className="z-10 text-center max-w-md">
           <h1 className="text-5xl font-bold tracking-tight mb-4">
             <span style={{ color: "#18967f" }}>Glown</span><span style={{ color: "#fff" }}>Dry</span>
