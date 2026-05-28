@@ -81,7 +81,7 @@ export default function AdminLogin() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="absolute top-8 left-8 z-10"
         >
-          <WashingMachine className="w-12 h-12 text-white" />
+          <WashingMachine className="w-16 h-16 text-white" />
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 40 }}

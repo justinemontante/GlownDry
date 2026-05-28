@@ -13,6 +13,17 @@ import {
   WashingMachine
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -42,7 +53,22 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
         <div className="p-4 border-t border-sidebar-border flex flex-col gap-1">
           <NavItem href="/admin/settings" icon={<Settings />} label="Settings" active={location === "/admin/settings"} />
-          <button onClick={() => { localStorage.clear(); navigate("/admin/login"); }} className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors duration-200 w-full"><LogOut className="w-5 h-5" /> Logout</button>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors duration-200 w-full"><LogOut className="w-5 h-5" /> Logout</button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                <AlertDialogDescription>Are you sure you want to logout?</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => { localStorage.clear(); navigate("/admin/login"); }}>Yes, Logout</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </aside>
 
