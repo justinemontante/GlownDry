@@ -1,12 +1,33 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Animated, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { useAuth } from "@/context/AuthContext";
 import { useLoginCustomer } from "@workspace/api-client-react";
 import * as Haptics from "expo-haptics";
+
+const WASHING_MACHINE_D = "M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M3 6h3 M17 6h.01 M17 13a5 5 0 11-10 0 5 5 0 0110 0z M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5";
+
+function GradientWashingMachine({ size = 28 }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <Defs>
+        <SvgGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <Stop offset="0%" stopColor="#00C6B5" />
+          <Stop offset="100%" stopColor="#006D96" />
+        </SvgGradient>
+      </Defs>
+      {WASHING_MACHINE_D.split("M").map((seg, i) => {
+        if (!seg) return null;
+        return <Path key={i} d={`M${seg}`} stroke="url(#iconGrad)" />;
+      })}
+    </Svg>
+  );
+}
 
 export default function LoginScreen() {
   const insets = useSafeAreaInsets();
@@ -18,6 +39,8 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passFocused, setPassFocused] = useState(false);
 
   const backOpacity = useRef(new Animated.Value(0)).current;
   const cardOpacity = useRef(new Animated.Value(0)).current;
@@ -87,9 +110,7 @@ export default function LoginScreen() {
       <Animated.View style={[styles.card, { opacity: cardOpacity, transform: [{ translateY: cardY }] }]}>
         <View style={styles.brandSection}>
           <Animated.View style={{ opacity: logoOpacity, transform: [{ scale: logoScale }] }}>
-            <View style={styles.logoWrap}>
-              <FlaticonIcon name="washing-machine" size={28} color="#fff" />
-            </View>
+            <GradientWashingMachine size={48} />
           </Animated.View>
           <Text style={styles.brandName}>GlownDry</Text>
           <Text style={styles.brandLabel}>C U S T O M E R</Text>
@@ -102,34 +123,48 @@ export default function LoginScreen() {
 
         <Animated.View style={{ opacity: formOpacity, transform: [{ translateY: formY }] }}>
           <View style={styles.form}>
-            <View style={[styles.field, { borderColor: "#e2e8f0", backgroundColor: "#fff" }]}>
-              <FlaticonIcon name="mail" size={16} color="#8a94a6" style={styles.fieldIcon} />
-              <TextInput
-                style={[styles.input, { color: "#1a2a3a" }]}
-                placeholder="Email address"
-                placeholderTextColor="#c0c8d4"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                testID="input-email"
-              />
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>Email Address</Text>
+              <View style={[styles.field, { borderColor: emailFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#fff" }]}>
+                <View style={styles.iconBox}>
+                  <FlaticonIcon name="mail" size={14} color="#00C6B5" />
+                </View>
+                <TextInput
+                  style={[styles.input, { color: "#1a2a3a" }]}
+                  placeholder="admin@glowndry.com"
+                  placeholderTextColor="#c0c8d4"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  onFocus={() => setEmailFocused(true)}
+                  onBlur={() => setEmailFocused(false)}
+                  testID="input-email"
+                />
+              </View>
             </View>
 
-            <View style={[styles.field, { borderColor: "#e2e8f0", backgroundColor: "#fff" }]}>
-              <FlaticonIcon name="lock" size={16} color="#8a94a6" style={styles.fieldIcon} />
-              <TextInput
-                style={[styles.input, { color: "#1a2a3a", flex: 1 }]}
-                placeholder="Password"
-                placeholderTextColor="#c0c8d4"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPass}
-                testID="input-password"
-              />
-              <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
-                <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={16} color="#8a94a6" />
-              </TouchableOpacity>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>Password</Text>
+              <View style={[styles.field, { borderColor: passFocused ? "#00C6B5" : "#e2e8f0", backgroundColor: "#fff" }]}>
+                <View style={styles.iconBox}>
+                  <FlaticonIcon name="lock" size={14} color="#00C6B5" />
+                </View>
+                <TextInput
+                  style={[styles.input, { color: "#1a2a3a", flex: 1 }]}
+                  placeholder="••••••••"
+                  placeholderTextColor="#c0c8d4"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPass}
+                  onFocus={() => setPassFocused(true)}
+                  onBlur={() => setPassFocused(false)}
+                  testID="input-password"
+                />
+                <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
+                  <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={16} color="#8a94a6" />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <TouchableOpacity
@@ -151,15 +186,21 @@ export default function LoginScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.btnLogin, { opacity: mutation.isPending ? 0.7 : 1 }]}
               onPress={handleLogin}
               disabled={mutation.isPending}
               activeOpacity={0.85}
               testID="btn-login"
             >
-              <FlaticonIcon name="lock" size={14} color="#fff" style={{ marginRight: 8 }} />
-              <Text style={styles.btnLoginText}>{mutation.isPending ? "Signing in..." : "Sign In"}</Text>
-              <FlaticonIcon name="arrow-left" size={14} color="#fff" style={{ marginLeft: 8, transform: [{ rotate: "180deg" }] }} />
+              <LinearGradient
+                colors={["#00C6B5", "#006D96"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[styles.btnLogin, { opacity: mutation.isPending ? 0.7 : 1 }]}
+              >
+                <FlaticonIcon name="lock" size={14} color="#fff" style={{ marginRight: 8 }} />
+                <Text style={styles.btnLoginText}>{mutation.isPending ? "Signing in..." : "Sign In"}</Text>
+                <FlaticonIcon name="arrow-left" size={14} color="#fff" style={{ marginLeft: 8, transform: [{ rotate: "180deg" }] }} />
+              </LinearGradient>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -200,11 +241,6 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   brandSection: { alignItems: "center", gap: 6 },
-  logoWrap: {
-    width: 48, height: 48, borderRadius: 14,
-    backgroundColor: "#00C6B5",
-    alignItems: "center", justifyContent: "center",
-  },
   brandName: {
     fontSize: 20, fontFamily: "Inter_700Bold",
     color: "#1a2a3a", letterSpacing: 4,
@@ -223,12 +259,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   form: { gap: 14 },
+  fieldGroup: { gap: 6 },
+  fieldLabel: {
+    fontSize: 12, fontFamily: "Inter_600SemiBold",
+    color: "#1a2a3a",
+  },
   field: {
     flexDirection: "row", alignItems: "center",
     borderWidth: 1.5, borderRadius: 12,
-    paddingHorizontal: 14, paddingVertical: 14,
+    paddingHorizontal: 12, paddingVertical: 12,
   },
-  fieldIcon: { marginRight: 10 },
+  iconBox: {
+    width: 28, height: 28, borderRadius: 8,
+    backgroundColor: "#e8f4f4",
+    alignItems: "center", justifyContent: "center",
+    marginRight: 10,
+  },
   input: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
   checkboxRow: {
     flexDirection: "row", alignItems: "center", gap: 10,
@@ -247,7 +293,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14, borderRadius: 14,
     alignItems: "center", justifyContent: "center",
     marginTop: 4,
-    backgroundColor: "#00C6B5",
   },
   btnLoginText: { fontSize: 15, fontFamily: "Inter_700Bold", color: "#fff" },
   link: { alignItems: "center", paddingVertical: 4 },
