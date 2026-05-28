@@ -1,7 +1,7 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ImageBackground, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { useColors } from "@/hooks/useColors";
@@ -19,6 +19,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [remember, setRemember] = useState(false);
 
   async function handleLogin() {
     if (!email || !password) {
@@ -27,6 +28,9 @@ export default function LoginScreen() {
     }
     try {
       const result = await mutation.mutateAsync({ data: { email, password } });
+      if (remember) {
+        // saved via secure storage in a real app
+      }
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await login(result.token, result.customer as Parameters<typeof login>[1]);
       router.replace("/(tabs)/");
@@ -38,82 +42,154 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAwareScrollViewCompat
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1, backgroundColor: "#f0f4f8" }}
       contentContainerStyle={[styles.container, { paddingTop: topPad + 16 }]}
       keyboardShouldPersistTaps="handled"
       bottomOffset={20}
     >
       <TouchableOpacity style={styles.back} onPress={() => router.back()} testID="btn-back">
-        <FlaticonIcon name="arrow-left" size={22} color={colors.foreground} />
+        <FlaticonIcon name="arrow-left" size={22} color="#1a2a3a" />
       </TouchableOpacity>
 
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Welcome back</Text>
-        <Text style={[styles.sub, { color: colors.mutedForeground }]}>Sign in to your account</Text>
-      </View>
-
-      <View style={styles.form}>
-        <View style={[styles.field, { borderColor: colors.border, backgroundColor: colors.card }]}>
-          <FlaticonIcon name="mail" size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
-          <TextInput
-            style={[styles.input, { color: colors.foreground }]}
-            placeholder="Email address"
-            placeholderTextColor={colors.mutedForeground}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            testID="input-email"
-          />
+      <View style={styles.card}>
+        <View style={styles.brandSection}>
+          <View style={styles.logoWrap}>
+            <FlaticonIcon name="wind" size={28} color="#fff" />
+          </View>
+          <Text style={styles.brandName}>GLOWNDRY</Text>
+          <Text style={styles.brandLabel}>C U S T O M E R</Text>
         </View>
 
-        <View style={[styles.field, { borderColor: colors.border, backgroundColor: colors.card }]}>
-          <FlaticonIcon name="lock" size={18} color={colors.mutedForeground} style={styles.fieldIcon} />
-          <TextInput
-            style={[styles.input, { color: colors.foreground, flex: 1 }]}
-            placeholder="Password"
-            placeholderTextColor={colors.mutedForeground}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPass}
-            testID="input-password"
-          />
-          <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
-            <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={18} color={colors.mutedForeground} />
+        <View style={styles.divider} />
+
+        <Text style={styles.greeting}>Welcome back</Text>
+        <Text style={styles.subtitle}>Sign in to your account</Text>
+
+        <View style={styles.form}>
+          <View style={[styles.field, { borderColor: "#e2e8f0", backgroundColor: "#fff" }]}>
+            <FlaticonIcon name="mail" size={16} color="#8a94a6" style={styles.fieldIcon} />
+            <TextInput
+              style={[styles.input, { color: "#1a2a3a" }]}
+              placeholder="Email address"
+              placeholderTextColor="#c0c8d4"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              testID="input-email"
+            />
+          </View>
+
+          <View style={[styles.field, { borderColor: "#e2e8f0", backgroundColor: "#fff" }]}>
+            <FlaticonIcon name="lock" size={16} color="#8a94a6" style={styles.fieldIcon} />
+            <TextInput
+              style={[styles.input, { color: "#1a2a3a", flex: 1 }]}
+              placeholder="Password"
+              placeholderTextColor="#c0c8d4"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPass}
+              testID="input-password"
+            />
+            <TouchableOpacity onPress={() => setShowPass(v => !v)} testID="btn-toggle-password">
+              <FlaticonIcon name={showPass ? "eye-off" : "eye"} size={16} color="#8a94a6" />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.checkboxRow]}
+            onPress={() => setRemember(!remember)}
+            activeOpacity={0.7}
+          >
+            <View
+              style={[styles.checkbox, {
+                backgroundColor: remember ? "#00C6B5" : "transparent",
+                borderColor: remember ? "#00C6B5" : "#d1d5db",
+              }]}
+            >
+              {remember && (
+                <FlaticonIcon name="check" size={10} color="#fff" />
+              )}
+            </View>
+            <Text style={styles.checkboxLabel}>Remember me</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.btnLogin, { opacity: mutation.isPending ? 0.7 : 1 }]}
+            onPress={handleLogin}
+            disabled={mutation.isPending}
+            activeOpacity={0.85}
+            testID="btn-login"
+          >
+            <FlaticonIcon name="lock" size={14} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={styles.btnLoginText}>{mutation.isPending ? "Signing in..." : "Sign In"}</Text>
+            <FlaticonIcon name="arrow-left" size={14} color="#fff" style={{ marginLeft: 8, transform: [{ rotate: "180deg" }] }} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => router.push("/(auth)/register")}
+            testID="link-register"
+          >
+            <Text style={styles.linkText}>
+              Don't have an account?{" "}
+              <Text style={{ color: "#00C6B5", fontFamily: "Inter_600SemiBold" }}>Register</Text>
+            </Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={[styles.btnLogin, { backgroundColor: colors.primary, opacity: mutation.isPending ? 0.7 : 1 }]}
-          onPress={handleLogin}
-          disabled={mutation.isPending}
-          activeOpacity={0.85}
-          testID="btn-login"
-        >
-          <Text style={styles.btnLoginText}>{mutation.isPending ? "Signing in…" : "Sign In"}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.link}
-          onPress={() => router.push("/(auth)/register")}
-          testID="link-register"
-        >
-          <Text style={[styles.linkText, { color: colors.mutedForeground }]}>
-            Don't have an account?{" "}
-            <Text style={{ color: colors.primary, fontFamily: "Inter_600SemiBold" }}>Register</Text>
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.securityBadge}>
+          <View style={styles.shieldIcon}>
+            <FlaticonIcon name="check-circle" size={12} color="#00C6B5" />
+          </View>
+          <Text style={styles.shieldText}>Protected by GlownDry System</Text>
+        </View>
       </View>
     </KeyboardAwareScrollViewCompat>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
-  back: { marginBottom: 32 },
-  header: { marginBottom: 32, gap: 6 },
-  title: { fontSize: 28, fontFamily: "Inter_700Bold" },
-  sub: { fontSize: 15, fontFamily: "Inter_400Regular" },
+  container: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 40 },
+  back: { marginBottom: 16, width: 40 },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.06,
+    shadowRadius: 24,
+    elevation: 6,
+  },
+  brandSection: { alignItems: "center", gap: 6 },
+  logoWrap: {
+    width: 48, height: 48, borderRadius: 14,
+    backgroundColor: "#00C6B5",
+    alignItems: "center", justifyContent: "center",
+  },
+  brandName: {
+    fontSize: 20, fontFamily: "Inter_700Bold",
+    color: "#1a2a3a", letterSpacing: 4,
+  },
+  brandLabel: {
+    fontSize: 10, fontFamily: "Inter_700Bold",
+    color: "#00C6B5", letterSpacing: 4,
+  },
+  divider: {
+    width: 32, height: 2, borderRadius: 1,
+    backgroundColor: "#00C6B5",
+    alignSelf: "center", marginVertical: 16,
+  },
+  greeting: {
+    fontSize: 22, fontFamily: "Inter_700Bold",
+    color: "#1a2a3a", textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 13, fontFamily: "Inter_400Regular",
+    color: "#8a94a6", textAlign: "center",
+    marginBottom: 20,
+  },
   form: { gap: 14 },
   field: {
     flexDirection: "row", alignItems: "center",
@@ -121,12 +197,41 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 14,
   },
   fieldIcon: { marginRight: 10 },
-  input: { flex: 1, fontSize: 15, fontFamily: "Inter_400Regular" },
-  btnLogin: {
-    paddingVertical: 16, borderRadius: 14,
-    alignItems: "center", marginTop: 8,
+  input: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
+  checkboxRow: {
+    flexDirection: "row", alignItems: "center", gap: 10,
   },
-  btnLoginText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff" },
-  link: { alignItems: "center", paddingVertical: 8 },
-  linkText: { fontSize: 14, fontFamily: "Inter_400Regular" },
+  checkbox: {
+    width: 18, height: 18, borderRadius: 4,
+    borderWidth: 1.5,
+    alignItems: "center", justifyContent: "center",
+  },
+  checkboxLabel: {
+    fontSize: 13, fontFamily: "Inter_400Regular",
+    color: "#8a94a6",
+  },
+  btnLogin: {
+    flexDirection: "row",
+    paddingVertical: 14, borderRadius: 14,
+    alignItems: "center", justifyContent: "center",
+    marginTop: 4,
+    backgroundColor: "#00C6B5",
+  },
+  btnLoginText: { fontSize: 15, fontFamily: "Inter_700Bold", color: "#fff" },
+  link: { alignItems: "center", paddingVertical: 4 },
+  linkText: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#8a94a6" },
+  securityBadge: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, marginTop: 20, paddingTop: 16,
+    borderTopWidth: 1, borderTopColor: "#f0f0f0",
+  },
+  shieldIcon: {
+    width: 22, height: 22, borderRadius: 11,
+    backgroundColor: "#f0fdfa",
+    alignItems: "center", justifyContent: "center",
+  },
+  shieldText: {
+    fontSize: 11, fontFamily: "Inter_500Medium",
+    color: "#c0c8d4",
+  },
 });
