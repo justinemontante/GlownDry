@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { StepTracker } from "@/components/StepTracker";
-import { useListBookings } from "@workspace/api-client-react";
+import { useListBookings, getListBookingsQueryKey } from "@workspace/api-client-react";
 
 export default function TrackScreen() {
   const colors = useColors();
@@ -19,7 +19,7 @@ export default function TrackScreen() {
 
   const { data: bookings, isLoading, refetch, isRefetching } = useListBookings(
     { customerId: customer?.id },
-    { query: { enabled: !!customer?.id } },
+    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
   );
 
   const activeBooking = bookings

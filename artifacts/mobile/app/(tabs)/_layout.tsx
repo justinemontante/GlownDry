@@ -17,7 +17,7 @@ function NativeTabLayout() {
         <Label>Home</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="booking">
-        <Icon sf={{ default: "calendar", selected: "calendar.fill" }} />
+        <Icon sf={{ default: "calendar", selected: "calendar" }} />
         <Label>Book</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="track">
@@ -90,7 +90,7 @@ function ClassicTabLayout() {
             title: screen.title,
             tabBarIcon: ({ color }) =>
               isIOS ? (
-                <SymbolView name={screen.sfSymbol} tintColor={color} size={24} />
+                <SymbolView name={screen.sfSymbol as any} tintColor={color} size={24} />
               ) : (
                                 <FlaticonIcon name={screen.featherIcon} size={22} color={color} />
               ),

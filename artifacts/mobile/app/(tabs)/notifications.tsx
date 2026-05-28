@@ -11,7 +11,7 @@ import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import {
   useListNotifications, useMarkNotificationRead, useListBookings,
-  getListNotificationsQueryKey,
+  getListNotificationsQueryKey, getListBookingsQueryKey,
 } from "@workspace/api-client-react";
 import { BookingCard } from "@/components/BookingCard";
 import { router } from "expo-router";
@@ -28,12 +28,12 @@ export default function NotificationsScreen() {
 
   const { data: notifications, isLoading: loadingNotifs, refetch: refetchNotifs, isRefetching: isRefetchingNotifs } = useListNotifications(
     { customerId: customer?.id ?? 0 },
-    { query: { enabled: !!customer?.id } },
+    { query: { queryKey: getListNotificationsQueryKey({ customerId: customer?.id ?? 0 }), enabled: !!customer?.id } },
   );
 
   const { data: bookings, isLoading: loadingBookings, refetch: refetchBookings } = useListBookings(
     { customerId: customer?.id },
-    { query: { enabled: !!customer?.id } },
+    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
   );
 
   const markRead = useMarkNotificationRead();
