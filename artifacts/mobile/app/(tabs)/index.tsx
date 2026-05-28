@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
 
   // Hero Section
   heroSection: {
-    marginHorizontal: 16, marginTop: 4, marginBottom: 8,
+    marginHorizontal: 16, marginTop: 16, marginBottom: 8,
     padding: 20, borderRadius: 20,
     backgroundColor: "#0A7474",
   },
