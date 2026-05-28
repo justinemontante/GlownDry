@@ -199,7 +199,7 @@ export default function HomeScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Brand Bar */}
-      <View style={[styles.brandBar, { paddingTop: topPad + 16, backgroundColor: colors.background }]}>
+      <View style={[styles.brandBar, { paddingTop: topPad + 16 }]}>
         <View style={styles.brandRow}>
           <GradientWashingMachine size={32} />
           <Text style={styles.brandName}>
@@ -274,7 +274,8 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   brandBar: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingHorizontal: 20, paddingBottom: 8,
+    alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
+    borderBottomWidth: 1, borderBottomColor: "#e2e8f0",
   },
   brandRow: {
     flexDirection: "row", alignItems: "center", gap: 8,

@@ -81,13 +81,9 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: "#f7fafa" }}
-      contentContainerStyle={[styles.container, { paddingTop: topPad + 16, paddingBottom: bottomPad + 40 }]}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Brand Bar */}
-      <View style={styles.brandBar}>
+    <View style={{ flex: 1, backgroundColor: "#f7fafa" }}>
+      {/* Brand Bar - Fixed */}
+      <View style={[styles.brandBar, { paddingTop: topPad + 16 }]}>
         <View style={styles.brandRow}>
           <GradientWashingMachine size={28} />
           <Text style={styles.brandName}>
@@ -103,6 +99,12 @@ export default function ProfileScreen() {
           <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
         </TouchableOpacity>
       </View>
+
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: bottomPad + 40 }}
+        showsVerticalScrollIndicator={false}
+      >
 
       {/* Profile Header */}
       <View style={styles.profileHeader}>
@@ -258,16 +260,17 @@ export default function ProfileScreen() {
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 20 },
-
   // Brand Bar
   brandBar: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", marginBottom: 20,
+    alignItems: "center", paddingHorizontal: 20, paddingBottom: 12,
+    backgroundColor: "#f7fafa",
+    borderBottomWidth: 1, borderBottomColor: "#e2e8f0",
   },
   brandRow: {
     flexDirection: "row", alignItems: "center", gap: 8,
