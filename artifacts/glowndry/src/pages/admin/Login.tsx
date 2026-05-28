@@ -100,18 +100,12 @@ export default function AdminLogin() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="absolute top-8 left-8 z-10"
         >
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <defs>
-              <linearGradient id="leftPanelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00C6B5" />
-                <stop offset="100%" stopColor="#006D96" />
-              </linearGradient>
-            </defs>
-            <path d="M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="url(#leftPanelGrad)" />
-            <path d="M3 6h3" stroke="url(#leftPanelGrad)" />
-            <path d="M17 6h.01" stroke="url(#leftPanelGrad)" />
-            <path d="M17 13a5 5 0 11-10 0 5 5 0 0110 0z" stroke="url(#leftPanelGrad)" />
-            <path d="M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5" stroke="url(#leftPanelGrad)" />
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z" />
+            <path d="M3 6h3" />
+            <path d="M17 6h.01" />
+            <path d="M17 13a5 5 0 11-10 0 5 5 0 0110 0z" />
+            <path d="M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5" />
           </svg>
         </motion.div>
         <motion.div
@@ -152,7 +146,7 @@ export default function AdminLogin() {
                 initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
-                className="mx-auto"
+                className="flex justify-center"
               >
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <defs>
