@@ -106,8 +106,8 @@ export default function AdminLogin() {
         className="flex-1 flex items-center justify-center p-4 lg:p-8 h-full"
         style={{ backgroundColor: "#f0f4f8" }}
       >
-        <div className="w-full max-w-md max-h-full py-2">
-          <div className="bg-white rounded-2xl shadow-2xl shadow-black/15 p-5 lg:p-8 space-y-4 lg:space-y-6">
+        <div className="w-full max-w-md max-h-full">
+          <div className="bg-white rounded-2xl shadow-2xl shadow-black/25 p-5 lg:p-8 space-y-4 lg:space-y-6">
             {/* Branding */}
             <motion.div
               custom={0}
@@ -163,7 +163,7 @@ export default function AdminLogin() {
                 initial={{ width: 0 }}
                 animate={{ width: 32 }}
                 transition={{ duration: 0.4, delay: 0.6 }}
-                className="h-0.5 rounded-full mt-3"
+                className="h-0.5 rounded-full mt-3 mx-auto"
                 style={{ backgroundColor: "#00C6B5" }}
               ></motion.div>
             </motion.div>
