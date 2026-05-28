@@ -43,12 +43,11 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen w-full flex">
-      <div className="hidden lg:flex flex-1 flex-col items-center justify-center bg-gradient-to-br from-sidebar to-sidebar-accent text-sidebar-foreground p-12 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
+      <div className="hidden lg:flex flex-1 flex-col items-center justify-center text-white p-12 relative overflow-hidden" style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#18967f" }}>
+        <div className="absolute inset-0 bg-black/40"></div>
         <div className="z-10 text-center max-w-md">
-          <img src="/images/admin/loginImage.png" alt="GlownDry" className="w-48 h-48 mx-auto mb-8 object-contain" />
           <h1 className="text-5xl font-bold tracking-tight mb-4">GlownDry Admin</h1>
-          <p className="text-xl text-primary-foreground/80">
+          <p className="text-xl text-white/80">
             Professional laundry management platform. Control orders, inventory, and insights from one place.
           </p>
         </div>
@@ -57,7 +56,6 @@ export default function AdminLogin() {
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-sm">
           <div className="mb-8 lg:hidden text-center">
-            <img src="/images/admin/loginImage.png" alt="GlownDry" className="w-16 h-16 mx-auto mb-4 object-contain" />
             <h1 className="text-3xl font-bold text-foreground">GlownDry</h1>
           </div>
 
