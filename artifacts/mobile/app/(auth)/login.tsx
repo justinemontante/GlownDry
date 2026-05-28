@@ -261,15 +261,15 @@ const styles = StyleSheet.create({
   field: {
     flexDirection: "row", alignItems: "center",
     borderWidth: 1.5, borderRadius: 12,
-    paddingHorizontal: 12, paddingVertical: 12,
+    paddingHorizontal: 10, paddingVertical: 8,
   },
   iconBox: {
-    width: 28, height: 28, borderRadius: 8,
+    width: 24, height: 24, borderRadius: 7,
     backgroundColor: "#e8f4f4",
     alignItems: "center", justifyContent: "center",
-    marginRight: 10,
+    marginRight: 8,
   },
-  input: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
+  input: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular", paddingVertical: 2 },
   checkboxRow: {
     flexDirection: "row", alignItems: "center", gap: 10,
   },
