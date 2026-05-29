@@ -129,6 +129,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
             <Text style={styles.drawerTitle}>Profile</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.container}>
             <View style={styles.profileHeader}>
               <TouchableOpacity onPress={handlePickImage} disabled={uploading} activeOpacity={0.8}>
                 <View style={styles.avatarOuter}>
@@ -242,6 +243,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               <FlaticonIcon name="log-out" size={18} color="#fff" />
               <Text style={styles.logoutText}>Logout</Text>
             </TouchableOpacity>
+            </View>
           </ScrollView>
         </Animated.View>
       </View>
@@ -261,13 +263,15 @@ const styles = StyleSheet.create({
     position: "absolute", top: 0, right: 0, bottom: 0,
     width: DRAWER_W,
     backgroundColor: "#EBF3F6",
-    paddingHorizontal: 20,
     shadowColor: "#000", shadowOffset: { width: -8, height: 0 },
     shadowOpacity: 0.15, shadowRadius: 24, elevation: 16,
   },
+  container: {
+    flex: 1, paddingHorizontal: 20,
+  },
   drawerHeader: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingVertical: 16,
+    alignItems: "center", paddingVertical: 16, paddingHorizontal: 20,
   },
   drawerTitle: {
     fontSize: 20, fontFamily: "Inter_800ExtraBold",
