@@ -30,8 +30,8 @@ function ImageUpload({ value, onChange }: { value: string; onChange: (url: strin
       <label className="text-sm font-medium">Service Image</label>
       <div className="flex items-center gap-3 mt-1">
         {value ? (
-          <div className="relative w-full h-32 rounded-lg overflow-hidden border">
-            <img src={value} alt="preview" className="w-full h-full object-cover" />
+          <div className="relative w-full h-32 rounded-lg overflow-hidden border bg-muted/20">
+            <img src={value} alt="preview" className="w-full h-full object-contain" />
             <button
               type="button"
               onClick={() => onChange("")}
@@ -98,7 +98,6 @@ export default function AdminServices() {
       pricePerKg: Number(form.pricePerKg),
     };
     if (form.serviceImage) body.serviceImage = form.serviceImage;
-    console.log("[Save] body:", body);
 
     try {
       const res = await fetch(url, {
@@ -187,46 +186,50 @@ export default function AdminServices() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {services.map(service => (
-          <Card key={service.id} className="border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-            <div className="w-full h-44 bg-muted/30 relative">
+          <Card key={service.id} className="group border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+            <div className="w-full h-48 bg-gradient-to-b from-muted/40 to-muted/20 relative">
               {service.serviceImage ? (
                 <img
                   src={service.serviceImage}
                   alt={service.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-3"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon className="w-10 h-10 text-muted-foreground/30" />
+                  <div className="flex flex-col items-center gap-2 opacity-40">
+                    <ImageIcon className="w-12 h-12 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">No image</span>
+                  </div>
                 </div>
               )}
-              <div className="absolute top-2 right-2 flex gap-1.5">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => openEdit(service)}
-                  className="bg-white/90 hover:bg-white rounded-lg p-1.5 shadow-sm transition-colors"
+                  className="bg-white shadow-sm hover:bg-white/90 rounded-lg p-2 transition-colors"
                   title="Edit"
                 >
                   <Edit2 className="w-4 h-4 text-muted-foreground" />
                 </button>
                 <button
                   onClick={() => setDeleteTarget(service)}
-                  className="bg-white/90 hover:bg-white rounded-lg p-1.5 shadow-sm transition-colors"
+                  className="bg-white shadow-sm hover:bg-white/90 rounded-lg p-2 transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </button>
               </div>
             </div>
-            <CardContent className="p-4">
+            <CardContent className="p-5">
               <div className="flex justify-between items-start mb-1">
-                <h3 className="font-semibold text-base">{service.name}</h3>
-                <span className="text-lg font-bold text-primary whitespace-nowrap ml-2">
-                  ₱{service.pricePerKg.toFixed(2)}
-                </span>
+                <h3 className="font-semibold text-base leading-tight">{service.name}</h3>
+                <div className="text-right flex-shrink-0 ml-3">
+                  <span className="text-lg font-bold text-primary">₱{service.pricePerKg.toFixed(2)}</span>
+                  <p className="text-[11px] text-muted-foreground">per kg</p>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">per kg</p>
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{service.description}</p>
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed">{service.description}</p>
             </CardContent>
           </Card>
         ))}
