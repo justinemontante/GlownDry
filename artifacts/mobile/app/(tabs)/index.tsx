@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   heroImage: {
     width: 160, height: 160,
     resizeMode: "contain",
-    position: "absolute", right: -5, top: -40,
+    position: "absolute", right: -5, top: -30,
   },
   heroBadge: {
     alignSelf: "flex-start", backgroundColor: "rgba(10,156,140,0.12)",
