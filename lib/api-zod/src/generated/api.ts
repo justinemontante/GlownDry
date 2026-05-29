@@ -49,6 +49,7 @@ export const LoginCustomerResponse = zod.object({
   "email": zod.string(),
   "phone": zod.string(),
   "totalOrders": zod.number().optional(),
+  "profileImage": zod.string().optional().nullable(),
   "createdAt": zod.coerce.date()
 })
 })

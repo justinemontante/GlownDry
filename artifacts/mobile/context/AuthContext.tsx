@@ -8,6 +8,7 @@ interface CustomerProfile {
   email: string;
   phone: string;
   totalOrders: number;
+  profileImage?: string | null;
   createdAt: string;
 }
 

@@ -54,6 +54,7 @@ router.post("/auth/register", async (req, res) => {
       email: customer.email,
       phone: customer.phone,
       totalOrders: customer.totalOrders,
+      profileImage: customer.profileImage,
       createdAt: customer.createdAt,
     },
   });
@@ -84,6 +85,7 @@ router.post("/auth/login", async (req, res) => {
       email: customer.email,
       phone: customer.phone,
       totalOrders: customer.totalOrders,
+      profileImage: customer.profileImage,
       createdAt: customer.createdAt,
     },
   });

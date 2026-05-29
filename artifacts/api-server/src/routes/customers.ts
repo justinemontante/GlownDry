@@ -12,6 +12,7 @@ function safeCustomer(c: typeof customersTable.$inferSelect) {
     email: c.email,
     phone: c.phone,
     totalOrders: c.totalOrders,
+    profileImage: c.profileImage,
     createdAt: c.createdAt,
   };
 }
@@ -41,11 +42,12 @@ router.get("/customers/:id", async (req, res) => {
 
 router.patch("/customers/:id", async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const { fullName, phone } = req.body as { fullName?: string; phone?: string };
+  const { fullName, phone, profileImage } = req.body as { fullName?: string; phone?: string; profileImage?: string | null };
 
   const updates: Partial<typeof customersTable.$inferInsert> = {};
   if (fullName) updates.fullName = fullName;
   if (phone) updates.phone = phone;
+  if (profileImage !== undefined) updates.profileImage = profileImage;
 
   const [c] = await db.update(customersTable).set(updates)
     .where(eq(customersTable.id, id)).returning();

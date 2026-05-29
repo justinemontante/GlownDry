@@ -9,6 +9,7 @@ export const customersTable = pgTable("customers", {
   phone: text("phone").notNull(),
   password: text("password").notNull(),
   authToken: text("auth_token"),
+  profileImage: text("profile_image"),
   totalOrders: integer("total_orders").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),

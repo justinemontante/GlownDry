@@ -228,13 +228,26 @@ export default function HomeScreen() {
             <Text style={{ color: "#00C6B5" }}>Dry</Text>
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.notifBtn}
-          onPress={() => router.push("/(tabs)/notifications")}
-          testID="btn-notifications"
-        >
-          <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
-        </TouchableOpacity>
+        <View style={styles.brandRight}>
+          <TouchableOpacity
+            style={styles.notifBtn}
+            onPress={() => router.push("/(tabs)/notifications")}
+            testID="btn-notifications"
+          >
+            <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/profile")}>
+            {customer?.profileImage ? (
+              <Image source={{ uri: customer.profileImage }} style={styles.profilePic} />
+            ) : (
+              <View style={[styles.profilePic, { backgroundColor: "#0A9C8C" }]}>
+                <Text style={styles.profileInitial}>
+                  {(customer?.fullName ?? "?").charAt(0).toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
       {isLoading ? (
@@ -344,6 +357,16 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     backgroundColor: "#fff",
     borderWidth: 1, borderColor: "#e2e8f0",
+  },
+  brandRight: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+  },
+  profilePic: {
+    width: 38, height: 38, borderRadius: 19,
+    alignItems: "center", justifyContent: "center",
+  },
+  profileInitial: {
+    fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff",
   },
 
   // Hero Section
