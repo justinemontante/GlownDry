@@ -161,6 +161,8 @@ export default function HomeScreen() {
 
         <ServicesGallery services={services ?? []} colors={colors} onServicePress={setSelectedService} />
 
+        
+
         {/* Recent Bookings Header */}
         <Text style={styles.recentHeader}>Recent Bookings</Text>
       </View>
@@ -344,10 +346,11 @@ const styles = StyleSheet.create({
 
   // Hero Section
   heroSection: {
-    marginHorizontal: 16, marginTop: 12, marginBottom: 0,
+    marginHorizontal: 16, marginTop: 12, marginBottom: 6,
     padding: 16, borderRadius: 24,
     shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2, shadowRadius: 12, elevation: 6,
+    position: "relative", overflow: "visible",
   },
   heroRow: {
     flexDirection: "row", alignItems: "center",
@@ -405,7 +408,7 @@ const styles = StyleSheet.create({
 
   // Services Gallery
   servicesWrapper: {
-    paddingTop: 4, paddingBottom: 0,
+    paddingTop: 8, paddingBottom: 4,
   },
   sectionHeaderRow: {
     flexDirection: "row", justifyContent: "space-between",
@@ -416,7 +419,7 @@ const styles = StyleSheet.create({
     color: "#1a2a3a",
   },
   servicesContainer: {
-    paddingHorizontal: 16, paddingVertical: 4, gap: 12,
+    paddingHorizontal: 16, paddingVertical: 8, gap: 12,
   },
   serviceCard: {
     width: SCREEN_W * 0.55, borderRadius: 24,
@@ -486,7 +489,7 @@ const styles = StyleSheet.create({
   recentHeader: {
     fontSize: 16, fontFamily: "Inter_700Bold",
     color: "#1a2a3a", paddingHorizontal: 20,
-    paddingTop: 4, paddingBottom: 8,
+    paddingTop: 8, paddingBottom: 8,
   },
 
   // Empty state
