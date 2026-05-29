@@ -59,12 +59,11 @@ function getServiceIcon(name: string) {
 
 const ServicesGallery = memo(function ServicesGallery({ services, colors, onServicePress }: { services: any[]; colors: any; onServicePress: (s: any) => void }) {
   const scrollRef = useRef<ScrollView>(null);
-  const CARD_W = SCREEN_W * 0.55 + 12;
   return (
     <View style={styles.servicesWrapper}>
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionLabel}>Our Services</Text>
-        <TouchableOpacity onPress={() => scrollRef.current?.scrollTo({ x: CARD_W, animated: true })}>
+        <TouchableOpacity onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}>
           <FlaticonIcon name="chevron-right" size={20} color="#00C6B5" />
         </TouchableOpacity>
       </View>
