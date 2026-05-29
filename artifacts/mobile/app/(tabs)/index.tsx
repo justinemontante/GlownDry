@@ -61,7 +61,7 @@ export default function HomeScreen() {
     { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
   );
 
-  const { data: services } = useListServices();
+  const { data: services } = useListServices({ query: { refetchInterval: 10000 } });
 
   function getServiceIcon(name: string) {
     const lower = name.toLowerCase();
