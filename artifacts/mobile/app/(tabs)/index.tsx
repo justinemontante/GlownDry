@@ -82,7 +82,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
                 <FlaticonIcon name={getServiceIcon(s.name)} size={24} color={colors.primary} />
               </View>
             )}
-            <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
+            <Text style={styles.serviceName}>{s.name}</Text>
             <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]} numberOfLines={2}>{s.description}</Text>
             <View style={styles.servicePriceRow}>
               <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     marginBottom: 8, resizeMode: "contain",
   },
   serviceName: {
-    fontSize: 14, fontFamily: "Inter_800ExtraBold",
+    fontSize: 14, fontFamily: "Inter_900Black", color: "#0f172a",
   },
   serviceDesc: {
     fontSize: 11, fontFamily: "Inter_400Regular",
