@@ -83,6 +83,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
               </View>
             )}
             <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
+            <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]} numberOfLines={2}>{s.description}</Text>
             <View style={styles.servicePriceRow}>
               <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
             </View>
@@ -411,7 +412,10 @@ const styles = StyleSheet.create({
   },
   serviceName: {
     fontSize: 14, fontFamily: "Inter_800ExtraBold",
-    textAlign: "center",
+  },
+  serviceDesc: {
+    fontSize: 11, fontFamily: "Inter_400Regular",
+    marginTop: 2, lineHeight: 14,
   },
   servicePriceRow: {
     flexDirection: "row", justifyContent: "center",
