@@ -130,41 +130,41 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
-            <View style={styles.profileHeader}>
-              <TouchableOpacity onPress={handlePickImage} disabled={uploading} activeOpacity={0.8}>
-                <View style={styles.avatarOuter}>
-                  {customer?.profileImage ? (
-                    <Image source={{ uri: customer.profileImage }} style={styles.avatarImage} />
-                  ) : (
-                    <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
-                      <FlaticonIcon name="camera" size={34} color="#fff" />
+            <View style={styles.sectionCard}>
+              <View style={styles.profileHeader}>
+                <TouchableOpacity onPress={handlePickImage} disabled={uploading} activeOpacity={0.8}>
+                  <View style={styles.avatarOuter}>
+                    {customer?.profileImage ? (
+                      <Image source={{ uri: customer.profileImage }} style={styles.avatarImage} />
+                    ) : (
+                      <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
+                        <FlaticonIcon name="camera" size={34} color="#fff" />
+                      </View>
+                    )}
+                    <View style={[styles.cameraOverlay, !customer?.profileImage && styles.cameraOverlayEmpty]}>
+                      <FlaticonIcon name="camera" size={16} color={customer?.profileImage ? "#fff" : "#0A7474"} />
+                    </View>
+                  </View>
+                  <Text style={styles.changePhotoText}>
+                    {uploading ? "Uploading..." : customer?.profileImage ? "Change Photo" : "Tap to Add Photo"}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={styles.name}>{customer?.fullName}</Text>
+                <Text style={styles.email}>{customer?.email}</Text>
+                <View style={styles.badgeRow}>
+                  <View style={styles.badge}>
+                    <FlaticonIcon name="check-circle" size={12} color="#0A7474" />
+                    <Text style={styles.badgeText}>{customer?.totalOrders ?? 0} orders</Text>
+                  </View>
+                  {joinDate && (
+                    <View style={styles.badge}>
+                      <FlaticonIcon name="calendar" size={12} color="#0A7474" />
+                      <Text style={styles.badgeText}>Since {joinDate}</Text>
                     </View>
                   )}
-                  <View style={[styles.cameraOverlay, !customer?.profileImage && styles.cameraOverlayEmpty]}>
-                    <FlaticonIcon name="camera" size={16} color={customer?.profileImage ? "#fff" : "#0A7474"} />
-                  </View>
                 </View>
-                <Text style={styles.changePhotoText}>
-                  {uploading ? "Uploading..." : customer?.profileImage ? "Change Photo" : "Tap to Add Photo"}
-                </Text>
-              </TouchableOpacity>
-              <Text style={styles.name}>{customer?.fullName}</Text>
-              <Text style={styles.email}>{customer?.email}</Text>
-              <View style={styles.badgeRow}>
-                <View style={styles.badge}>
-                  <FlaticonIcon name="check-circle" size={12} color="#0A7474" />
-                  <Text style={styles.badgeText}>{customer?.totalOrders ?? 0} orders</Text>
-                </View>
-                {joinDate && (
-                  <View style={styles.badge}>
-                    <FlaticonIcon name="calendar" size={12} color="#0A7474" />
-                    <Text style={styles.badgeText}>Since {joinDate}</Text>
-                  </View>
-                )}
               </View>
-            </View>
-
-            <View style={styles.sectionCard}>
+              <View style={styles.divider} />
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>Personal Information</Text>
                 {!editing ? (
