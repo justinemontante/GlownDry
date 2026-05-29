@@ -110,7 +110,6 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
                   style={[
                     styles.dayCell,
                     isSelected && styles.dayCellSelected,
-                    isToday && !isSelected && styles.dayCellToday,
                   ]}
                   onPress={() => !isPast && setSelectedDay(d)}
                   disabled={isPast}
@@ -238,9 +237,6 @@ const styles = StyleSheet.create({
   },
   dayCellSelected: {
     backgroundColor: "#0A7474",
-  },
-  dayCellToday: {
-    borderWidth: 1.5, borderColor: "#0A7474",
   },
   dayText: {
     fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a",
