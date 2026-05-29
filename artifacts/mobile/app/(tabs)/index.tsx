@@ -70,22 +70,23 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
         {services.map(s => (
           <TouchableOpacity
             key={s.id}
-            style={[styles.serviceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={() => onServicePress(s)}
             activeOpacity={0.85}
           >
-            {s.serviceImage ? (
-              <Image source={{ uri: s.serviceImage }} style={styles.serviceImage} />
-            ) : (
-              <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
-                <FlaticonIcon name={getServiceIcon(s.name)} size={24} color={colors.primary} />
+            <LinearGradient colors={["#ffffff", "#f8fafc"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.serviceCard}>
+              {s.serviceImage ? (
+                <Image source={{ uri: s.serviceImage }} style={styles.serviceImage} />
+              ) : (
+                <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
+                  <FlaticonIcon name={getServiceIcon(s.name)} size={24} color={colors.primary} />
+                </View>
+              )}
+              <Text style={styles.serviceName}>{s.name}</Text>
+              <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]} numberOfLines={2}>{s.description}</Text>
+              <View style={styles.servicePriceRow}>
+                <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
               </View>
-            )}
-            <Text style={styles.serviceName}>{s.name}</Text>
-            <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]} numberOfLines={2}>{s.description}</Text>
-            <View style={styles.servicePriceRow}>
-              <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
-            </View>
+            </LinearGradient>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -473,10 +474,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, gap: 12,
   },
   serviceCard: {
-    width: SCREEN_W * 0.55, borderRadius: 16,
-    padding: 14, backgroundColor: "#fff",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1, shadowRadius: 4, elevation: 4,
+    width: SCREEN_W * 0.55, borderRadius: 24,
+    padding: 16, backgroundColor: "#fff",
+    shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15, shadowRadius: 10, elevation: 5,
   },
   serviceIconWrap: {
     width: 44, height: 44, borderRadius: 12,
