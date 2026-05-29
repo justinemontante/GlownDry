@@ -143,19 +143,19 @@ export default function HomeScreen() {
           <View style={styles.heroStats}>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{bookings?.length ?? 0}</Text>
-              <Text style={styles.statLabel}>Orders</Text>
+              <Text style={styles.statLabel}>Total Orders</Text>
             </View>
             <View style={styles.statDot} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{activeBooking ? 1 : 0}</Text>
-              <Text style={styles.statLabel}>Active</Text>
+              <Text style={styles.statLabel}>Active Orders</Text>
             </View>
             <View style={styles.statDot} />
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: "#4ade80" }]}>
                 {bookings?.filter(b => b.status === "completed").length ?? 0}
               </Text>
-              <Text style={styles.statLabel}>Done</Text>
+              <Text style={styles.statLabel}>Completed</Text>
             </View>
           </View>
         </LinearGradient>
