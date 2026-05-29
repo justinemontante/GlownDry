@@ -10,6 +10,10 @@ import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollV
 import { useAuth } from "@/context/AuthContext";
 import { useLoginCustomer } from "@workspace/api-client-react";
 import * as Haptics from "expo-haptics";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const REMEMBER_EMAIL_KEY = "glowndry_remember_email";
+const REMEMBER_PASS_KEY = "glowndry_remember_pass";
 
 const WASHING_MACHINE_D = "M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M3 6h3 M17 6h.01 M17 13a5 5 0 11-10 0 5 5 0 0110 0z M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5";
 
@@ -56,6 +60,16 @@ export default function LoginScreen() {
   const arrowAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    AsyncStorage.multiGet([REMEMBER_EMAIL_KEY, REMEMBER_PASS_KEY]).then(([[_, savedEmail], [__, savedPass]]) => {
+      if (savedEmail && savedPass) {
+        setEmail(savedEmail);
+        setPassword(savedPass);
+        setRemember(true);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     Animated.sequence([
       Animated.timing(backOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
       Animated.parallel([
@@ -92,6 +106,11 @@ export default function LoginScreen() {
     }
     try {
       const result = await mutation.mutateAsync({ data: { email, password } });
+      if (remember) {
+        await AsyncStorage.multiSet([[REMEMBER_EMAIL_KEY, email], [REMEMBER_PASS_KEY, password]]);
+      } else {
+        await AsyncStorage.multiRemove([REMEMBER_EMAIL_KEY, REMEMBER_PASS_KEY]);
+      }
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await login(result.token, result.customer as Parameters<typeof login>[1]);
       router.replace("/(tabs)/");
