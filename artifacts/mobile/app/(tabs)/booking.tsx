@@ -1,5 +1,5 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { NativeDatePicker } from "@/components/NativeDatePicker";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -49,7 +49,7 @@ export default function BookingScreen() {
   const selectedSvc = services?.find(s => s.id === selectedService);
   const estimatedTotal = selectedSvc && weight ? parseFloat(weight) * selectedSvc.pricePerKg : 0;
 
-  function onDateChange(_: DateTimePickerEvent, d?: Date) {
+  function onDateChange(_: any, d?: Date) {
     if (Platform.OS === "android") setShowDatePicker(false);
     if (!d) return;
     setScheduleDate(d);
@@ -60,7 +60,7 @@ export default function BookingScreen() {
     }
   }
 
-  function onTimeChange(_: DateTimePickerEvent, d?: Date) {
+  function onTimeChange(_: any, d?: Date) {
     setShowTimePicker(false);
     if (!d) return;
     const merged = new Date(scheduleDate);
@@ -198,7 +198,7 @@ export default function BookingScreen() {
           </TouchableOpacity>
 
           {showDatePicker && (
-            <DateTimePicker
+            <NativeDatePicker
               value={scheduleDate}
               mode={Platform.OS === "ios" ? "datetime" : "date"}
               display={Platform.OS === "ios" ? "spinner" : "default"}
@@ -208,7 +208,7 @@ export default function BookingScreen() {
           )}
 
           {showTimePicker && Platform.OS === "android" && (
-            <DateTimePicker
+            <NativeDatePicker
               value={scheduleDate}
               mode="time"
               display="default"
