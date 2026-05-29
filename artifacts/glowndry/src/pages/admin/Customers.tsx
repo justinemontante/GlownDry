@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, Mail, Phone, ExternalLink, Calendar, Weight } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ type Customer = {
   phone: string;
   totalOrders: number;
   createdAt: string;
+  profileImage?: string | null;
 };
 
 type Booking = {
@@ -132,9 +134,12 @@ export default function AdminCustomers() {
               <TableRow key={c.id} className="hover:bg-slate-50/50">
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                      {c.fullName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                    </div>
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={c.profileImage || undefined} alt={c.fullName} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+                        {c.fullName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                     <span className="font-medium">{c.fullName}</span>
                   </div>
                 </TableCell>
