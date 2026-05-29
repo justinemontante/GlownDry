@@ -4,9 +4,10 @@ import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
+  Alert, Platform, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from "react-native";
+import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
@@ -88,16 +89,10 @@ export default function BookingScreen() {
         end={{ x: 1, y: 0 }}
         style={StyleSheet.absoluteFill}
       />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-      >
-      <ScrollView
-        style={{ flex: 1 }}
+      <KeyboardAwareScrollViewCompat
         contentContainerStyle={[styles.container, { paddingTop: 8, paddingBottom: bottomPad + 140 }]}
-        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        bottomOffset={20}
       >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>New Booking</Text>
 
@@ -203,8 +198,7 @@ export default function BookingScreen() {
           {createBooking.isPending ? "Booking…" : "Confirm Drop-off"}
         </Text>
       </TouchableOpacity>
-      </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollViewCompat>
     </View>
   );
 }
