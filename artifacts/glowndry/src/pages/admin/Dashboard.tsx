@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, CreditCard, ShoppingBag, TrendingUp, Package } from "lucide-react";
+import { Users, CreditCard, ShoppingBag, TrendingUp, Package, Calendar, Clock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { useLocation } from "wouter";
@@ -31,6 +31,22 @@ const statusLabels: Record<string, string> = {
   claimed: "Claimed",
 };
 
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
+
+function getCurrentDate() {
+  return new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export default function AdminDashboard() {
   const [, navigate] = useLocation();
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -50,6 +66,7 @@ export default function AdminDashboard() {
 
   if (loading) return (
     <div className="space-y-8 p-8">
+      <Skeleton className="h-32 w-full rounded-2xl" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {Array.from({ length: 4 }).map((_, i) => (
           <Card key={i} className="shadow-sm border-none">
@@ -98,17 +115,37 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Active Orders" value={String(stats.activeOrders)} icon={<Package />} change="Current in system" />
-        <StatCard title="Daily Revenue" value={`₱${stats.dailyRevenue.toFixed(2)}`} icon={<CreditCard />} change="Today's earnings" />
-        <StatCard title="Total Customers" value={String(stats.totalCustomers)} icon={<Users />} change="Registered users" />
-        <StatCard title="Expected Drop-offs" value={String(stats.expectedDropoffs)} icon={<TrendingUp />} change="Scheduled today" />
+      {/* Greeting Hero */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-600 to-teal-400 p-8 text-white">
+        <div className="absolute inset-0 bg-white/10" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 60%)" }} />
+        <div className="relative z-10">
+          <p className="text-teal-50/80 text-sm font-medium mb-1">{getCurrentDate()}</p>
+          <h1 className="text-3xl font-bold mb-2">{getGreeting()}, Admin</h1>
+          <p className="text-teal-50/80 text-sm">Here's what's happening with your business today.</p>
+        </div>
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden sm:block">
+          <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center">
+            <Package className="w-10 h-10 text-white/60" />
+          </div>
+        </div>
       </div>
 
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="Active Orders" value={String(stats.activeOrders)} icon={<Package />} change="Current in system" accent="bg-orange-500/10 text-orange-600" />
+        <StatCard title="Daily Revenue" value={`₱${stats.dailyRevenue.toFixed(2)}`} icon={<CreditCard />} change="Today's earnings" accent="bg-green-500/10 text-green-600" />
+        <StatCard title="Total Customers" value={String(stats.totalCustomers)} icon={<Users />} change="Registered users" accent="bg-blue-500/10 text-blue-600" />
+        <StatCard title="Expected Drop-offs" value={String(stats.expectedDropoffs)} icon={<TrendingUp />} change="Scheduled today" accent="bg-purple-500/10 text-purple-600" />
+      </div>
+
+      {/* Charts & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="col-span-1 lg:col-span-2 shadow-sm border-none">
+        <Card className="col-span-1 lg:col-span-2 shadow-sm border-0">
           <CardHeader>
-            <CardTitle>Weekly Revenue (Estimate)</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              Weekly Revenue (Estimate)
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] w-full">
@@ -125,18 +162,21 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border-none">
+        <Card className="shadow-sm border-0">
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-primary" />
+              Recent Orders
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {stats.recentBookings.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">No recent orders</p>
             )}
-            {stats.recentBookings.map((b) => (
+            {stats.recentBookings.slice(0, 5).map((b) => (
               <div key={b.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-medium text-slate-600">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
                     {(b.customerName || "?").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
                   </div>
                   <div>
@@ -146,7 +186,9 @@ export default function AdminDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium text-foreground">₱{b.totalAmount?.toFixed(2) ?? "0.00"}</p>
-                  <p className="text-xs text-primary font-medium">{statusLabels[b.status] || b.status}</p>
+                  <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                    {statusLabels[b.status] || b.status}
+                  </span>
                 </div>
               </div>
             ))}
@@ -158,16 +200,16 @@ export default function AdminDashboard() {
   );
 }
 
-function StatCard({ title, value, icon, change }: { title: string, value: string, icon: React.ReactNode, change: string }) {
+function StatCard({ title, value, icon, change, accent }: { title: string, value: string, icon: React.ReactNode, change: string, accent: string }) {
   return (
-    <Card className="shadow-sm border-none">
+    <Card className="shadow-sm border-0 hover:shadow-md transition-shadow duration-200">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
             <h3 className="text-3xl font-bold text-foreground">{value}</h3>
           </div>
-          <div className="p-3 bg-primary/10 text-primary rounded-xl">
+          <div className={`p-3 rounded-xl ${accent}`}>
             {icon}
           </div>
         </div>
