@@ -115,7 +115,7 @@ export default function BookingScreen() {
         </View>
       )}
 
-      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop-off Date</Text>
+      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Dropoff Date</Text>
       <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
         <FlaticonIcon name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
         <TextInput
@@ -128,7 +128,7 @@ export default function BookingScreen() {
         />
       </View>
 
-      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop-off Time</Text>
+      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Dropoff Time</Text>
       <View style={styles.timeGrid}>
         {DROP_OFF_SLOTS.map(slot => (
           <TouchableOpacity
@@ -188,7 +188,7 @@ export default function BookingScreen() {
       >
         <FlaticonIcon name="check-circle" size={18} color="#fff" />
         <Text style={styles.btnBookText}>
-          {createBooking.isPending ? "Booking…" : "Confirm Drop-off"}
+          {createBooking.isPending ? "Booking…" : "Confirm Dropoff"}
         </Text>
       </TouchableOpacity>
       </ScrollView>
