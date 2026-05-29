@@ -84,7 +84,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
         </header>
-        <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto p-8" style={{ backgroundColor: "#0C3B2E" }}>
           {children}
         </div>
       </main>

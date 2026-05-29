@@ -114,7 +114,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8 min-h-full" style={{ backgroundColor: "#0C3B2E" }}>
+    <div className="space-y-8">
       {/* Greeting */}
       <div className="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
         <div className="flex items-start justify-between">
