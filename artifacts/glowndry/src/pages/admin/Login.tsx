@@ -84,16 +84,19 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="h-screen w-full flex overflow-hidden">
-      {/* Left - Image Background */}
+    <div className="h-screen w-full flex overflow-hidden relative"
+      style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center" }}
+    >
+      {/* Gradient overlay: left transparent → right khaki */}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to right, transparent 50%, #C3B091)" }}></div>
+
+      {/* Left - Image (solid, no overlay) */}
       <motion.div
         variants={slideLeft}
         initial="hidden"
         animate="visible"
-        className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative overflow-hidden"
-        style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#C3B091" }}
+        className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative z-10 overflow-hidden"
       >
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, #C3B091, transparent 60%)" }}></div>
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -128,7 +131,7 @@ export default function AdminLogin() {
         variants={slideRight}
         initial="hidden"
         animate="visible"
-        className="flex-1 flex items-center justify-center p-4 lg:p-8 h-full"
+        className="flex-1 flex items-center justify-center p-4 lg:p-8 h-full relative z-10"
         style={{ backgroundColor: "#C3B091" }}
       >
         <div className="w-full max-w-md max-h-full">
