@@ -123,7 +123,7 @@ export default function HomeScreen() {
       <View>
         {/* Hero Section */}
         <LinearGradient
-          colors={["#0A9C8C", "#0A7A74"]}
+          colors={["#f0faf5", "#d4ede1"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[styles.heroSection, { paddingTop: 16 }]}
@@ -355,27 +355,27 @@ const styles = StyleSheet.create({
     padding: 16, borderRadius: 24,
   },
   heroBadge: {
-    alignSelf: "flex-start", backgroundColor: "rgba(255,255,255,0.15)",
+    alignSelf: "flex-start", backgroundColor: "rgba(10,156,140,0.12)",
     paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20,
     marginBottom: 10,
   },
   heroBadgeText: {
     fontSize: 11, fontFamily: "Inter_600SemiBold",
-    color: "rgba(255,255,255,0.9)", letterSpacing: 0.3,
+    color: "#0A9C8C", letterSpacing: 0.3,
   },
   heroTitle: {
     fontSize: 24, fontFamily: "Inter_700Bold",
-    color: "#fff",
+    color: "#1a2a3a",
   },
   heroName: {
-    color: "#fff",
+    color: "#0A9C8C",
   },
   heroSub: {
     fontSize: 12, fontFamily: "Inter_400Regular",
-    color: "rgba(255,255,255,0.7)", marginTop: 2,
+    color: "rgba(26,42,58,0.6)", marginTop: 2,
   },
   heroDivider: {
-    height: 1, backgroundColor: "rgba(255,255,255,0.12)",
+    height: 1, backgroundColor: "rgba(10,156,140,0.15)",
     marginVertical: 12,
   },
   heroStats: {
@@ -386,15 +386,15 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     fontSize: 20, fontFamily: "Inter_900Black",
-    color: "#fff",
+    color: "#1a2a3a",
   },
   statLabel: {
     fontSize: 10, fontFamily: "Inter_500Medium",
-    color: "rgba(255,255,255,0.65)", marginTop: 1,
+    color: "rgba(26,42,58,0.55)", marginTop: 1,
   },
   statDot: {
     width: 4, height: 4, borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.25)",
+    backgroundColor: "rgba(10,156,140,0.3)",
   },
 
   // Services Gallery
