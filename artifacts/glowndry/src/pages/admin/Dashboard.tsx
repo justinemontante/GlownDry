@@ -78,10 +78,9 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 5 }).map((_, i) => (
           <Card key={i} className="shadow-sm border-none">
-            <CardContent className="p-6 space-y-4">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-8 w-32" />
-              <Skeleton className="h-4 w-20" />
+            <CardContent className="p-6 space-y-2">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-8 w-20" />
             </CardContent>
           </Card>
         ))}
@@ -131,11 +130,11 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard title="Total Bookings" value={String(stats.totalBookings)} icon={<ShoppingBag />} change="All time orders" accent="bg-teal-500/10 text-teal-600" />
-        <StatCard title="Active Orders" value={String(stats.activeOrders)} icon={<Package />} change="Current in system" accent="bg-orange-500/10 text-orange-600" />
-        <StatCard title="Daily Revenue" value={`₱${stats.dailyRevenue.toFixed(2)}`} icon={<CreditCard />} change="Today's earnings" accent="bg-green-500/10 text-green-600" />
-        <StatCard title="Total Customers" value={String(stats.totalCustomers)} icon={<Users />} change="Registered users" accent="bg-blue-500/10 text-blue-600" />
-        <StatCard title="Expected Drop-offs" value={String(stats.expectedDropoffs)} icon={<TrendingUp />} change="Scheduled today" accent="bg-purple-500/10 text-purple-600" />
+        <StatCard title="Total Bookings" value={String(stats.totalBookings)} icon={<ShoppingBag />} accent="bg-teal-500/10 text-teal-600" />
+        <StatCard title="Active Orders" value={String(stats.activeOrders)} icon={<Package />} accent="bg-orange-500/10 text-orange-600" />
+        <StatCard title="Daily Revenue" value={`₱${stats.dailyRevenue.toFixed(2)}`} icon={<CreditCard />} accent="bg-green-500/10 text-green-600" />
+        <StatCard title="Total Customers" value={String(stats.totalCustomers)} icon={<Users />} accent="bg-blue-500/10 text-blue-600" />
+        <StatCard title="Expected Drop-offs" value={String(stats.expectedDropoffs)} icon={<TrendingUp />} accent="bg-purple-500/10 text-purple-600" />
       </div>
 
       {/* Recent Bookings */}
@@ -262,11 +261,11 @@ export default function AdminDashboard() {
   );
 }
 
-function StatCard({ title, value, icon, change, accent }: { title: string, value: string, icon: React.ReactNode, change: string, accent: string }) {
+function StatCard({ title, value, icon, accent }: { title: string, value: string, icon: React.ReactNode, accent: string }) {
   return (
     <Card className="shadow-sm border-0 hover:shadow-md transition-shadow duration-200">
       <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-start">
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
             <h3 className="text-3xl font-bold text-foreground">{value}</h3>
@@ -275,7 +274,6 @@ function StatCard({ title, value, icon, change, accent }: { title: string, value
             {icon}
           </div>
         </div>
-        <p className="text-sm text-muted-foreground">{change}</p>
       </CardContent>
     </Card>
   );
