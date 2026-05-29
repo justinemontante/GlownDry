@@ -126,7 +126,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
             <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
               <FlaticonIcon name="arrow-left" size={20} color="#1a2a3a" />
             </TouchableOpacity>
-            <Text style={styles.drawerTitle}>Profile</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
@@ -267,15 +266,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15, shadowRadius: 24, elevation: 16,
   },
   container: {
-    flex: 1, paddingHorizontal: 20,
+    paddingHorizontal: 20, paddingBottom: 20,
   },
   drawerHeader: {
-    flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingVertical: 16, paddingHorizontal: 20,
-  },
-  drawerTitle: {
-    fontSize: 20, fontFamily: "Inter_800ExtraBold",
-    color: "#1a2a3a",
+    flexDirection: "row", alignItems: "center",
+    paddingVertical: 16, paddingHorizontal: 20,
   },
   closeBtn: {
     width: 36, height: 36, borderRadius: 10,
