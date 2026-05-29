@@ -107,7 +107,11 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
               return (
                 <TouchableOpacity
                   key={i}
-                  style={[styles.dayCell]}
+                  style={[
+                    styles.dayCell,
+                    isSelected && styles.dayCellSelected,
+                    isToday && !isSelected && styles.dayCellToday,
+                  ]}
                   onPress={() => !isPast && setSelectedDay(d)}
                   disabled={isPast}
                 >
@@ -232,11 +236,17 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderRadius: 20,
   },
+  dayCellSelected: {
+    backgroundColor: "#0A7474",
+  },
+  dayCellToday: {
+    borderWidth: 1.5, borderColor: "#0A7474",
+  },
   dayText: {
     fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a",
   },
   dayTextSelected: {
-    color: "#0A7474", fontFamily: "Inter_700Bold",
+    color: "#fff", fontFamily: "Inter_700Bold",
   },
   dayTextToday: {
     color: "#0A7474", fontFamily: "Inter_700Bold",
