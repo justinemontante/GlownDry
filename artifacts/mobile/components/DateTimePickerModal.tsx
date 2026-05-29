@@ -237,19 +237,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   dayCellSelected: {
-    backgroundColor: "#334155",
+    borderWidth: 2, borderColor: "#0A7474",
   },
   dayCellToday: {
-    borderWidth: 1.5, borderColor: "#334155",
+    borderWidth: 1.5, borderColor: "#0A7474",
   },
   dayText: {
     fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a",
   },
   dayTextSelected: {
-    color: "#fff", fontFamily: "Inter_700Bold",
+    color: "#0A7474", fontFamily: "Inter_700Bold",
   },
   dayTextToday: {
-    color: "#334155", fontFamily: "Inter_700Bold",
+    color: "#0A7474", fontFamily: "Inter_700Bold",
   },
   dayTextPast: {
     color: "#d0d5dd",
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   ampmBtnActive: {
-    backgroundColor: "#334155", borderColor: "#334155",
+    backgroundColor: "#0A7474", borderColor: "#0A7474",
   },
   ampmText: {
     fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#1a2a3a",
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   confirmBtn: {
     flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
     gap: 6, paddingVertical: 14, borderRadius: 14,
-    backgroundColor: "#334155",
+    backgroundColor: "#0A7474",
   },
   confirmBtnDisabled: {
     opacity: 0.5,
