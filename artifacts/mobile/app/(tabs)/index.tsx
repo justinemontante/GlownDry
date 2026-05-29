@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import React, { useState, memo } from "react";
 import {
   ActivityIndicator, Dimensions, FlatList, Image, Modal, Platform,
-  RefreshControl, StyleSheet, Text, TouchableOpacity, View,
+  RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -55,9 +55,6 @@ function getServiceIcon(name: string) {
   return SERVICE_ICONS[key ?? "washing-machine"];
 }
 
-const CARD_GAP = 8;
-const CARD_W = (SCREEN_W - 32 - CARD_GAP * 2) / 3;
-
 const ServicesGallery = memo(function ServicesGallery({ services, colors, onServicePress }: { services: any[]; colors: any; onServicePress: (s: any) => void }) {
   return (
     <View style={styles.servicesWrapper}>
@@ -67,7 +64,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
           <Text style={styles.seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.servicesContainer}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.servicesContainer}>
         {services.map(s => (
           <TouchableOpacity
             key={s.id}
@@ -89,7 +86,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
             </View>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 });
@@ -416,20 +413,19 @@ const styles = StyleSheet.create({
     color: "#00C6B5",
   },
   servicesContainer: {
-    flexDirection: "row", flexWrap: "wrap",
-    paddingHorizontal: 16, gap: CARD_GAP,
+    paddingHorizontal: 16, gap: 12,
   },
   serviceCard: {
-    width: CARD_W, borderRadius: 16,
-    padding: 12, borderWidth: 1, borderColor: "#e2e8f0",
+    width: SCREEN_W * 0.55, borderRadius: 16,
+    padding: 14, borderWidth: 1, borderColor: "#e2e8f0",
   },
   serviceIconWrap: {
     width: 44, height: 44, borderRadius: 12,
-    alignItems: "center", justifyContent: "center", marginBottom: 8,
+    alignItems: "center", justifyContent: "center", marginBottom: 10,
   },
   serviceImage: {
-    width: "100%", height: 80, borderRadius: 10,
-    marginBottom: 8, resizeMode: "contain",
+    width: "100%", height: 100, borderRadius: 12,
+    marginBottom: 10, resizeMode: "contain",
   },
   serviceName: {
     fontSize: 15, fontFamily: "Inter_900Black", fontWeight: "900", color: "#000",
@@ -439,11 +435,10 @@ const styles = StyleSheet.create({
     marginTop: 2, lineHeight: 14,
   },
   servicePriceRow: {
-    flexDirection: "row", justifyContent: "center",
-    marginTop: 4,
+    flexDirection: "row", marginTop: 6,
   },
   servicePrice: {
-    fontSize: 13, fontFamily: "Inter_800ExtraBold",
+    fontSize: 14, fontFamily: "Inter_800ExtraBold",
   },
 
   // Active Order
