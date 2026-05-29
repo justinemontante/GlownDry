@@ -120,7 +120,7 @@ export default function HomeScreen() {
       <View>
         {/* Hero Section */}
         <LinearGradient
-          colors={["#f0faf5", "#d4ede1"]}
+          colors={["#ffffff", "#f8fafc"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[styles.heroSection, { paddingTop: 16 }]}
