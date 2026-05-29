@@ -249,7 +249,7 @@ export default function HomeScreen() {
             />
           )}
           ListHeaderComponent={ListHeader}
-          contentContainerStyle={{ paddingBottom: bottomPad + 100 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: bottomPad + 100 }}
           refreshControl={
             <RefreshControl
               refreshing={manualRefreshing}
