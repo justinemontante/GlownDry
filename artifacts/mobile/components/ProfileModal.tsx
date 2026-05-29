@@ -236,28 +236,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               </View>
             </View>
 
-            <View style={styles.sectionCard}>
-              <Text style={[styles.cardTitle, { paddingHorizontal: 16, paddingTop: 16 }]}>Quick Links</Text>
-              <View style={[styles.divider, { marginTop: 12 }]} />
-              {[
-                { label: "Booking History", icon: "archive" as const, route: "/(tabs)/notifications" as const },
-                { label: "Track Current Order", icon: "map-pin" as const, route: "/(tabs)/track" as const },
-                { label: "New Booking", icon: "plus-circle" as const, route: "/(tabs)/booking" as const },
-              ].map((item) => (
-                <TouchableOpacity
-                  key={item.label}
-                  style={styles.menuItem}
-                  onPress={() => { onClose(); router.push(item.route); }}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.menuIconWrap}>
-                    <FlaticonIcon name={item.icon} size={18} color="#0A7474" />
-                  </View>
-                  <Text style={styles.menuLabel}>{item.label}</Text>
-                  <FlaticonIcon name="chevron-right" size={16} color="#c0c8d4" />
-                </TouchableOpacity>
-              ))}
-            </View>
+
 
             <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
               <FlaticonIcon name="log-out" size={18} color="#fff" />
@@ -430,19 +409,6 @@ const styles = StyleSheet.create({
     color: "#1a2a3a", marginTop: 2,
     borderBottomWidth: 1.5, borderBottomColor: "#0A7474",
     paddingBottom: 2,
-  },
-  menuItem: {
-    flexDirection: "row", alignItems: "center", gap: 12,
-    paddingHorizontal: 16, paddingVertical: 14,
-  },
-  menuIconWrap: {
-    width: 38, height: 38, borderRadius: 10,
-    backgroundColor: "#f0fdfa",
-    alignItems: "center", justifyContent: "center",
-  },
-  menuLabel: {
-    flex: 1, fontSize: 14, fontFamily: "Inter_600SemiBold",
-    color: "#1a2a3a",
   },
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
