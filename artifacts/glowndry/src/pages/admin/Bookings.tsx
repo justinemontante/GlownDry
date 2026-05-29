@@ -167,7 +167,7 @@ export default function AdminBookings() {
                 </Select>
               </div>
               <div>
-                <Label>Dropoff Date</Label>
+                <Label>Drop off Schedule</Label>
                 <Input type="date" value={newForm.scheduledDate} onChange={e => setNewForm({ ...newForm, scheduledDate: e.target.value })} />
               </div>
               <div>
