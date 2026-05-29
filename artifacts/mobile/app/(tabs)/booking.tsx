@@ -158,12 +158,9 @@ export default function BookingScreen() {
         <View style={[styles.scheduleIconWrap, { backgroundColor: colors.tealLight }]}>
           <FlaticonIcon name="calendar" size={20} color={colors.primary} />
         </View>
-        <View style={styles.scheduleTextWrap}>
-          <Text style={styles.scheduleLabel}>Pickup date & time</Text>
-          <Text style={[styles.scheduleBtnText, { color: selectedDate ? colors.foreground : colors.mutedForeground }]}>
-            {formatDateLabel()}
-          </Text>
-        </View>
+        <Text style={[styles.scheduleBtnText, { color: selectedDate ? colors.foreground : colors.mutedForeground }]}>
+          {formatDateLabel()}
+        </Text>
         <FlaticonIcon name="chevron-right" size={16} color={colors.mutedForeground} />
       </TouchableOpacity>
 
@@ -264,15 +261,8 @@ const styles = StyleSheet.create({
     width: 44, height: 44, borderRadius: 12,
     alignItems: "center", justifyContent: "center",
   },
-  scheduleTextWrap: {
-    flex: 1, gap: 2,
-  },
-  scheduleLabel: {
-    fontSize: 11, fontFamily: "Inter_500Medium", color: "#94a3b8",
-    textTransform: "uppercase", letterSpacing: 0.4,
-  },
   scheduleBtnText: {
-    fontSize: 15, fontFamily: "Inter_600SemiBold",
+    flex: 1, fontSize: 15, fontFamily: "Inter_600SemiBold",
   },
   inputCard: {
     borderWidth: 1.5, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 8,
