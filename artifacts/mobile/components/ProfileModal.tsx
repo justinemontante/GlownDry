@@ -136,12 +136,12 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                     {customer?.profileImage ? (
                       <Image source={{ uri: customer.profileImage }} style={styles.avatarImage} />
                     ) : (
-                      <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
-                        <FlaticonIcon name="camera" size={34} color="#fff" />
+                      <View style={[styles.avatar, { backgroundColor: "#00C6B5" }]}>
+                        <FlaticonIcon name="camera" size={34} color="#1a2a3a" />
                       </View>
                     )}
                     <View style={[styles.cameraOverlay, !customer?.profileImage && styles.cameraOverlayEmpty]}>
-                      <FlaticonIcon name="camera" size={16} color={customer?.profileImage ? "#fff" : "#0A7474"} />
+                      <FlaticonIcon name="camera" size={16} color={customer?.profileImage ? "#1a2a3a" : "#00C6B5"} />
                     </View>
                   </View>
                   <Text style={styles.changePhotoText}>
@@ -152,12 +152,12 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 <Text style={styles.email}>{customer?.email}</Text>
                 <View style={styles.badgeRow}>
                   <View style={styles.badge}>
-                    <FlaticonIcon name="check-circle" size={12} color="#0A7474" />
+                    <FlaticonIcon name="check-circle" size={12} color="#00C6B5" />
                     <Text style={styles.badgeText}>{customer?.totalOrders ?? 0} orders</Text>
                   </View>
                   {joinDate && (
                     <View style={styles.badge}>
-                      <FlaticonIcon name="calendar" size={12} color="#0A7474" />
+                      <FlaticonIcon name="calendar" size={12} color="#00C6B5" />
                       <Text style={styles.badgeText}>Since {joinDate}</Text>
                     </View>
                   )}
@@ -168,7 +168,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 <Text style={styles.cardTitle}>Personal Information</Text>
                 {!editing ? (
                   <TouchableOpacity style={styles.editBtn} onPress={() => setEditing(true)}>
-                    <FlaticonIcon name="edit-2" size={14} color="#0A7474" />
+                    <FlaticonIcon name="edit-2" size={14} color="#00C6B5" />
                     <Text style={styles.editBtnText}>Edit</Text>
                   </TouchableOpacity>
                 ) : (
@@ -187,7 +187,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               <View style={styles.fieldsContainer}>
                 <View style={styles.fieldRow}>
                   <View style={styles.fieldIconWrap}>
-                    <FlaticonIcon name="user" size={16} color="#0A7474" />
+                    <FlaticonIcon name="user" size={16} color="#00C6B5" />
                   </View>
                   <View style={styles.fieldContent}>
                     <Text style={styles.fieldLabel}>Full Name</Text>
@@ -206,7 +206,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 <View style={styles.fieldDivider} />
                 <View style={styles.fieldRow}>
                   <TouchableOpacity style={styles.fieldIconWrap} activeOpacity={0.7}>
-                    <FlaticonIcon name="phone" size={16} color="#0A7474" />
+                    <FlaticonIcon name="phone" size={16} color="#00C6B5" />
                   </TouchableOpacity>
                   <View style={styles.fieldContent}>
                     <Text style={styles.fieldLabel}>Phone</Text>
@@ -226,7 +226,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 <View style={styles.fieldDivider} />
                 <View style={styles.fieldRow}>
                   <View style={styles.fieldIconWrap}>
-                    <FlaticonIcon name="mail" size={16} color="#0A7474" />
+                    <FlaticonIcon name="mail" size={16} color="#00C6B5" />
                   </View>
                   <View style={styles.fieldContent}>
                     <Text style={styles.fieldLabel}>Email</Text>
@@ -259,12 +259,12 @@ const styles = StyleSheet.create({
   drawer: {
     position: "absolute", top: 0, right: 0, bottom: 0,
     width: DRAWER_W,
-    backgroundColor: "#EBF3F6",
+    backgroundColor: "#1a2a3a",
     shadowColor: "#000", shadowOffset: { width: -8, height: 0 },
-    shadowOpacity: 0.15, shadowRadius: 24, elevation: 16,
+    shadowOpacity: 0.25, shadowRadius: 24, elevation: 16,
   },
   container: {
-    paddingHorizontal: 20, paddingBottom: 20,
+    paddingHorizontal: 20, paddingBottom: 40,
   },
   drawerHeader: {
     flexDirection: "row", alignItems: "center",
@@ -273,144 +273,151 @@ const styles = StyleSheet.create({
   closeBtn: {
     width: 36, height: 36, borderRadius: 10,
     alignItems: "center", justifyContent: "center",
-    backgroundColor: "#fff",
-    borderWidth: 1, borderColor: "#e2e8f0",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1, borderColor: "rgba(255,255,255,0.15)",
   },
   profileHeader: {
-    alignItems: "center", paddingVertical: 16, gap: 6,
+    alignItems: "center", paddingTop: 24, paddingBottom: 8, gap: 8,
   },
   avatarOuter: {
-    width: 100, height: 100, borderRadius: 50,
+    width: 96, height: 96, borderRadius: 48,
     backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
-    marginBottom: 4, borderWidth: 3, borderColor: "#e2e8f0",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1, shadowRadius: 8, elevation: 4,
+    borderWidth: 3, borderColor: "rgba(255,255,255,0.2)",
+    shadowColor: "#000", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 12, elevation: 8,
   },
   avatar: {
-    width: 90, height: 90, borderRadius: 45,
+    width: 88, height: 88, borderRadius: 44,
     alignItems: "center", justifyContent: "center",
     overflow: "hidden",
   },
   avatarImage: {
-    width: 90, height: 90, borderRadius: 45,
+    width: 88, height: 88, borderRadius: 44,
   },
   cameraOverlay: {
-    position: "absolute", bottom: -2, right: -2,
+    position: "absolute", bottom: 0, right: 0,
     width: 34, height: 34, borderRadius: 17,
-    backgroundColor: "#0A7474",
+    backgroundColor: "#00C6B5",
     alignItems: "center", justifyContent: "center",
-    borderWidth: 2.5, borderColor: "#fff",
+    borderWidth: 3, borderColor: "#1a2a3a",
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15, shadowRadius: 4, elevation: 5,
+    shadowOpacity: 0.2, shadowRadius: 4, elevation: 5,
   },
   cameraOverlayEmpty: {
     backgroundColor: "#fff",
   },
   changePhotoText: {
     fontSize: 12, fontFamily: "Inter_500Medium",
-    color: "#0A7474", textAlign: "center", marginTop: 4,
+    color: "#00C6B5", textAlign: "center", marginTop: 6,
   },
   name: {
-    fontSize: 20, fontFamily: "Inter_700Bold",
-    color: "#1a2a3a",
+    fontSize: 22, fontFamily: "Inter_700Bold",
+    color: "#fff",
   },
   email: {
     fontSize: 13, fontFamily: "Inter_400Regular",
-    color: "#8a94a6",
+    color: "rgba(255,255,255,0.5)",
   },
   badgeRow: {
-    flexDirection: "row", gap: 8, marginTop: 4,
+    flexDirection: "row", gap: 8, marginTop: 6,
   },
   badge: {
     flexDirection: "row", alignItems: "center", gap: 4,
-    backgroundColor: "#e8f4f4", paddingHorizontal: 10, paddingVertical: 5,
+    backgroundColor: "rgba(0,198,181,0.15)",
+    paddingHorizontal: 10, paddingVertical: 5,
     borderRadius: 16,
+    borderWidth: 1, borderColor: "rgba(0,198,181,0.3)",
   },
   badgeText: {
     fontSize: 11, fontFamily: "Inter_600SemiBold",
-    color: "#0A7474",
+    color: "#00C6B5",
   },
   sectionCard: {
-    backgroundColor: "#fff", borderRadius: 18,
-    marginBottom: 14, paddingBottom: 4,
-    borderWidth: 1, borderColor: "#e2e8f0",
+    backgroundColor: "#243044",
+    borderRadius: 20,
+    marginTop: 20,
+    paddingBottom: 4,
+    borderWidth: 1, borderColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
   },
   cardHeader: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingHorizontal: 16, paddingVertical: 14,
+    alignItems: "center", paddingHorizontal: 16, paddingVertical: 16,
   },
   cardTitle: {
     fontSize: 15, fontFamily: "Inter_700Bold",
-    color: "#1a2a3a",
+    color: "#fff",
   },
   editBtn: {
     flexDirection: "row", alignItems: "center", gap: 4,
-    backgroundColor: "#e8f4f4", paddingHorizontal: 10, paddingVertical: 5,
+    backgroundColor: "rgba(0,198,181,0.15)",
+    paddingHorizontal: 10, paddingVertical: 5,
     borderRadius: 8,
+    borderWidth: 1, borderColor: "rgba(0,198,181,0.3)",
   },
   editBtnText: {
     fontSize: 12, fontFamily: "Inter_600SemiBold",
-    color: "#0A7474",
+    color: "#00C6B5",
   },
   editActions: {
-    flexDirection: "row", gap: 6,
+    flexDirection: "row", gap: 8,
   },
   cancelBtn: {
-    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8,
-    backgroundColor: "#f1f5f9",
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   cancelBtnText: {
     fontSize: 12, fontFamily: "Inter_600SemiBold",
-    color: "#8a94a6",
+    color: "rgba(255,255,255,0.6)",
   },
   saveBtn: {
-    flexDirection: "row", alignItems: "center", gap: 3,
-    backgroundColor: "#0A7474", paddingHorizontal: 10, paddingVertical: 5,
+    flexDirection: "row", alignItems: "center", gap: 4,
+    backgroundColor: "#00C6B5", paddingHorizontal: 12, paddingVertical: 6,
     borderRadius: 8,
   },
   saveBtnText: {
     fontSize: 12, fontFamily: "Inter_600SemiBold",
-    color: "#fff",
+    color: "#1a2a3a",
   },
   divider: {
-    height: 1, backgroundColor: "#f0f0f0",
+    height: 1, backgroundColor: "rgba(255,255,255,0.06)",
   },
   fieldsContainer: {
     paddingVertical: 4,
   },
   fieldRow: {
     flexDirection: "row", alignItems: "center", gap: 12,
-    paddingHorizontal: 16, paddingVertical: 12,
+    paddingHorizontal: 16, paddingVertical: 14,
   },
   fieldDivider: {
-    height: 1, backgroundColor: "#f7fafa",
-    marginLeft: 60, marginRight: 16,
+    height: 1, backgroundColor: "rgba(255,255,255,0.06)",
+    marginLeft: 62, marginRight: 16,
   },
   fieldIconWrap: {
-    width: 34, height: 34, borderRadius: 10,
-    backgroundColor: "#e8f4f4",
+    width: 36, height: 36, borderRadius: 10,
+    backgroundColor: "rgba(0,198,181,0.12)",
     alignItems: "center", justifyContent: "center",
   },
   fieldContent: { flex: 1 },
   fieldLabel: {
     fontSize: 11, fontFamily: "Inter_500Medium",
     textTransform: "uppercase", letterSpacing: 0.5,
-    color: "#8a94a6",
+    color: "rgba(255,255,255,0.45)",
   },
   fieldValue: {
-    fontSize: 14, fontFamily: "Inter_500Medium",
-    color: "#1a2a3a", marginTop: 2,
+    fontSize: 15, fontFamily: "Inter_500Medium",
+    color: "#fff", marginTop: 3,
   },
   fieldInput: {
-    fontSize: 14, fontFamily: "Inter_500Medium",
-    color: "#1a2a3a", marginTop: 2,
-    borderBottomWidth: 1.5, borderBottomColor: "#0A7474",
-    paddingBottom: 2,
+    fontSize: 15, fontFamily: "Inter_500Medium",
+    color: "#fff", marginTop: 3,
+    borderBottomWidth: 1.5, borderBottomColor: "#00C6B5",
+    paddingBottom: 3,
   },
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 8, paddingVertical: 16, borderRadius: 16,
-    backgroundColor: "#ef4444", marginBottom: 8,
+    gap: 8, paddingVertical: 16, borderRadius: 14,
+    backgroundColor: "#ef4444", marginTop: 16,
   },
   logoutText: {
     fontSize: 15, fontFamily: "Inter_600SemiBold",
