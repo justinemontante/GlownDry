@@ -6,7 +6,7 @@ import {
   Dimensions, FlatList, Image, Modal, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
-
+import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
@@ -16,6 +16,8 @@ import { useListBookings, getListBookingsQueryKey, useListServices } from "@work
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
+const WASHING_MACHINE_D = "M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M3 6h3 M17 6h.01 M17 13a5 5 0 11-10 0 5 5 0 0110 0z M12 18a2.5 2.5 0 000-5 2.5 2.5 0 010-5";
+
 const SERVICE_ICONS: Record<string, string> = {
   "wash": "washing-machine",
   "dry": "wind",
@@ -23,6 +25,23 @@ const SERVICE_ICONS: Record<string, string> = {
   "delicate": "star",
   "regular": "washing-machine",
 };
+
+function GradientWashingMachine({ size = 28 }: { size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <Defs>
+        <SvgGradient id="homeIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <Stop offset="0%" stopColor="#00C6B5" />
+          <Stop offset="100%" stopColor="#006D96" />
+        </SvgGradient>
+      </Defs>
+      {WASHING_MACHINE_D.split("M").map((seg, i) => {
+        if (!seg) return null;
+        return <Path key={i} d={`M${seg}`} stroke="url(#homeIconGrad)" />;
+      })}
+    </Svg>
+  );
+}
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -77,6 +96,7 @@ export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { customer } = useAuth();
+  const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [manualRefreshing, setManualRefreshing] = useState(false);
@@ -205,6 +225,37 @@ export default function HomeScreen() {
         end={{ x: 1, y: 0 }}
         style={StyleSheet.absoluteFill}
       />
+      {/* Brand Bar */}
+      <View style={[styles.brandBar, { paddingTop: topPad }]}>
+        <View style={styles.brandRow}>
+          <GradientWashingMachine size={28} />
+          <Text style={styles.brandName}>
+            <Text style={{ color: "#1a2a3a" }}>Glown</Text>
+            <Text style={{ color: "#00C6B5" }}>Dry</Text>
+          </Text>
+        </View>
+        <View style={styles.brandRight}>
+          <TouchableOpacity
+            style={styles.notifBtn}
+            onPress={() => router.push("/(tabs)/notifications")}
+            testID="btn-notifications"
+          >
+            <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/profile")}>
+            {customer?.profileImage ? (
+              <Image source={{ uri: customer.profileImage }} style={styles.profilePic} />
+            ) : (
+              <View style={[styles.profilePic, { backgroundColor: "#0A9C8C" }]}>
+                <Text style={styles.profileInitial}>
+                  {(customer?.fullName ?? "?").charAt(0).toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {isLoading ? (
         <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
           <Skeleton height={180} borderRadius={24} style={{ marginBottom: 16 }} />
@@ -311,6 +362,34 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+    brandBar: {
+    flexDirection: "row", justifyContent: "space-between",
+    alignItems: "center", paddingHorizontal: 20, paddingBottom: 8,
+    borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
+  },
+  brandRow: {
+    flexDirection: "row", alignItems: "center", gap: 8,
+  },
+  brandName: {
+    fontSize: 18, fontFamily: "Inter_900Black",
+    letterSpacing: 2,
+  },
+  notifBtn: {
+    width: 38, height: 38, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1, borderColor: "#e2e8f0",
+  },
+  brandRight: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+  },
+  profilePic: {
+    width: 38, height: 38, borderRadius: 19,
+    alignItems: "center", justifyContent: "center",
+  },
+  profileInitial: {
+    fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff",
+  },
 
   // Hero Section
   heroSection: {
