@@ -353,6 +353,8 @@ const styles = StyleSheet.create({
   heroSection: {
     marginHorizontal: 16, marginTop: 12, marginBottom: 6,
     padding: 16, borderRadius: 24,
+    shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2, shadowRadius: 12, elevation: 6,
   },
   heroBadge: {
     alignSelf: "flex-start", backgroundColor: "rgba(10,156,140,0.12)",
