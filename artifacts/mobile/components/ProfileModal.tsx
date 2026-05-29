@@ -13,7 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useUpdateCustomer } from "@workspace/api-client-react";
 
 const { width: SCREEN_W } = Dimensions.get("window");
-const DRAWER_W = SCREEN_W * 0.82;
+const DRAWER_W = SCREEN_W;
 
 interface ProfileModalProps {
   visible: boolean;
