@@ -158,9 +158,12 @@ export default function BookingScreen() {
         <View style={[styles.scheduleIconWrap, { backgroundColor: colors.tealLight }]}>
           <FlaticonIcon name="calendar" size={20} color={colors.primary} />
         </View>
-        <Text style={[styles.scheduleBtnText, { color: selectedDate ? colors.foreground : colors.mutedForeground }]}>
-          {formatDateLabel()}
-        </Text>
+        <View style={styles.scheduleTextWrap}>
+          <Text style={styles.scheduleLabel}>Pickup date & time</Text>
+          <Text style={[styles.scheduleBtnText, { color: selectedDate ? colors.foreground : colors.mutedForeground }]}>
+            {formatDateLabel()}
+          </Text>
+        </View>
         <FlaticonIcon name="chevron-right" size={16} color={colors.mutedForeground} />
       </TouchableOpacity>
 
@@ -175,11 +178,14 @@ export default function BookingScreen() {
       />
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Weight (kg)</Text>
-      <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
-        <FlaticonIcon name="package" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
+      <View style={[styles.inputCard, { borderColor: colors.border, backgroundColor: colors.card }]}>
+        <View style={styles.inputCardLabel}>
+          <FlaticonIcon name="package" size={16} color={colors.primary} />
+          <Text style={[styles.inputCardLabelText, { color: colors.mutedForeground }]}>Estimated weight</Text>
+        </View>
         <TextInput
           style={[styles.input, { color: colors.foreground }]}
-          placeholder="Estimated weight"
+          placeholder="0.0"
           placeholderTextColor={colors.mutedForeground}
           value={weight}
           onChangeText={setWeight}
@@ -189,9 +195,9 @@ export default function BookingScreen() {
       </View>
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Notes (optional)</Text>
-      <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card, alignItems: "flex-start" }]}>
+      <View style={[styles.inputCard, { borderColor: colors.border, backgroundColor: colors.card, paddingVertical: 12 }]}>
         <TextInput
-          style={[styles.input, { color: colors.foreground, minHeight: 80, textAlignVertical: "top", paddingTop: 4 }]}
+          style={[styles.input, { color: colors.foreground, minHeight: 80, textAlignVertical: "top", paddingTop: 0 }]}
           placeholder="Special instructions, stain notes…"
           placeholderTextColor={colors.mutedForeground}
           value={notes}
@@ -229,10 +235,10 @@ const styles = StyleSheet.create({
   container: { paddingHorizontal: 20, gap: 0 },
   sectionHeaderRow: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", marginTop: 4, marginBottom: 10,
+    alignItems: "center", marginTop: 8, marginBottom: 10,
   },
-  pageTitle: { fontSize: 26, fontFamily: "Inter_700Bold", marginBottom: 8 },
-  sectionLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", marginTop: 20, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
+  pageTitle: { fontSize: 28, fontFamily: "Inter_700Bold", marginBottom: 4, letterSpacing: -0.5 },
+  sectionLabel: { fontSize: 12, fontFamily: "Inter_600SemiBold", marginTop: 24, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.8 },
   loading: { fontSize: 14 },
   serviceGallery: { paddingRight: 20, gap: 12, paddingVertical: 8 },
   serviceCard: {
@@ -251,31 +257,44 @@ const styles = StyleSheet.create({
   svcPrice: { fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#0A9C8C" },
   scheduleBtn: {
     flexDirection: "row", alignItems: "center",
-    borderWidth: 1.5, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 14,
-    gap: 12,
+    borderWidth: 1.5, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14,
+    gap: 14,
   },
   scheduleIconWrap: {
-    width: 40, height: 40, borderRadius: 10,
+    width: 44, height: 44, borderRadius: 12,
     alignItems: "center", justifyContent: "center",
   },
+  scheduleTextWrap: {
+    flex: 1, gap: 2,
+  },
+  scheduleLabel: {
+    fontSize: 11, fontFamily: "Inter_500Medium", color: "#94a3b8",
+    textTransform: "uppercase", letterSpacing: 0.4,
+  },
   scheduleBtnText: {
-    flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
+    fontSize: 15, fontFamily: "Inter_600SemiBold",
   },
-  inputWrap: {
-    flexDirection: "row", alignItems: "center",
-    borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 14,
+  inputCard: {
+    borderWidth: 1.5, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 8,
   },
-  inputIcon: { marginRight: 10 },
-  input: { flex: 1, fontSize: 15, fontFamily: "Inter_400Regular" },
+  inputCardLabel: {
+    flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 2,
+  },
+  inputCardLabelText: {
+    fontSize: 11, fontFamily: "Inter_500Medium", textTransform: "uppercase", letterSpacing: 0.4,
+  },
+  input: { flex: 1, fontSize: 18, fontFamily: "Inter_600SemiBold", paddingVertical: 4 },
   estimateCard: {
-    marginTop: 20, padding: 16, borderRadius: 14, borderWidth: 1,
+    marginTop: 24, padding: 18, borderRadius: 16, borderWidth: 1,
     flexDirection: "row", justifyContent: "space-between", alignItems: "center",
   },
-  estimateLabel: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
-  estimateAmount: { fontSize: 22, fontFamily: "Inter_700Bold" },
+  estimateLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", textTransform: "uppercase", letterSpacing: 0.5 },
+  estimateAmount: { fontSize: 24, fontFamily: "Inter_700Bold" },
   btnBook: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 10, paddingVertical: 16, borderRadius: 14, marginTop: 24,
+    gap: 10, paddingVertical: 18, borderRadius: 16, marginTop: 28,
+    shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
   },
-  btnBookText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff" },
+  btnBookText: { fontSize: 17, fontFamily: "Inter_700Bold", color: "#fff" },
 });
