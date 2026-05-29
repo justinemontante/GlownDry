@@ -128,7 +128,6 @@ export default function BookingScreen() {
         />
       </View>
 
-      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Time</Text>
       <View style={styles.timeGrid}>
         {DROP_OFF_SLOTS.map(slot => (
           <TouchableOpacity
