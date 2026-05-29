@@ -229,9 +229,9 @@ const styles = StyleSheet.create({
   container: { paddingHorizontal: 20, gap: 0 },
   sectionHeaderRow: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", marginTop: 20, marginBottom: 10,
+    alignItems: "center", marginTop: 4, marginBottom: 10,
   },
-  pageTitle: { fontSize: 26, fontFamily: "Inter_700Bold", marginBottom: 24 },
+  pageTitle: { fontSize: 26, fontFamily: "Inter_700Bold", marginBottom: 8 },
   sectionLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", marginTop: 20, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
   loading: { fontSize: 14 },
   serviceGallery: { paddingRight: 20, gap: 12, paddingVertical: 8 },
