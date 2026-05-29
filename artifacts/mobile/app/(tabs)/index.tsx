@@ -2,7 +2,7 @@ import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import React, { useState, useRef, memo } from "react";
 import {
-  ActivityIndicator, Dimensions, FlatList, Image, Platform,
+  ActivityIndicator, Dimensions, FlatList, Image, Modal, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
@@ -55,7 +55,7 @@ function getServiceIcon(name: string) {
   return SERVICE_ICONS[key ?? "washing-machine"];
 }
 
-const ServicesGallery = memo(function ServicesGallery({ services, colors }: { services: any[]; colors: any }) {
+const ServicesGallery = memo(function ServicesGallery({ services, colors, onServicePress }: { services: any[]; colors: any; onServicePress: (s: any) => void }) {
   const scrollRef = useRef<ScrollView>(null);
   const offsetRef = useRef(0);
 
@@ -81,7 +81,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors }: { se
           <TouchableOpacity
             key={s.id}
             style={[styles.serviceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-            onPress={() => router.push("/(tabs)/booking")}
+            onPress={() => onServicePress(s)}
             activeOpacity={0.85}
           >
             {s.serviceImage ? (
@@ -112,6 +112,7 @@ export default function HomeScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [manualRefreshing, setManualRefreshing] = useState(false);
+  const [selectedService, setSelectedService] = useState<any | null>(null);
 
   const { data: bookings, isLoading, refetch } = useListBookings(
     { customerId: customer?.id },
@@ -154,7 +155,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <ServicesGallery services={services ?? []} colors={colors} />
+        <ServicesGallery services={services ?? []} colors={colors} onServicePress={setSelectedService} />
 
         {/* Active Order */}
         {activeBooking && (
@@ -293,6 +294,37 @@ export default function HomeScreen() {
       >
         <FlaticonIcon name="plus" size={24} color="#fff" />
       </TouchableOpacity>
+
+      {/* Service Detail Modal */}
+      <Modal visible={!!selectedService} transparent animationType="fade" onRequestClose={() => setSelectedService(null)}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            {selectedService && (
+              <>
+                {selectedService.serviceImage ? (
+                  <Image source={{ uri: selectedService.serviceImage }} style={styles.modalImage} />
+                ) : (
+                  <View style={[styles.modalIconWrap, { backgroundColor: colors.tealLight }]}>
+                    <FlaticonIcon name={getServiceIcon(selectedService.name)} size={48} color={colors.primary} />
+                  </View>
+                )}
+                <Text style={[styles.modalTitle, { color: colors.foreground }]}>{selectedService.name}</Text>
+                <Text style={[styles.modalDesc, { color: colors.mutedForeground }]}>{selectedService.description}</Text>
+                <Text style={[styles.modalPrice, { color: colors.primary }]}>₱{selectedService.pricePerKg} / kg</Text>
+                <TouchableOpacity
+                  style={[styles.modalBtn, { backgroundColor: colors.primary }]}
+                  onPress={() => { setSelectedService(null); router.push("/(tabs)/booking"); }}
+                >
+                  <Text style={styles.modalBtnText}>Book Now</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalClose} onPress={() => setSelectedService(null)}>
+                  <Text style={[styles.modalCloseText, { color: colors.mutedForeground }]}>Close</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -471,6 +503,48 @@ const styles = StyleSheet.create({
     borderRadius: 12, marginTop: 4,
   },
   emptyBtnText: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#fff" },
+
+  // Modal
+  modalOverlay: {
+    flex: 1, backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center", alignItems: "center", padding: 24,
+  },
+  modalContent: {
+    width: "100%", borderRadius: 24, padding: 28,
+    alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15, shadowRadius: 12, elevation: 8,
+  },
+  modalImage: {
+    width: "100%", height: 200, borderRadius: 16,
+    marginBottom: 20, resizeMode: "contain",
+  },
+  modalIconWrap: {
+    width: 88, height: 88, borderRadius: 24,
+    alignItems: "center", justifyContent: "center", marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 22, fontFamily: "Inter_700Bold", marginBottom: 8,
+  },
+  modalDesc: {
+    fontSize: 14, fontFamily: "Inter_400Regular",
+    textAlign: "center", lineHeight: 20, marginBottom: 16,
+  },
+  modalPrice: {
+    fontSize: 24, fontFamily: "Inter_800ExtraBold", marginBottom: 24,
+  },
+  modalBtn: {
+    width: "100%", paddingVertical: 16, borderRadius: 16,
+    alignItems: "center",
+  },
+  modalBtnText: {
+    fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff",
+  },
+  modalClose: {
+    marginTop: 12, paddingVertical: 8,
+  },
+  modalCloseText: {
+    fontSize: 14, fontFamily: "Inter_500Medium",
+  },
 
   // FAB
   fab: {
