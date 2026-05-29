@@ -14,10 +14,12 @@ router.post("/services", async (req, res) => {
   const { name, description, pricePerKg, serviceImage } = req.body as {
     name?: string; description?: string; pricePerKg?: number; serviceImage?: string;
   };
+  console.log("[POST /services] body:", { name, description, pricePerKg, serviceImage: serviceImage ? serviceImage.slice(0, 80) + "..." : serviceImage });
   if (!name || !description || pricePerKg == null) {
     return res.status(400).json({ error: "name, description, pricePerKg are required" });
   }
   const [svc] = await db.insert(servicesTable).values({ name, description, pricePerKg, serviceImage }).returning();
+  console.log("[POST /services] inserted:", svc.serviceImage ? "has image" : "NO image");
   return res.status(201).json(svc);
 });
 

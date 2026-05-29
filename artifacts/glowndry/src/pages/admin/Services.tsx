@@ -97,6 +97,7 @@ export default function AdminServices() {
       pricePerKg: Number(form.pricePerKg),
     };
     if (form.serviceImage) body.serviceImage = form.serviceImage;
+    console.log("[Save] body:", body);
 
     try {
       const res = await fetch(url, {
