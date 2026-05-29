@@ -391,6 +391,7 @@ const styles = StyleSheet.create({
   statDot: {
     width: 4, height: 4, borderRadius: 2,
     backgroundColor: "rgba(255,255,255,0.25)",
+  },
 
   // Services Gallery
   servicesWrapper: {
