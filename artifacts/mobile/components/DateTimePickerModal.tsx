@@ -103,7 +103,7 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             {days.map((d, i) => {
               const isToday = d !== null && `${year}-${month}-${d}` === todayStr;
               const isSelected = d === selectedDay;
-              const isPast = d !== null && new Date(year, month, d + 1) < new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+              const isPast = d !== null && new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
               return (
                 <TouchableOpacity
                   key={i}
