@@ -14,6 +14,8 @@ import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useListServices, useCreateBooking } from "@workspace/api-client-react";
 
+const MIN_WEIGHT = 8;
+
 const SERVICE_ICONS: Record<string, string> = {
   "wash": "washing-machine",
   "dry": "wind",
@@ -47,6 +49,8 @@ export default function BookingScreen() {
 
   const selectedSvc = services?.find(s => s.id === selectedService);
   const estimatedTotal = selectedSvc && weight ? parseFloat(weight) * selectedSvc.pricePerKg : 0;
+  const weightNum = parseFloat(weight);
+  const weightError = weight.trim() !== "" && (isNaN(weightNum) || weightNum < MIN_WEIGHT);
 
   function formatDateLabel() {
     if (!selectedDate && !selectedTime) return "Tap to select schedule";
@@ -71,6 +75,10 @@ export default function BookingScreen() {
     if (!selectedDate) { Alert.alert("Select drop-off schedule"); return; }
     if (!selectedTime) { Alert.alert("Select drop-off schedule"); return; }
     if (!customer) { Alert.alert("Not logged in"); return; }
+    if (!weight.trim() || isNaN(weightNum) || weightNum < MIN_WEIGHT) {
+      Alert.alert(`Minimum of ${MIN_WEIGHT} kg required`);
+      return;
+    }
 
     const phDate = new Date(`${selectedDate}T${selectedTime}:00+08:00`);
 
@@ -80,7 +88,7 @@ export default function BookingScreen() {
           customerId: customer.id,
           serviceId: selectedService,
           scheduledDate: phDate.toISOString(),
-          weightKg: weight ? parseFloat(weight) : undefined,
+          weightKg: weightNum,
           notes: notes || undefined,
         },
       });
@@ -137,8 +145,11 @@ export default function BookingScreen() {
                     name={getServiceIcon(svc.name)}
                     size={22}
                     color={selectedService === svc.id ? colors.primary : colors.mutedForeground}
-                  />
-                </View>
+        />
+      </View>
+      {weightError && (
+        <Text style={styles.errorHint}>Minimum of {MIN_WEIGHT} kg required</Text>
+      )}
               )}
               <Text style={[styles.svcName, { color: selectedService === svc.id ? colors.primary : colors.foreground }]}>
                 {svc.name}
@@ -212,9 +223,9 @@ export default function BookingScreen() {
       )}
 
       <TouchableOpacity
-        style={[styles.btnBook, { backgroundColor: colors.primary, opacity: createBooking.isPending ? 0.7 : 1 }]}
+        style={[styles.btnBook, { backgroundColor: colors.primary, opacity: (createBooking.isPending || weightError) ? 0.7 : 1 }]}
         onPress={handleBook}
-        disabled={createBooking.isPending}
+        disabled={createBooking.isPending || weightError}
         activeOpacity={0.85}
         testID="btn-confirm-booking"
       >
@@ -287,4 +298,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
   },
   btnBookText: { fontSize: 17, fontFamily: "Inter_700Bold", color: "#fff" },
+  errorHint: { fontSize: 12, fontFamily: "Inter_500Medium", color: "#ef4444", marginTop: 4, marginLeft: 4 },
 });
