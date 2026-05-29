@@ -7,7 +7,7 @@ export const servicesTable = pgTable("services", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   pricePerKg: doublePrecision("price_per_kg").notNull(),
-  imageUrl: text("image_url"),
+  serviceImage: text("service_image"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });

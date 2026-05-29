@@ -657,7 +657,7 @@ components:
           type: string
         pricePerKg:
           type: number
-        imageUrl:
+        serviceImage:
           type: string
           nullable: true
         createdAt:
@@ -674,7 +674,7 @@ components:
           type: string
         pricePerKg:
           type: number
-        imageUrl:
+        serviceImage:
           type: string
 
     ServiceUpdate:
@@ -686,7 +686,7 @@ components:
           type: string
         pricePerKg:
           type: number
-        imageUrl:
+        serviceImage:
           type: string
 
     # ── Booking ──────────────────────────────────────────────────────────────────

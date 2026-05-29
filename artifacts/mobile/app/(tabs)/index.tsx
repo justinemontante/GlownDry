@@ -125,8 +125,8 @@ export default function HomeScreen() {
                 onPress={() => router.push("/(tabs)/booking")}
                 activeOpacity={0.85}
               >
-                {s.imageUrl ? (
-                  <Image source={{ uri: s.imageUrl }} style={styles.serviceImage} />
+                {s.serviceImage ? (
+                  <Image source={{ uri: s.serviceImage }} style={styles.serviceImage} />
                 ) : (
                   <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
                     <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />

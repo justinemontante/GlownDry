@@ -140,7 +140,7 @@ export const ListServicesResponseItem = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "pricePerKg": zod.number(),
-  "imageUrl": zod.string().nullable().optional(),
+  "serviceImage": zod.string().nullable().optional(),
   "createdAt": zod.coerce.date()
 })
 export const ListServicesResponse = zod.array(ListServicesResponseItem)
@@ -153,7 +153,7 @@ export const CreateServiceBody = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "pricePerKg": zod.number(),
-  "imageUrl": zod.string().optional()
+  "serviceImage": zod.string().optional()
 })
 
 
@@ -168,7 +168,7 @@ export const UpdateServiceBody = zod.object({
   "name": zod.string().optional(),
   "description": zod.string().optional(),
   "pricePerKg": zod.number().optional(),
-  "imageUrl": zod.string().optional()
+  "serviceImage": zod.string().optional()
 })
 
 export const UpdateServiceResponse = zod.object({
@@ -176,7 +176,7 @@ export const UpdateServiceResponse = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "pricePerKg": zod.number(),
-  "imageUrl": zod.string().nullable().optional(),
+  "serviceImage": zod.string().nullable().optional(),
   "createdAt": zod.coerce.date()
 })
 

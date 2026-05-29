@@ -11,7 +11,7 @@ type Service = {
   name: string;
   description: string;
   pricePerKg: number;
-  imageUrl?: string | null;
+  serviceImage?: string | null;
 };
 
 function ImageUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
@@ -64,7 +64,7 @@ function ImageUpload({ value, onChange }: { value: string; onChange: (url: strin
   );
 }
 
-const emptyForm = { name: "", description: "", pricePerKg: 0, imageUrl: "" };
+const emptyForm = { name: "", description: "", pricePerKg: 0, serviceImage: "" };
 
 export default function AdminServices() {
   const [services, setServices] = useState<Service[]>([]);
@@ -96,7 +96,7 @@ export default function AdminServices() {
       description: form.description.trim(),
       pricePerKg: Number(form.pricePerKg),
     };
-    if (form.imageUrl) body.imageUrl = form.imageUrl;
+    if (form.serviceImage) body.serviceImage = form.serviceImage;
 
     try {
       const res = await fetch(url, {
@@ -133,7 +133,7 @@ export default function AdminServices() {
 
   function openEdit(s: Service) {
     setEditing(s);
-    setForm({ name: s.name, description: s.description, pricePerKg: s.pricePerKg, imageUrl: s.imageUrl ?? "" });
+    setForm({ name: s.name, description: s.description, pricePerKg: s.pricePerKg, serviceImage: s.serviceImage ?? "" });
     setOpen(true);
   }
 
@@ -173,7 +173,7 @@ export default function AdminServices() {
                 <label className="text-sm font-medium">Price per kg (₱)</label>
                 <Input type="number" min={0} step={1} value={form.pricePerKg} onChange={e => setForm({ ...form, pricePerKg: Number(e.target.value) })} />
               </div>
-              <ImageUpload value={form.imageUrl} onChange={url => setForm({ ...form, imageUrl: url })} />
+              <ImageUpload value={form.serviceImage} onChange={url => setForm({ ...form, serviceImage: url })} />
               <Button onClick={save} className="w-full" disabled={saving || !form.name.trim() || !form.description.trim()}>
                 {saving ? "Saving..." : editing ? "Update Service" : "Create Service"}
               </Button>
@@ -186,9 +186,9 @@ export default function AdminServices() {
         {services.map(service => (
           <Card key={service.id} className="border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
             <div className="w-full h-44 bg-muted/30 relative">
-              {service.imageUrl ? (
+              {service.serviceImage ? (
                 <img
-                  src={service.imageUrl}
+                  src={service.serviceImage}
                   alt={service.name}
                   className="w-full h-full object-cover"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}

@@ -51,7 +51,7 @@ export interface Service {
   name: string;
   description: string;
   pricePerKg: number;
-  imageUrl?: string | null;
+  serviceImage?: string | null;
   createdAt: string;
 }
 
@@ -59,14 +59,14 @@ export interface ServiceInput {
   name: string;
   description: string;
   pricePerKg: number;
-  imageUrl?: string;
+  serviceImage?: string;
 }
 
 export interface ServiceUpdate {
   name?: string;
   description?: string;
   pricePerKg?: number;
-  imageUrl?: string;
+  serviceImage?: string;
 }
 
 export type BookingStatus = typeof BookingStatus[keyof typeof BookingStatus];

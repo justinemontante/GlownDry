@@ -38,10 +38,10 @@ async function seedDefaultServices() {
   const [{ count: existing }] = await db.select({ count: count() }).from(servicesTable);
   if (Number(existing) === 0) {
     await db.insert(servicesTable).values([
-      { name: "Regular Wash", description: "Standard wash and fold service for everyday clothes", pricePerKg: 50, imageUrl: "https://images.unsplash.com/photo-1545173168-9f5f5e4c6d1f?w=400&h=300&fit=crop" },
-      { name: "Dry Clean", description: "Professional dry cleaning for delicate and formal garments", pricePerKg: 120, imageUrl: "https://images.unsplash.com/photo-1604335399105-a0c585db81b1?w=400&h=300&fit=crop" },
-      { name: "Express Wash", description: "Same-day wash and fold — ready in 4 hours", pricePerKg: 80, imageUrl: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400&h=300&fit=crop" },
-      { name: "Delicate Care", description: "Gentle hand wash for delicate fabrics and undergarments", pricePerKg: 90, imageUrl: "https://images.unsplash.com/photo-1489659639091-8b687bc4386e?w=400&h=300&fit=crop" },
+      { name: "Regular Wash", description: "Standard wash and fold service for everyday clothes", pricePerKg: 50, serviceImage: "https://images.unsplash.com/photo-1545173168-9f5f5e4c6d1f?w=400&h=300&fit=crop" },
+      { name: "Dry Clean", description: "Professional dry cleaning for delicate and formal garments", pricePerKg: 120, serviceImage: "https://images.unsplash.com/photo-1604335399105-a0c585db81b1?w=400&h=300&fit=crop" },
+      { name: "Express Wash", description: "Same-day wash and fold — ready in 4 hours", pricePerKg: 80, serviceImage: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400&h=300&fit=crop" },
+      { name: "Delicate Care", description: "Gentle hand wash for delicate fabrics and undergarments", pricePerKg: 90, serviceImage: "https://images.unsplash.com/photo-1489659639091-8b687bc4386e?w=400&h=300&fit=crop" },
     ]);
     logger.info("Seeded default services");
   }

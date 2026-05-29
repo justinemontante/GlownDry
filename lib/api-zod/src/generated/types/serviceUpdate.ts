@@ -10,5 +10,5 @@ export interface ServiceUpdate {
   name?: string;
   description?: string;
   pricePerKg?: number;
-  imageUrl?: string;
+  serviceImage?: string;
 }
