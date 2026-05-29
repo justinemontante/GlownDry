@@ -7,8 +7,6 @@ import { FlaticonIcon } from "./FlaticonIcon";
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-const TIME_REGEX = /^[0-9]{1,2}:[0-5][0-9]$/;
-
 interface DateTimePickerModalProps {
   visible: boolean;
   onClose: () => void;
@@ -20,7 +18,8 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [timeInput, setTimeInput] = useState("");
+  const [hourInput, setHourInput] = useState("");
+  const [minuteInput, setMinuteInput] = useState("");
   const [ampm, setAmpm] = useState<"AM" | "PM">("AM");
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -46,18 +45,17 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
   }
 
   function parseTime(): string | null {
-    const m = timeInput.trim().match(TIME_REGEX);
-    if (!m) return null;
-    const [hStr, min] = timeInput.trim().split(":");
-    const h = parseInt(hStr, 10);
-    if (h < 1 || h > 12) return null;
+    const h = parseInt(hourInput.trim(), 10);
+    const min = minuteInput.trim();
+    if (!/^\d{1,2}$/.test(hourInput.trim()) || h < 1 || h > 12) return null;
+    if (!/^\d{2}$/.test(min)) return null;
     const hr24 = ampm === "PM" && h !== 12 ? h + 12 : ampm === "AM" && h === 12 ? 0 : h;
     if (hr24 < 7 || hr24 > 20) return null;
     return `${String(hr24).padStart(2, "0")}:${min}`;
   }
 
   function handleConfirm() {
-    if (!selectedDay || !timeInput.trim()) return;
+    if (!selectedDay || !hourInput.trim() || !minuteInput.trim()) return;
     const parsed = parseTime();
     if (!parsed) return;
     const mm = String(month + 1).padStart(2, "0");
@@ -130,16 +128,29 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
           {/* Time Section */}
           <Text style={styles.sectionLabel}>Time</Text>
           <View style={styles.timeRow}>
-            <View style={[styles.inputWrap, styles.timeInputWrap, !timeInput.trim() || parseTime() ? {} : styles.inputError]}>
-              <FlaticonIcon name="clock" size={18} color="#8a94a6" style={{ marginRight: 8 }} />
+            <View style={[styles.inputWrap, styles.hourInputWrap, !hourInput.trim() || parseTime() ? {} : styles.inputError]}>
               <TextInput
                 style={styles.timeInput}
-                placeholder="9:30"
+                placeholder="HH"
                 placeholderTextColor="#c0c8d4"
-                value={timeInput}
-                onChangeText={setTimeInput}
-                keyboardType="numbers-and-punctuation"
-                testID="input-time"
+                value={hourInput}
+                onChangeText={setHourInput}
+                keyboardType="number-pad"
+                maxLength={2}
+                testID="input-hour"
+              />
+            </View>
+            <Text style={styles.timeColon}>:</Text>
+            <View style={[styles.inputWrap, styles.minInputWrap, !minuteInput.trim() || parseTime() ? {} : styles.inputError]}>
+              <TextInput
+                style={styles.timeInput}
+                placeholder="MM"
+                placeholderTextColor="#c0c8d4"
+                value={minuteInput}
+                onChangeText={setMinuteInput}
+                keyboardType="number-pad"
+                maxLength={2}
+                testID="input-minute"
               />
             </View>
             <View style={styles.ampmRow}>
@@ -164,9 +175,9 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.confirmBtn, (!selectedDay || !timeInput.trim() || !parseTime()) && styles.confirmBtnDisabled]}
+              style={[styles.confirmBtn, (!selectedDay || !hourInput.trim() || !minuteInput.trim() || !parseTime()) && styles.confirmBtnDisabled]}
               onPress={handleConfirm}
-              disabled={!selectedDay || !timeInput.trim() || !parseTime()}
+              disabled={!selectedDay || !hourInput.trim() || !minuteInput.trim() || !parseTime()}
             >
               <FlaticonIcon name="check" size={16} color="#fff" />
               <Text style={styles.confirmText}>Confirm</Text>
@@ -252,21 +263,27 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     flexDirection: "row", alignItems: "center",
-    borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 4,
+    borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 8, paddingVertical: 4,
     borderColor: "#e2e8f0",
   },
   inputError: {
     borderColor: "#ef4444",
   },
   timeInput: {
-    flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
-    color: "#1a2a3a", paddingVertical: 10,
+    fontSize: 18, fontFamily: "Inter_700Bold",
+    color: "#1a2a3a", paddingVertical: 8, textAlign: "center",
+  },
+  timeColon: {
+    fontSize: 20, fontFamily: "Inter_700Bold", color: "#1a2a3a",
   },
   timeRow: {
-    flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 24,
+    flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 24,
   },
-  timeInputWrap: {
-    flex: 1,
+  hourInputWrap: {
+    width: 68, flex: 0,
+  },
+  minInputWrap: {
+    width: 68, flex: 0,
   },
   ampmRow: {
     flexDirection: "row", gap: 6,
