@@ -11,7 +11,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { BookingCard } from "@/components/BookingCard";
-import { useServiceEvents } from "@/hooks/useServiceEvents";
 import { useListBookings, getListBookingsQueryKey, useListServices } from "@workspace/api-client-react";
 
 const { width: SCREEN_W } = Dimensions.get("window");
@@ -59,11 +58,10 @@ export default function HomeScreen() {
 
   const { data: bookings, isLoading, refetch, isRefetching } = useListBookings(
     { customerId: customer?.id },
-    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
+    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id, refetchInterval: 3000 } },
   );
 
-  useServiceEvents();
-  const { data: services } = useListServices();
+  const { data: services } = useListServices({ query: { refetchInterval: 3000 } });
 
   function getServiceIcon(name: string) {
     const lower = name.toLowerCase();
