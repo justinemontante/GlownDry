@@ -54,18 +54,19 @@ export default function AdminReports() {
   const claimedBookings = stats?.recentBookings?.filter(b => b.status === "claimed") ?? [];
   const inProgressBookings = stats?.recentBookings?.filter(b => ["scheduled", "received", "in_progress", "ready"].includes(b.status)) ?? [];
 
-  const totalRevenue = stats?.recentBookings.reduce((sum, b) => sum + (b.totalAmount ?? 0), 0) ?? 0;
-  const avgOrderValue = stats?.totalBookings ? totalRevenue / stats.totalBookings : 0;
+  const paidRevenue = stats?.recentBookings
+    .filter(b => b.status === "claimed")
+    .reduce((sum, b) => sum + (b.totalAmount ?? 0), 0) ?? 0;
+  const avgOrderValue = stats?.totalBookings ? paidRevenue / stats.totalBookings : 0;
 
   const monthlyData = stats?.recentBookings.length
     ? [
-        { name: 'This Week', value: Math.round(totalRevenue * 0.4) },
+        { name: 'Claimed', value: Math.round(paidRevenue) },
         { name: 'Pending', value: Math.round(avgOrderValue * inProgressBookings.length) },
         { name: 'Completed', value: Math.round(avgOrderValue * completedBookings.length) },
-        { name: 'Claimed', value: Math.round(avgOrderValue * claimedBookings.length) },
       ]
     : [
-        { name: 'This Week', value: 0 },
+        { name: 'Claimed', value: 0 },
         { name: 'Pending', value: 0 },
         { name: 'Completed', value: 0 },
         { name: 'Claimed', value: 0 },
@@ -112,7 +113,7 @@ export default function AdminReports() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-muted-foreground text-sm font-medium">Total Revenue</p>
-                <h3 className="text-3xl font-bold text-foreground mt-1">₱{totalRevenue.toFixed(2)}</h3>
+                <h3 className="text-3xl font-bold text-foreground mt-1">₱{paidRevenue.toFixed(2)}</h3>
               </div>
               <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-6 h-6 text-green-600" />
@@ -203,7 +204,7 @@ export default function AdminReports() {
         <p className="text-sm text-muted-foreground">Generated on {new Date().toLocaleDateString("en-PH", { dateStyle: "long" })}</p>
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 border rounded">Total Bookings: {stats?.totalBookings ?? 0}</div>
-          <div className="p-4 border rounded">Total Revenue: ₱{totalRevenue.toFixed(2)}</div>
+          <div className="p-4 border rounded">Total Revenue: ₱{paidRevenue.toFixed(2)}</div>
           <div className="p-4 border rounded">Active Orders: {stats?.activeOrders ?? 0}</div>
           <div className="p-4 border rounded">Total Customers: {stats?.totalCustomers ?? 0}</div>
         </div>
