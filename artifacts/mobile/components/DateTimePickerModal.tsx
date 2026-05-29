@@ -7,7 +7,7 @@ import { FlaticonIcon } from "./FlaticonIcon";
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-const TIME_REGEX = /^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i;
+const TIME_REGEX = /^[0-9]{1,2}:[0-5][0-9]$/;
 
 interface DateTimePickerModalProps {
   visible: boolean;
@@ -21,6 +21,7 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
   const [month, setMonth] = useState(now.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [timeInput, setTimeInput] = useState("");
+  const [ampm, setAmpm] = useState<"AM" | "PM">("AM");
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startDay = new Date(year, month, 1).getDay();
@@ -44,19 +45,20 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     setSelectedDay(null);
   }
 
-  function parseTimeInput(val: string): string | null {
-    const m = val.trim().match(TIME_REGEX);
+  function parseTime(): string | null {
+    const m = timeInput.trim().match(TIME_REGEX);
     if (!m) return null;
-    let [_, hour, minute, ampm] = m;
-    const h = parseInt(hour, 10);
-    const hr24 = ampm.toUpperCase() === "PM" && h !== 12 ? h + 12 : ampm.toUpperCase() === "AM" && h === 12 ? 0 : h;
+    const [hStr, min] = timeInput.trim().split(":");
+    const h = parseInt(hStr, 10);
+    if (h < 1 || h > 12) return null;
+    const hr24 = ampm === "PM" && h !== 12 ? h + 12 : ampm === "AM" && h === 12 ? 0 : h;
     if (hr24 < 7 || hr24 > 20) return null;
-    return `${String(hr24).padStart(2, "0")}:${minute}`;
+    return `${String(hr24).padStart(2, "0")}:${min}`;
   }
 
   function handleConfirm() {
     if (!selectedDay || !timeInput.trim()) return;
-    const parsed = parseTimeInput(timeInput);
+    const parsed = parseTime();
     if (!parsed) return;
     const mm = String(month + 1).padStart(2, "0");
     const dd = String(selectedDay).padStart(2, "0");
@@ -128,20 +130,33 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
 
           {/* Time Section */}
           <Text style={styles.sectionLabel}>Time</Text>
-          <View style={[styles.inputWrap, !timeInput.trim() || parseTimeInput(timeInput) ? {} : styles.inputError]}>
-            <FlaticonIcon name="clock" size={18} color="#8a94a6" style={{ marginRight: 10 }} />
-            <TextInput
-              style={styles.timeInput}
-              placeholder="e.g. 9:30 AM"
-              placeholderTextColor="#c0c8d4"
-              value={timeInput}
-              onChangeText={setTimeInput}
-              autoCapitalize="characters"
-              testID="input-time"
-            />
-            {timeInput.trim() && !parseTimeInput(timeInput) && (
-              <Text style={styles.inputErrorText}>Invalid</Text>
-            )}
+          <View style={styles.timeRow}>
+            <View style={[styles.inputWrap, styles.timeInputWrap, !timeInput.trim() || parseTime() ? {} : styles.inputError]}>
+              <FlaticonIcon name="clock" size={18} color="#8a94a6" style={{ marginRight: 8 }} />
+              <TextInput
+                style={styles.timeInput}
+                placeholder="9:30"
+                placeholderTextColor="#c0c8d4"
+                value={timeInput}
+                onChangeText={setTimeInput}
+                keyboardType="numbers-and-punctuation"
+                testID="input-time"
+              />
+            </View>
+            <View style={styles.ampmRow}>
+              <TouchableOpacity
+                style={[styles.ampmBtn, ampm === "AM" && styles.ampmBtnActive]}
+                onPress={() => setAmpm("AM")}
+              >
+                <Text style={[styles.ampmText, ampm === "AM" && styles.ampmTextActive]}>AM</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.ampmBtn, ampm === "PM" && styles.ampmBtnActive]}
+                onPress={() => setAmpm("PM")}
+              >
+                <Text style={[styles.ampmText, ampm === "PM" && styles.ampmTextActive]}>PM</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Buttons */}
@@ -150,9 +165,9 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.confirmBtn, (!selectedDay || !timeInput.trim() || !parseTimeInput(timeInput)) && styles.confirmBtnDisabled]}
+              style={[styles.confirmBtn, (!selectedDay || !timeInput.trim() || !parseTime()) && styles.confirmBtnDisabled]}
               onPress={handleConfirm}
-              disabled={!selectedDay || !timeInput.trim() || !parseTimeInput(timeInput)}
+              disabled={!selectedDay || !timeInput.trim() || !parseTime()}
             >
               <FlaticonIcon name="check" size={16} color="#fff" />
               <Text style={styles.confirmText}>Confirm</Text>
@@ -242,7 +257,7 @@ const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: "row", alignItems: "center",
     borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 4,
-    borderColor: "#e2e8f0", marginBottom: 24,
+    borderColor: "#e2e8f0",
   },
   inputError: {
     borderColor: "#ef4444",
@@ -251,8 +266,28 @@ const styles = StyleSheet.create({
     flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
     color: "#1a2a3a", paddingVertical: 10,
   },
-  inputErrorText: {
-    fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#ef4444",
+  timeRow: {
+    flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 24,
+  },
+  timeInputWrap: {
+    flex: 1,
+  },
+  ampmRow: {
+    flexDirection: "row", gap: 6,
+  },
+  ampmBtn: {
+    paddingHorizontal: 16, paddingVertical: 10,
+    borderRadius: 10, borderWidth: 1.5, borderColor: "#e2e8f0",
+    backgroundColor: "#fff",
+  },
+  ampmBtnActive: {
+    backgroundColor: "#0A7474", borderColor: "#0A7474",
+  },
+  ampmText: {
+    fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#1a2a3a",
+  },
+  ampmTextActive: {
+    color: "#fff",
   },
   btnRow: {
     flexDirection: "row", gap: 10,
