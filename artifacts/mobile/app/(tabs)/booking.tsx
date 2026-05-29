@@ -1,3 +1,4 @@
+import { DateTimePickerModal } from "@/components/DateTimePickerModal";
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
@@ -11,16 +12,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useListServices, useCreateBooking } from "@workspace/api-client-react";
-
-const DROP_OFF_SLOTS = ["8:00 AM", "10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM"];
-
-function to24h(slot: string) {
-  const map: Record<string, string> = {
-    "8:00 AM": "08:00", "10:00 AM": "10:00", "12:00 PM": "12:00",
-    "2:00 PM": "14:00", "4:00 PM": "16:00", "6:00 PM": "18:00",
-  };
-  return map[slot] ?? "08:00";
-}
 
 export default function BookingScreen() {
   const colors = useColors();
@@ -37,16 +28,32 @@ export default function BookingScreen() {
   const [weight, setWeight] = useState("");
   const [notes, setNotes] = useState("");
 
+  const [showPicker, setShowPicker] = useState(false);
+
   const selectedSvc = services?.find(s => s.id === selectedService);
   const estimatedTotal = selectedSvc && weight ? parseFloat(weight) * selectedSvc.pricePerKg : 0;
 
+  function formatDateLabel() {
+    if (!selectedDate && !selectedTime) return "Tap to select schedule";
+    if (selectedDate && selectedTime) {
+      const d = new Date(selectedDate + "T12:00:00");
+      const dateStr = d.toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
+      return `${dateStr} at ${selectedTime}`;
+    }
+    if (selectedDate) {
+      const d = new Date(selectedDate + "T12:00:00");
+      return d.toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
+    }
+    return "";
+  }
+
   async function handleBook() {
     if (!selectedService) { Alert.alert("Select a service"); return; }
-    if (!selectedDate) { Alert.alert("Select drop-off date"); return; }
-    if (!selectedTime) { Alert.alert("Select drop-off time"); return; }
+    if (!selectedDate) { Alert.alert("Select drop-off schedule"); return; }
+    if (!selectedTime) { Alert.alert("Select drop-off schedule"); return; }
     if (!customer) { Alert.alert("Not logged in"); return; }
 
-    const phDate = new Date(`${selectedDate}T${to24h(selectedTime)}:00+08:00`);
+    const phDate = new Date(`${selectedDate}T${selectedTime === "8:00 AM" ? "08:00" : selectedTime === "10:00 AM" ? "10:00" : selectedTime === "12:00 PM" ? "12:00" : selectedTime === "2:00 PM" ? "14:00" : selectedTime === "4:00 PM" ? "16:00" : "18:00"}:00+08:00`);
 
     try {
       await createBooking.mutateAsync({
@@ -117,47 +124,28 @@ export default function BookingScreen() {
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop off Schedule</Text>
 
-      <View style={[styles.dateInputRow]}>
-        <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card, flex: 1 }]}>
-          <FlaticonIcon name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
-          <TextInput
-            style={[styles.input, { color: colors.foreground }]}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={colors.mutedForeground}
-            value={selectedDate}
-            onChangeText={setSelectedDate}
-            testID="input-date"
-          />
+      <TouchableOpacity
+        style={[styles.scheduleBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+        onPress={() => setShowPicker(true)}
+      >
+        <View style={[styles.scheduleIconWrap, { backgroundColor: colors.tealLight }]}>
+          <FlaticonIcon name="calendar" size={20} color={colors.primary} />
         </View>
-        <TouchableOpacity
-          style={[styles.datePickerIconBtn, { backgroundColor: colors.primary }]}
-          onPress={() => {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, "0");
-            const dd = String(today.getDate()).padStart(2, "0");
-            setSelectedDate(`${yyyy}-${mm}-${dd}`);
-          }}
-        >
-          <FlaticonIcon name="calendar" size={20} color="#fff" />
-        </TouchableOpacity>
-      </View>
+        <Text style={[styles.scheduleBtnText, { color: selectedDate ? colors.foreground : colors.mutedForeground }]}>
+          {formatDateLabel()}
+        </Text>
+        <FlaticonIcon name="chevron-right" size={16} color={colors.mutedForeground} />
+      </TouchableOpacity>
 
-      <View style={styles.timeGrid}>
-        {DROP_OFF_SLOTS.map(slot => (
-          <TouchableOpacity
-            key={slot}
-            style={[
-              styles.timeChip,
-              { borderColor: selectedTime === slot ? colors.primary : colors.border, backgroundColor: selectedTime === slot ? colors.primary : colors.card },
-            ]}
-            onPress={() => setSelectedTime(slot)}
-            testID={`btn-time-${slot}`}
-          >
-            <Text style={[styles.timeText, { color: selectedTime === slot ? "#fff" : colors.foreground }]}>{slot}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <DateTimePickerModal
+        visible={showPicker}
+        onClose={() => setShowPicker(false)}
+        onSelect={(date, time) => {
+          setSelectedDate(date);
+          setSelectedTime(time);
+          setShowPicker(false);
+        }}
+      />
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Weight (kg)</Text>
       <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
@@ -222,8 +210,17 @@ const styles = StyleSheet.create({
   },
   svcName: { fontSize: 13, fontFamily: "Inter_600SemiBold", textAlign: "center" },
   svcPrice: { fontSize: 12, fontFamily: "Inter_400Regular" },
-  dateInputRow: {
-    flexDirection: "row", alignItems: "center", gap: 10,
+  scheduleBtn: {
+    flexDirection: "row", alignItems: "center",
+    borderWidth: 1.5, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 14,
+    gap: 12,
+  },
+  scheduleIconWrap: {
+    width: 40, height: 40, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+  },
+  scheduleBtnText: {
+    flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
   },
   inputWrap: {
     flexDirection: "row", alignItems: "center",
@@ -231,16 +228,6 @@ const styles = StyleSheet.create({
   },
   inputIcon: { marginRight: 10 },
   input: { flex: 1, fontSize: 15, fontFamily: "Inter_400Regular" },
-  datePickerIconBtn: {
-    width: 48, height: 48, borderRadius: 12,
-    alignItems: "center", justifyContent: "center",
-  },
-  timeGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 10 },
-  timeChip: {
-    paddingHorizontal: 14, paddingVertical: 8,
-    borderRadius: 20, borderWidth: 1.5,
-  },
-  timeText: { fontSize: 13, fontFamily: "Inter_500Medium" },
   estimateCard: {
     marginTop: 20, padding: 16, borderRadius: 14, borderWidth: 1,
     flexDirection: "row", justifyContent: "space-between", alignItems: "center",
