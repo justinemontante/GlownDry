@@ -163,7 +163,7 @@ export default function NotificationsScreen() {
                 scheduledDate={String(item.scheduledDate)}
                 status={item.status}
                 totalAmount={item.totalAmount}
-                onPress={() => router.push("/(tabs)/track")}
+                onPress={() => router.push("/(tabs)/orders")}
               />
             )}
             contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 100 }]}

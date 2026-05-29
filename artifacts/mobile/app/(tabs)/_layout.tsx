@@ -119,9 +119,9 @@ function NativeTabLayout() {
         <Icon sf={{ default: "calendar", selected: "calendar" }} />
         <Label>Book</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="track">
+      <NativeTabs.Trigger name="orders">
         <Icon sf={{ default: "shippingbox", selected: "shippingbox.fill" }} />
-        <Label>Track</Label>
+        <Label>Orders</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="notifications">
         <Icon sf={{ default: "bell", selected: "bell.fill" }} />
@@ -146,7 +146,7 @@ function ClassicTabLayout() {
   }[] = [
     { name: "index", title: "Home", sfSymbol: "house", featherIcon: "home" },
     { name: "booking", title: "Book", sfSymbol: "calendar", featherIcon: "calendar" },
-    { name: "track", title: "Track", sfSymbol: "shippingbox", featherIcon: "package" },
+    { name: "orders", title: "Orders", sfSymbol: "shippingbox", featherIcon: "package" },
     { name: "notifications", title: "Alerts", sfSymbol: "bell", featherIcon: "bell" },
   ];
 

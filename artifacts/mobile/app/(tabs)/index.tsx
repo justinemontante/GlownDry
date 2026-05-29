@@ -246,7 +246,7 @@ export default function HomeScreen() {
                 scheduledDate={String(item.scheduledDate)}
                 status={item.status}
                 totalAmount={item.totalAmount}
-                onPress={() => router.push("/(tabs)/track")}
+                onPress={() => router.push("/(tabs)/orders")}
               />
             </View>
           )}

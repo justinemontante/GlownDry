@@ -94,7 +94,7 @@ export default function BookingScreen() {
       });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert("Booking Confirmed!", "Your drop-off has been scheduled.", [
-        { text: "Track Order", onPress: () => router.replace("/(tabs)/track") },
+        { text: "Track Order", onPress: () => router.replace("/(tabs)/orders") },
         { text: "OK", onPress: () => router.replace("/(tabs)/") },
       ]);
     } catch {
