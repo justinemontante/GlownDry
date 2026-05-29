@@ -136,12 +136,12 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                     {customer?.profileImage ? (
                       <Image source={{ uri: customer.profileImage }} style={styles.avatarImage} />
                     ) : (
-                      <View style={[styles.avatar, { backgroundColor: "#00C6B5" }]}>
-                        <FlaticonIcon name="camera" size={34} color="#1a2a3a" />
+                      <View style={[styles.avatar, { backgroundColor: "#e8f4f4" }]}>
+                        <FlaticonIcon name="camera" size={34} color="#00C6B5" />
                       </View>
                     )}
                     <View style={[styles.cameraOverlay, !customer?.profileImage && styles.cameraOverlayEmpty]}>
-                      <FlaticonIcon name="camera" size={16} color={customer?.profileImage ? "#1a2a3a" : "#00C6B5"} />
+                      <FlaticonIcon name="camera" size={16} color="#fff" />
                     </View>
                   </View>
                   <Text style={styles.changePhotoText}>
@@ -259,9 +259,9 @@ const styles = StyleSheet.create({
   drawer: {
     position: "absolute", top: 0, right: 0, bottom: 0,
     width: DRAWER_W,
-    backgroundColor: "#1a2a3a",
+    backgroundColor: "#fff",
     shadowColor: "#000", shadowOffset: { width: -8, height: 0 },
-    shadowOpacity: 0.25, shadowRadius: 24, elevation: 16,
+    shadowOpacity: 0.15, shadowRadius: 24, elevation: 16,
   },
   container: {
     paddingHorizontal: 20, paddingBottom: 40,
@@ -273,8 +273,8 @@ const styles = StyleSheet.create({
   closeBtn: {
     width: 36, height: 36, borderRadius: 10,
     alignItems: "center", justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
-    borderWidth: 1, borderColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "#f1f5f9",
+    borderWidth: 1, borderColor: "#e2e8f0",
   },
   profileHeader: {
     alignItems: "center", paddingTop: 24, paddingBottom: 8, gap: 8,
@@ -282,9 +282,9 @@ const styles = StyleSheet.create({
   avatarOuter: {
     width: 96, height: 96, borderRadius: 48,
     backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
-    borderWidth: 3, borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 3, borderColor: "#e2e8f0",
     shadowColor: "#000", shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3, shadowRadius: 12, elevation: 8,
+    shadowOpacity: 0.1, shadowRadius: 12, elevation: 8,
   },
   avatar: {
     width: 88, height: 88, borderRadius: 44,
@@ -299,9 +299,9 @@ const styles = StyleSheet.create({
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: "#00C6B5",
     alignItems: "center", justifyContent: "center",
-    borderWidth: 3, borderColor: "#1a2a3a",
+    borderWidth: 3, borderColor: "#fff",
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2, shadowRadius: 4, elevation: 5,
+    shadowOpacity: 0.15, shadowRadius: 4, elevation: 5,
   },
   cameraOverlayEmpty: {
     backgroundColor: "#fff",
@@ -312,32 +312,32 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 22, fontFamily: "Inter_700Bold",
-    color: "#fff",
+    color: "#1a2a3a",
   },
   email: {
     fontSize: 13, fontFamily: "Inter_400Regular",
-    color: "rgba(255,255,255,0.5)",
+    color: "#8a94a6",
   },
   badgeRow: {
     flexDirection: "row", gap: 8, marginTop: 6,
   },
   badge: {
     flexDirection: "row", alignItems: "center", gap: 4,
-    backgroundColor: "rgba(0,198,181,0.15)",
+    backgroundColor: "#e8f4f4",
     paddingHorizontal: 10, paddingVertical: 5,
     borderRadius: 16,
-    borderWidth: 1, borderColor: "rgba(0,198,181,0.3)",
+    borderWidth: 1, borderColor: "#d1f0ed",
   },
   badgeText: {
     fontSize: 11, fontFamily: "Inter_600SemiBold",
     color: "#00C6B5",
   },
   sectionCard: {
-    backgroundColor: "#243044",
+    backgroundColor: "#fff",
     borderRadius: 20,
     marginTop: 20,
     paddingBottom: 4,
-    borderWidth: 1, borderColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1, borderColor: "#e2e8f0",
     overflow: "hidden",
   },
   cardHeader: {
@@ -346,14 +346,14 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 15, fontFamily: "Inter_700Bold",
-    color: "#fff",
+    color: "#1a2a3a",
   },
   editBtn: {
     flexDirection: "row", alignItems: "center", gap: 4,
-    backgroundColor: "rgba(0,198,181,0.15)",
+    backgroundColor: "#e8f4f4",
     paddingHorizontal: 10, paddingVertical: 5,
     borderRadius: 8,
-    borderWidth: 1, borderColor: "rgba(0,198,181,0.3)",
+    borderWidth: 1, borderColor: "#d1f0ed",
   },
   editBtnText: {
     fontSize: 12, fontFamily: "Inter_600SemiBold",
@@ -364,11 +364,11 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "#f1f5f9",
   },
   cancelBtnText: {
     fontSize: 12, fontFamily: "Inter_600SemiBold",
-    color: "rgba(255,255,255,0.6)",
+    color: "#8a94a6",
   },
   saveBtn: {
     flexDirection: "row", alignItems: "center", gap: 4,
@@ -377,10 +377,10 @@ const styles = StyleSheet.create({
   },
   saveBtnText: {
     fontSize: 12, fontFamily: "Inter_600SemiBold",
-    color: "#1a2a3a",
+    color: "#fff",
   },
   divider: {
-    height: 1, backgroundColor: "rgba(255,255,255,0.06)",
+    height: 1, backgroundColor: "#f0f0f0",
   },
   fieldsContainer: {
     paddingVertical: 4,
@@ -390,27 +390,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 14,
   },
   fieldDivider: {
-    height: 1, backgroundColor: "rgba(255,255,255,0.06)",
+    height: 1, backgroundColor: "#f5f5f5",
     marginLeft: 62, marginRight: 16,
   },
   fieldIconWrap: {
     width: 36, height: 36, borderRadius: 10,
-    backgroundColor: "rgba(0,198,181,0.12)",
+    backgroundColor: "#e8f4f4",
     alignItems: "center", justifyContent: "center",
   },
   fieldContent: { flex: 1 },
   fieldLabel: {
     fontSize: 11, fontFamily: "Inter_500Medium",
     textTransform: "uppercase", letterSpacing: 0.5,
-    color: "rgba(255,255,255,0.45)",
+    color: "#8a94a6",
   },
   fieldValue: {
     fontSize: 15, fontFamily: "Inter_500Medium",
-    color: "#fff", marginTop: 3,
+    color: "#1a2a3a", marginTop: 3,
   },
   fieldInput: {
     fontSize: 15, fontFamily: "Inter_500Medium",
-    color: "#fff", marginTop: 3,
+    color: "#1a2a3a", marginTop: 3,
     borderBottomWidth: 1.5, borderBottomColor: "#00C6B5",
     paddingBottom: 3,
   },
