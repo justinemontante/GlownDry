@@ -12,7 +12,15 @@ import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useListServices, useCreateBooking } from "@workspace/api-client-react";
 
-const TIME_SLOTS = ["8:00 AM", "10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM"];
+const DROP_OFF_SLOTS = ["8:00 AM", "10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM"];
+
+function to24h(slot: string) {
+  const map: Record<string, string> = {
+    "8:00 AM": "08:00", "10:00 AM": "10:00", "12:00 PM": "12:00",
+    "2:00 PM": "14:00", "4:00 PM": "16:00", "6:00 PM": "18:00",
+  };
+  return map[slot] ?? "08:00";
+}
 
 export default function BookingScreen() {
   const colors = useColors();
@@ -34,24 +42,24 @@ export default function BookingScreen() {
 
   async function handleBook() {
     if (!selectedService) { Alert.alert("Select a service"); return; }
-    if (!selectedDate) { Alert.alert("Select a date"); return; }
-    if (!selectedTime) { Alert.alert("Select a time slot"); return; }
+    if (!selectedDate) { Alert.alert("Select drop-off date"); return; }
+    if (!selectedTime) { Alert.alert("Select drop-off time"); return; }
     if (!customer) { Alert.alert("Not logged in"); return; }
 
-    const dateStr = `${selectedDate}T${selectedTime === "8:00 AM" ? "08:00" : selectedTime === "10:00 AM" ? "10:00" : selectedTime === "12:00 PM" ? "12:00" : selectedTime === "2:00 PM" ? "14:00" : selectedTime === "4:00 PM" ? "16:00" : "18:00"}:00`;
+    const phDate = new Date(`${selectedDate}T${to24h(selectedTime)}:00+08:00`);
 
     try {
       await createBooking.mutateAsync({
         data: {
           customerId: customer.id,
           serviceId: selectedService,
-          scheduledDate: new Date(dateStr).toISOString(),
+          scheduledDate: phDate.toISOString(),
           weightKg: weight ? parseFloat(weight) : undefined,
           notes: notes || undefined,
         },
       });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("Booking Confirmed!", "Your laundry has been scheduled.", [
+      Alert.alert("Booking Confirmed!", "Your drop-off has been scheduled.", [
         { text: "Track Order", onPress: () => router.replace("/(tabs)/track") },
         { text: "OK", onPress: () => router.replace("/(tabs)/") },
       ]);
@@ -107,7 +115,7 @@ export default function BookingScreen() {
         </View>
       )}
 
-      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Schedule Date</Text>
+      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop-off Date</Text>
       <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
         <FlaticonIcon name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
         <TextInput
@@ -120,9 +128,9 @@ export default function BookingScreen() {
         />
       </View>
 
-      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Time Slot</Text>
+      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop-off Time</Text>
       <View style={styles.timeGrid}>
-        {TIME_SLOTS.map(slot => (
+        {DROP_OFF_SLOTS.map(slot => (
           <TouchableOpacity
             key={slot}
             style={[
@@ -180,7 +188,7 @@ export default function BookingScreen() {
       >
         <FlaticonIcon name="check-circle" size={18} color="#fff" />
         <Text style={styles.btnBookText}>
-          {createBooking.isPending ? "Booking…" : "Confirm Booking"}
+          {createBooking.isPending ? "Booking…" : "Confirm Drop-off"}
         </Text>
       </TouchableOpacity>
       </ScrollView>
