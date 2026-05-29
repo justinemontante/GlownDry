@@ -24,8 +24,8 @@ router.get("/payments", async (_req, res) => {
 });
 
 router.post("/payments", async (req, res) => {
-  const { bookingId, amount, cashReceived } = req.body as {
-    bookingId?: number; amount?: number; cashReceived?: number;
+  const { bookingId, amount, cashReceived, method, status } = req.body as {
+    bookingId?: number; amount?: number; cashReceived?: number; method?: string; status?: string;
   };
   if (!bookingId || amount == null || cashReceived == null) {
     return res.status(400).json({ error: "bookingId, amount, cashReceived required" });
@@ -33,6 +33,8 @@ router.post("/payments", async (req, res) => {
   const change = cashReceived - amount;
   const [payment] = await db.insert(paymentsTable).values({
     bookingId, amount, cashReceived, change,
+    method: method || "cash",
+    status: status || "success",
   }).returning();
   await db.update(bookingsTable).set({ status: "claimed" }).where(eq(bookingsTable.id, bookingId));
   return res.status(201).json(await enrichPayment(payment));

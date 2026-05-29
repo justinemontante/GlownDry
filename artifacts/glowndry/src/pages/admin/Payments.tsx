@@ -33,7 +33,7 @@ export default function AdminPayments() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
-  const [form, setForm] = useState({ bookingId: "", amount: "", cashReceived: "" });
+  const [form, setForm] = useState({ bookingId: "", amount: "", cashReceived: "", method: "cash" });
 
   const token = () => localStorage.getItem("adminToken");
 
@@ -60,16 +60,17 @@ export default function AdminPayments() {
         bookingId: Number(form.bookingId),
         amount: Number(form.amount),
         cashReceived: Number(form.cashReceived),
+        method: form.method,
       }),
     });
     setOpen(false);
-    setForm({ bookingId: "", amount: "", cashReceived: "" });
+    setForm({ bookingId: "", amount: "", cashReceived: "", method: "cash" });
     load();
   }
 
   function selectBooking(id: string) {
     const b = bookings.find(x => x.id === Number(id));
-    setForm({ bookingId: id, amount: b?.totalAmount ? String(b.totalAmount) : "", cashReceived: "" });
+    setForm({ ...form, bookingId: id, amount: b?.totalAmount ? String(b.totalAmount) : "" });
   }
 
   const todayRevenue = payments
@@ -129,6 +130,16 @@ export default function AdminPayments() {
                         ORD-{String(b.id).padStart(4, "0")} — {b.customerName || `#${b.id}`}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Payment Method</Label>
+                <Select value={form.method} onValueChange={m => setForm({ ...form, method: m })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="card">Card / Online</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -259,7 +270,7 @@ export default function AdminPayments() {
 
               <div className="text-center pt-2 border-t border-slate-100">
                 <p className="text-xs text-muted-foreground">Thank you for choosing GlownDry!</p>
-                <p className="text-xs text-muted-foreground mt-1">₱{receiptPayment.amount.toFixed(2)} • {receiptPayment.method.toUpperCase()} • {new Date(receiptPayment.createdAt).toLocaleDateString("en-PH")}</p>
+                <p className="text-xs text-muted-foreground mt-1">₱{receiptPayment.amount.toFixed(2)} • {(receiptPayment.method || "CASH").toUpperCase()} • {new Date(receiptPayment.createdAt).toLocaleDateString("en-PH")}</p>
               </div>
 
               <div className="flex gap-3">

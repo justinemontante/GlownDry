@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, timestamp, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, timestamp, doublePrecision, text } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { bookingsTable } from "./bookings";
@@ -9,6 +9,8 @@ export const paymentsTable = pgTable("payments", {
   amount: doublePrecision("amount").notNull(),
   cashReceived: doublePrecision("cash_received").notNull(),
   change: doublePrecision("change").notNull(),
+  method: text("method").notNull().default("cash"),
+  status: text("status").notNull().default("success"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
