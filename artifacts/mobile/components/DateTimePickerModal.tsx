@@ -1,12 +1,25 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
-  Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View,
+  FlatList, Modal, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import { FlaticonIcon } from "./FlaticonIcon";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-const TIMES = ["8:00 AM","10:00 AM","12:00 PM","2:00 PM","4:00 PM","6:00 PM"];
+
+function generateTimes() {
+  const times: string[] = [];
+  for (let h = 7; h <= 19; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const hour = h > 12 ? h - 12 : h;
+      const ampm = h >= 12 ? "PM" : "AM";
+      const mm = m === 0 ? "00" : "30";
+      times.push(`${hour}:${mm} ${ampm}`);
+    }
+  }
+  return times;
+}
+const ALL_TIMES = generateTimes();
 
 interface DateTimePickerModalProps {
   visible: boolean;
@@ -20,6 +33,8 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
   const [month, setMonth] = useState(now.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  const timeListRef = useRef<FlatList<string>>(null);
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startDay = new Date(year, month, 1).getDay();
@@ -56,24 +71,31 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <Text style={styles.title}>Drop off Schedule</Text>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Select Schedule</Text>
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+              <FlaticonIcon name="x" size={20} color="#8a94a6" />
+            </TouchableOpacity>
+          </View>
 
-          {/* Month/Year Header */}
+          {/* Date Section */}
+          <Text style={styles.sectionLabel}>Date</Text>
+
+          {/* Month/Year */}
           <View style={styles.monthRow}>
             <TouchableOpacity onPress={prevMonth} style={styles.arrowBtn}>
-              <FlaticonIcon name="chevron-right" size={20} color="#1a2a3a" style={{ transform: [{ rotate: "180deg" }] }} />
+              <FlaticonIcon name="chevron-right" size={18} color="#1a2a3a" style={{ transform: [{ rotate: "180deg" }] }} />
             </TouchableOpacity>
             <Text style={styles.monthText}>{MONTHS[month]} {year}</Text>
             <TouchableOpacity onPress={nextMonth} style={styles.arrowBtn}>
-              <FlaticonIcon name="chevron-right" size={20} color="#1a2a3a" />
+              <FlaticonIcon name="chevron-right" size={18} color="#1a2a3a" />
             </TouchableOpacity>
           </View>
 
           {/* Day Headers */}
           <View style={styles.dayHeaderRow}>
-            {DAYS.map(d => (
-              <Text key={d} style={styles.dayHeader}>{d}</Text>
-            ))}
+            {DAYS.map(d => <Text key={d} style={styles.dayHeader}>{d}</Text>)}
           </View>
 
           {/* Days Grid */}
@@ -106,18 +128,30 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             })}
           </View>
 
-          {/* Time */}
-          <Text style={styles.timeLabel}>Time</Text>
-          <View style={styles.timeGrid}>
-            {TIMES.map(t => (
-              <TouchableOpacity
-                key={t}
-                style={[styles.timeChip, selectedTime === t && styles.timeChipSelected]}
-                onPress={() => setSelectedTime(t)}
-              >
-                <Text style={[styles.timeChipText, selectedTime === t && styles.timeChipTextSelected]}>{t}</Text>
-              </TouchableOpacity>
-            ))}
+          {/* Time Section */}
+          <Text style={styles.sectionLabel}>Time</Text>
+          <View style={styles.timePickerWrap}>
+            <FlatList
+              ref={timeListRef}
+              data={ALL_TIMES}
+              keyExtractor={t => t}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.timeList}
+              renderItem={({ item }) => {
+                const sel = selectedTime === item;
+                return (
+                  <TouchableOpacity
+                    style={[styles.timeItem, sel && styles.timeItemSelected]}
+                    onPress={() => setSelectedTime(item)}
+                  >
+                    <Text style={[styles.timeItemText, sel && styles.timeItemTextSelected]}>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
           </View>
 
           {/* Buttons */}
@@ -126,12 +160,12 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.confirmBtn, (!selectedDay || !selectedTime) && { opacity: 0.5 }]}
+              style={[styles.confirmBtn, (!selectedDay || !selectedTime) && styles.confirmBtnDisabled]}
               onPress={handleConfirm}
               disabled={!selectedDay || !selectedTime}
             >
               <FlaticonIcon name="check" size={16} color="#fff" />
-              <Text style={styles.confirmText}>Set Schedule</Text>
+              <Text style={styles.confirmText}>Confirm</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -142,44 +176,55 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1, backgroundColor: "rgba(0,0,0,0.4)",
+    flex: 1, backgroundColor: "rgba(0,0,0,0.45)",
     justifyContent: "center", alignItems: "center",
     padding: 20,
   },
   modal: {
     width: "100%", maxWidth: 380,
-    backgroundColor: "#fff", borderRadius: 24,
-    padding: 20,
-    shadowColor: "#000", shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15, shadowRadius: 24, elevation: 10,
+    backgroundColor: "#fff", borderRadius: 28,
+    padding: 24,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2, shadowRadius: 32, elevation: 16,
+  },
+  header: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    marginBottom: 20,
   },
   title: {
     fontSize: 18, fontFamily: "Inter_700Bold", color: "#1a2a3a",
-    textAlign: "center", marginBottom: 16,
+  },
+  closeBtn: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: "#f1f5f9", alignItems: "center", justifyContent: "center",
+  },
+  sectionLabel: {
+    fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#8a94a6",
+    textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 10,
   },
   monthRow: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: 14,
   },
   arrowBtn: {
-    width: 36, height: 36, borderRadius: 18,
+    width: 34, height: 34, borderRadius: 17,
     alignItems: "center", justifyContent: "center",
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#f8fafc",
   },
   monthText: {
-    fontSize: 16, fontFamily: "Inter_700Bold", color: "#1a2a3a",
+    fontSize: 15, fontFamily: "Inter_700Bold", color: "#1a2a3a",
   },
   dayHeaderRow: {
     flexDirection: "row", justifyContent: "space-around",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   dayHeader: {
     width: 40, textAlign: "center",
-    fontSize: 12, fontFamily: "Inter_600SemiBold", color: "#8a94a6",
+    fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#94a3b8",
   },
   daysGrid: {
     flexDirection: "row", flexWrap: "wrap",
-    marginBottom: 16,
+    marginBottom: 20,
   },
   dayCell: {
     width: "14.28%", aspectRatio: 1,
@@ -193,7 +238,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: "#0A7474",
   },
   dayText: {
-    fontSize: 14, fontFamily: "Inter_500Medium", color: "#1a2a3a",
+    fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a",
   },
   dayTextSelected: {
     color: "#fff", fontFamily: "Inter_700Bold",
@@ -204,41 +249,43 @@ const styles = StyleSheet.create({
   dayTextPast: {
     color: "#d0d5dd",
   },
-  timeLabel: {
-    fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#8a94a6",
-    textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8,
+  timePickerWrap: {
+    marginBottom: 24,
   },
-  timeGrid: {
-    flexDirection: "row", flexWrap: "wrap", gap: 8,
-    marginBottom: 20,
+  timeList: {
+    gap: 8,
   },
-  timeChip: {
-    paddingHorizontal: 14, paddingVertical: 8,
+  timeItem: {
+    paddingHorizontal: 16, paddingVertical: 10,
     borderRadius: 20, borderWidth: 1.5, borderColor: "#e2e8f0",
+    backgroundColor: "#fff",
   },
-  timeChipSelected: {
+  timeItemSelected: {
     backgroundColor: "#0A7474", borderColor: "#0A7474",
   },
-  timeChipText: {
+  timeItemText: {
     fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a",
   },
-  timeChipTextSelected: {
+  timeItemTextSelected: {
     color: "#fff", fontFamily: "Inter_600SemiBold",
   },
   btnRow: {
     flexDirection: "row", gap: 10,
   },
   cancelBtn: {
-    flex: 1, paddingVertical: 14, borderRadius: 12,
+    flex: 1, paddingVertical: 14, borderRadius: 14,
     backgroundColor: "#f1f5f9", alignItems: "center",
   },
   cancelText: {
-    fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#8a94a6",
+    fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#94a3b8",
   },
   confirmBtn: {
     flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 6, paddingVertical: 14, borderRadius: 12,
+    gap: 6, paddingVertical: 14, borderRadius: 14,
     backgroundColor: "#0A7474",
+  },
+  confirmBtnDisabled: {
+    opacity: 0.5,
   },
   confirmText: {
     fontSize: 14, fontFamily: "Inter_700Bold", color: "#fff",
