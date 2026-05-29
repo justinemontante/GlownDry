@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     marginBottom: 8, resizeMode: "contain",
   },
   serviceName: {
-    fontSize: 12, fontFamily: "Inter_700Bold",
+    fontSize: 14, fontFamily: "Inter_800ExtraBold",
     textAlign: "center",
   },
   servicePriceRow: {
