@@ -4,8 +4,9 @@ import { Redirect, Tabs, router } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import { ProfileModal } from "@/components/ProfileModal";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useState } from "react";
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -34,39 +35,43 @@ function GradientWashingMachine({ size = 28 }: { size?: number }) {
 function BrandHeader() {
   const { customer } = useAuth();
   const insets = useSafeAreaInsets();
+  const [profileOpen, setProfileOpen] = useState(false);
   return (
-    <LinearGradient
-      colors={["#EBF3F6", "#E0EDE6"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={[brandStyles.bar, { paddingTop: insets.top }]}
-    >
-      <View style={brandStyles.row}>
-        <View style={brandStyles.left}>
-          <GradientWashingMachine size={28} />
-          <Text style={brandStyles.name}>
-            <Text style={{ color: "#1a2a3a" }}>Glown</Text>
-            <Text style={{ color: "#00C6B5" }}>Dry</Text>
-          </Text>
+    <>
+      <LinearGradient
+        colors={["#EBF3F6", "#E0EDE6"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[brandStyles.bar, { paddingTop: insets.top }]}
+      >
+        <View style={brandStyles.row}>
+          <View style={brandStyles.left}>
+            <GradientWashingMachine size={28} />
+            <Text style={brandStyles.name}>
+              <Text style={{ color: "#1a2a3a" }}>Glown</Text>
+              <Text style={{ color: "#00C6B5" }}>Dry</Text>
+            </Text>
+          </View>
+          <View style={brandStyles.right}>
+            <TouchableOpacity style={brandStyles.notifBtn} onPress={() => router.push("/(tabs)/notifications")} testID="btn-notifications">
+              <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setProfileOpen(true)}>
+              {customer?.profileImage ? (
+                <Image source={{ uri: customer.profileImage }} style={brandStyles.profilePic} />
+              ) : (
+                <View style={[brandStyles.profilePic, { backgroundColor: "#0A9C8C" }]}>
+                  <Text style={brandStyles.profileInitial}>
+                    {(customer?.fullName ?? "?").charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={brandStyles.right}>
-          <TouchableOpacity style={brandStyles.notifBtn} onPress={() => router.push("/(tabs)/notifications")} testID="btn-notifications">
-            <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/(tabs)/profile")}>
-            {customer?.profileImage ? (
-              <Image source={{ uri: customer.profileImage }} style={brandStyles.profilePic} />
-            ) : (
-              <View style={[brandStyles.profilePic, { backgroundColor: "#0A9C8C" }]}>
-                <Text style={brandStyles.profileInitial}>
-                  {(customer?.fullName ?? "?").charAt(0).toUpperCase()}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-    </LinearGradient>
+      </LinearGradient>
+      <ProfileModal visible={profileOpen} onClose={() => setProfileOpen(false)} />
+    </>
   );
 }
 
@@ -122,10 +127,6 @@ function NativeTabLayout() {
         <Icon sf={{ default: "bell", selected: "bell.fill" }} />
         <Label>Alerts</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="profile">
-        <Icon sf={{ default: "person", selected: "person.fill" }} />
-        <Label>Profile</Label>
-      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
@@ -147,7 +148,6 @@ function ClassicTabLayout() {
     { name: "booking", title: "Book", sfSymbol: "calendar", featherIcon: "calendar" },
     { name: "track", title: "Track", sfSymbol: "shippingbox", featherIcon: "package" },
     { name: "notifications", title: "Alerts", sfSymbol: "bell", featherIcon: "bell" },
-    { name: "profile", title: "Profile", sfSymbol: "person", featherIcon: "user" },
   ];
 
   return (

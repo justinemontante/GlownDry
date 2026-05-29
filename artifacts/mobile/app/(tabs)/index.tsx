@@ -1,4 +1,5 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import { ProfileModal } from "@/components/ProfileModal";
 import { Skeleton } from "@/components/Skeleton";
 import { router } from "expo-router";
 import React, { useRef, useState, memo } from "react";
@@ -104,6 +105,7 @@ export default function HomeScreen() {
 
   const [manualRefreshing, setManualRefreshing] = useState(false);
   const [selectedService, setSelectedService] = useState<any | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const { data: bookings, isLoading, refetch } = useListBookings(
     { customerId: customer?.id },
@@ -219,7 +221,7 @@ export default function HomeScreen() {
           >
             <FlaticonIcon name="bell" size={18} color="#1a2a3a" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/(tabs)/profile")}>
+          <TouchableOpacity onPress={() => setProfileOpen(true)}>
             {customer?.profileImage ? (
               <Image source={{ uri: customer.profileImage }} style={styles.profilePic} />
             ) : (
@@ -332,6 +334,8 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
+
+      <ProfileModal visible={profileOpen} onClose={() => setProfileOpen(false)} />
     </View>
   );
 }
