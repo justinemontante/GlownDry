@@ -111,7 +111,7 @@ export default function AdminServices() {
       load();
     } catch (e) {
       console.error("Save failed", e);
-      alert("Failed to save service. Check console for details.");
+      alert("Error: " + (e as Error).message);
     } finally {
       setSaving(false);
     }
