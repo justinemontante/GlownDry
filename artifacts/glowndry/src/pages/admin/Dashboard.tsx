@@ -75,7 +75,7 @@ export default function AdminDashboard() {
   if (loading) return (
     <div className="space-y-8 p-8">
       <Skeleton className="h-32 w-full rounded-2xl" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 5 }).map((_, i) => (
           <Card key={i} className="shadow-sm border-none">
             <CardContent className="p-6 space-y-4">
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard title="Total Bookings" value={String(stats.totalBookings)} icon={<ShoppingBag />} change="All time orders" accent="bg-teal-500/10 text-teal-600" />
         <StatCard title="Active Orders" value={String(stats.activeOrders)} icon={<Package />} change="Current in system" accent="bg-orange-500/10 text-orange-600" />
         <StatCard title="Daily Revenue" value={`₱${stats.dailyRevenue.toFixed(2)}`} icon={<CreditCard />} change="Today's earnings" accent="bg-green-500/10 text-green-600" />
