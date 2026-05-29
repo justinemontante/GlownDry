@@ -61,6 +61,15 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     return `${String(hr24).padStart(2, "0")}:${min}`;
   }
 
+  function isTimePast(): boolean {
+    if (!selectedDay || !hourInput.trim() || !minuteInput.trim()) return false;
+    const parsed = parseTime();
+    if (!parsed) return false;
+    const nowPH = new Date();
+    const selectedDate = new Date(year, month, selectedDay, parseInt(parsed.split(":")[0]), parseInt(parsed.split(":")[1]));
+    return selectedDate <= nowPH;
+  }
+
   function handleConfirm() {
     if (!selectedDay || !hourInput.trim() || !minuteInput.trim()) return;
     const parsed = parseTime();
@@ -70,7 +79,9 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     onSelect(`${year}-${mm}-${dd}`, parsed);
   }
 
-  const timeValid = parseTime() !== null;
+  const timeParsed = parseTime();
+  const timeValid = timeParsed !== null && !isTimePast();
+  const timePast = timeParsed !== null && isTimePast();
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -132,7 +143,9 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
           </View>
 
           {hourInput && minuteInput && !timeValid && (
-            <Text style={styles.errorHint}>Enter a valid time between 7:00 AM and 6:00 PM</Text>
+            <Text style={styles.errorHint}>
+              {timePast ? "This time has already passed today" : "Enter a valid time between 7:00 AM and 6:00 PM"}
+            </Text>
           )}
 
           <Text style={styles.sectionLabel}>Date</Text>
