@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CreditCard, DollarSign, ReceiptText, Plus, Printer, X } from "lucide-react";
+import { CreditCard, DollarSign, ReceiptText, Plus, Printer, X, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 type Payment = {
   id: number;
@@ -78,6 +80,30 @@ export default function AdminPayments() {
     .reduce((s, p) => s + p.amount, 0);
   const cardTotal = payments.filter(p => p.method === "card" && p.status !== "refunded").reduce((s, p) => s + p.amount, 0);
   const cashTotal = payments.filter(p => p.method === "cash" && p.status !== "refunded").reduce((s, p) => s + p.amount, 0);
+
+  const downloadReceiptPDF = async () => {
+    if (!receiptPayment) return;
+    const element = document.getElementById("receipt-content");
+    if (!element) return;
+
+    // Hide action buttons before capture
+    const buttons = element.querySelector(".receipt-actions");
+    if (buttons) (buttons as HTMLElement).style.display = "none";
+
+    try {
+      const canvas = await html2canvas(element, { scale: 2, logging: false, useCORS: true });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      const imgWidth = 190; // mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+      pdf.save(`Receipt-TXN-${String(receiptPayment.id).padStart(4, "0")}.pdf`);
+    } finally {
+      if (buttons) (buttons as HTMLElement).style.display = "flex";
+    }
+  };
 
   if (loading) return <div className="p-8 text-center text-muted-foreground">Loading payments...</div>;
 
@@ -273,9 +299,12 @@ export default function AdminPayments() {
                 <p className="text-xs text-muted-foreground mt-1">₱{receiptPayment.amount.toFixed(2)} • {(receiptPayment.method || "CASH").toUpperCase()} • {new Date(receiptPayment.createdAt).toLocaleDateString("en-PH")}</p>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 receipt-actions">
                 <Button variant="outline" className="flex-1 gap-2" onClick={() => { window.print(); }}>
                   <Printer className="w-4 h-4" /> Print
+                </Button>
+                <Button variant="outline" className="flex-1 gap-2" onClick={downloadReceiptPDF}>
+                  <Download className="w-4 h-4" /> Download
                 </Button>
                 <Button className="flex-1" onClick={() => setReceiptPayment(null)}>Done</Button>
               </div>
