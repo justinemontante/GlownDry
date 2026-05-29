@@ -1,9 +1,11 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert, Platform, ScrollView, StyleSheet,
+  Alert, Image, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,6 +24,7 @@ export default function ProfileScreen() {
   const [editing, setEditing] = useState(false);
   const [fullName, setFullName] = useState(customer?.fullName ?? "");
   const [phone, setPhone] = useState(customer?.phone ?? "");
+  const [uploading, setUploading] = useState(false);
 
   const initials = customer?.fullName
     ?.split(" ")
@@ -33,6 +36,47 @@ export default function ProfileScreen() {
   const joinDate = customer?.createdAt
     ? new Date(customer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long" })
     : null;
+
+  async function handlePickImage() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permission needed", "Allow access to your photo library to change your profile picture.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.6,
+      base64: true,
+    });
+
+    if (result.canceled || !result.assets[0]?.base64) return;
+
+    const base64 = `data:image/jpeg;base64,${result.assets[0].base64}`;
+    if (!customer) return;
+
+    setUploading(true);
+    try {
+      const token = await AsyncStorage.getItem("glowndry_token");
+      const res = await fetch(`/api/customers/${customer.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ profileImage: base64 }),
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      await updateProfile({ profileImage: base64 });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch {
+      Alert.alert("Error", "Could not update profile picture.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleSave() {
     if (!customer) return;
@@ -76,11 +120,20 @@ export default function ProfileScreen() {
 
       {/* Profile Header */}
       <View style={styles.profileHeader}>
-        <View style={styles.avatarOuter}>
-          <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
-            <Text style={styles.initials}>{initials}</Text>
+        <TouchableOpacity onPress={handlePickImage} disabled={uploading} activeOpacity={0.8}>
+          <View style={styles.avatarOuter}>
+            {customer?.profileImage ? (
+              <Image source={{ uri: customer.profileImage }} style={styles.avatarImage} />
+            ) : (
+              <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
+                <Text style={styles.initials}>{initials}</Text>
+              </View>
+            )}
+            <View style={styles.cameraOverlay}>
+              <FlaticonIcon name="camera" size={16} color="#fff" />
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
         <Text style={styles.name}>{customer?.fullName}</Text>
         <Text style={styles.email}>{customer?.email}</Text>
         <View style={styles.badgeRow}>
@@ -248,6 +301,16 @@ const styles = StyleSheet.create({
   },
   initials: {
     fontSize: 30, fontFamily: "Inter_700Bold", color: "#fff",
+  },
+  avatarImage: {
+    width: 84, height: 84, borderRadius: 42,
+  },
+  cameraOverlay: {
+    position: "absolute", bottom: 0, right: 0,
+    width: 30, height: 30, borderRadius: 15,
+    backgroundColor: "#0A7474",
+    alignItems: "center", justifyContent: "center",
+    borderWidth: 2, borderColor: "#fff",
   },
   name: {
     fontSize: 22, fontFamily: "Inter_700Bold",

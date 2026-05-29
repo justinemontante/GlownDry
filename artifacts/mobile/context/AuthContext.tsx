@@ -18,7 +18,7 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (token: string, customer: CustomerProfile) => Promise<void>;
   logout: () => Promise<void>;
-  updateProfile: (updates: Partial<CustomerProfile>) => void;
+  updateProfile: (updates: Partial<CustomerProfile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -72,8 +72,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthTokenGetter(null);
   }, []);
 
-  const updateProfile = useCallback((updates: Partial<CustomerProfile>) => {
-    setCustomer(prev => prev ? { ...prev, ...updates } : prev);
+  const updateProfile = useCallback(async (updates: Partial<CustomerProfile>) => {
+    setCustomer(prev => {
+      const updated = prev ? { ...prev, ...updates } : prev;
+      if (updated) {
+        AsyncStorage.setItem(CUSTOMER_KEY, JSON.stringify(updated));
+      }
+      return updated;
+    });
   }, []);
 
   return (
