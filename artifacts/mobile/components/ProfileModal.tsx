@@ -231,6 +231,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                   <View style={styles.fieldContent}>
                     <Text style={styles.fieldLabel}>Email</Text>
                     <Text style={[styles.fieldValue, { color: "#8a94a6" }]}>{customer?.email}</Text>
+                  </View>
                 </View>
               </View>
               <View style={styles.divider} />
@@ -239,15 +240,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 <Text style={styles.logoutText}>Logout</Text>
               </TouchableOpacity>
             </View>
-            </View>
-            </View>
-
-
-
-            <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
-              <FlaticonIcon name="log-out" size={18} color="#fff" />
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
             </View>
           </ScrollView>
         </Animated.View>
