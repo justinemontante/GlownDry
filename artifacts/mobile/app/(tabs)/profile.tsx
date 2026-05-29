@@ -1,5 +1,4 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
@@ -59,17 +58,8 @@ export default function ProfileScreen() {
 
     setUploading(true);
     try {
-      const token = await AsyncStorage.getItem("glowndry_token");
-      const res = await fetch(`/api/customers/${customer.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ profileImage: base64 }),
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      await updateProfile({ profileImage: base64 });
+      const updated = await updateMutation.mutateAsync({ id: customer.id, data: { profileImage: base64 } });
+      await updateProfile({ profileImage: updated.profileImage });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch {
       Alert.alert("Error", "Could not update profile picture.");
