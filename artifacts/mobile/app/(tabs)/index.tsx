@@ -63,7 +63,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionLabel}>Our Services</Text>
         <TouchableOpacity onPress={() => router.push("/(tabs)/booking")}>
-          <Text style={styles.seeAll}>See All</Text>
+          <FlaticonIcon name="chevron-right" size={20} color="#00C6B5" />
         </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.servicesContainer}>
@@ -465,10 +465,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 16, fontFamily: "Inter_700Bold",
     color: "#1a2a3a",
-  },
-  seeAll: {
-    fontSize: 12, fontFamily: "Inter_600SemiBold",
-    color: "#00C6B5",
   },
   servicesContainer: {
     paddingHorizontal: 16, paddingVertical: 8, gap: 12,
