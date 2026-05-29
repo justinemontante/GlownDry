@@ -1,32 +1,13 @@
 import React, { useMemo, useState } from "react";
 import {
-  Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View,
+  Modal, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import { FlaticonIcon } from "./FlaticonIcon";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-const CLOCK_SIZE = 220;
-const CLOCK_RADIUS = CLOCK_SIZE / 2;
-const DOT_RADIUS = 80;
-const BTN_SIZE = 38;
-const HALF_BTN = BTN_SIZE / 2;
-
-const HOURS = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-
-function position(index: number, total: number) {
-  const angle = (index * (360 / total) - 90) * (Math.PI / 180);
-  return {
-    left: CLOCK_RADIUS + DOT_RADIUS * Math.cos(angle) - HALF_BTN,
-    top: CLOCK_RADIUS + DOT_RADIUS * Math.sin(angle) - HALF_BTN,
-  };
-}
-
-function handAngle(value: number, total: number) {
-  return (value / total) * 360 - 90;
-}
+const TIME_REGEX = /^[0-9]{1,2}:[0-5][0-9]$/;
 
 interface DateTimePickerModalProps {
   visible: boolean;
@@ -39,9 +20,7 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [clockMode, setClockMode] = useState<"hour" | "minute">("hour");
-  const [selectedHour, setSelectedHour] = useState<number | null>(null);
-  const [selectedMinute, setSelectedMinute] = useState<number | null>(null);
+  const [timeInput, setTimeInput] = useState("");
   const [ampm, setAmpm] = useState<"AM" | "PM">("AM");
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -53,16 +32,6 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     for (let i = 1; i <= daysInMonth; i++) d.push(i);
     return d;
   }, [year, month]);
-
-  const selectedTime = useMemo(() => {
-    if (selectedHour === null || selectedMinute === null) return "";
-    const hr24 = ampm === "PM" && selectedHour !== 12
-      ? selectedHour + 12
-      : ampm === "AM" && selectedHour === 12
-        ? 0
-        : selectedHour;
-    return `${String(hr24).padStart(2, "0")}:${String(selectedMinute).padStart(2, "0")}`;
-  }, [selectedHour, selectedMinute, ampm]);
 
   function prevMonth() {
     if (month === 0) { setYear(y => y - 1); setMonth(11); }
@@ -76,42 +45,33 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     setSelectedDay(null);
   }
 
-  function handleHourSelect(h: number) {
-    setSelectedHour(h);
-    setClockMode("minute");
-  }
-
-  function handleMinuteSelect(m: number) {
-    setSelectedMinute(m);
+  function parseTime(): string | null {
+    const m = timeInput.trim().match(TIME_REGEX);
+    if (!m) return null;
+    const [hStr, min] = timeInput.trim().split(":");
+    const h = parseInt(hStr, 10);
+    if (h < 1 || h > 12) return null;
+    const hr24 = ampm === "PM" && h !== 12 ? h + 12 : ampm === "AM" && h === 12 ? 0 : h;
+    if (hr24 < 7 || hr24 > 20) return null;
+    return `${String(hr24).padStart(2, "0")}:${min}`;
   }
 
   function handleConfirm() {
-    if (!selectedDay || !selectedHour || selectedMinute === null) return;
+    if (!selectedDay || !timeInput.trim()) return;
+    const parsed = parseTime();
+    if (!parsed) return;
     const mm = String(month + 1).padStart(2, "0");
     const dd = String(selectedDay).padStart(2, "0");
-    onSelect(`${year}-${mm}-${dd}`, selectedTime);
-  }
-
-  function formatTime() {
-    if (selectedHour === null) return "";
-    const min = selectedMinute !== null ? String(selectedMinute).padStart(2, "0") : "";
-    return `${selectedHour}:${min || "–"} ${ampm}`;
-  }
-
-  function isDisabledHour(h: number) {
-    const hr24 = ampm === "PM" && h !== 12 ? h + 12 : ampm === "AM" && h === 12 ? 0 : h;
-    return hr24 < 7 || hr24 > 20;
+    onSelect(`${year}-${mm}-${dd}`, parsed);
   }
 
   const todayStr = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
-  const handDeg = clockMode === "hour"
-    ? handAngle(HOURS.indexOf(selectedHour ?? 12), 12)
-    : handAngle(MINUTES.indexOf(selectedMinute ?? 0), 12);
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.modal}>
+          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>Select Schedule</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
@@ -119,8 +79,10 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             </TouchableOpacity>
           </View>
 
+          {/* Date Section */}
           <Text style={styles.sectionLabel}>Date</Text>
 
+          {/* Month/Year */}
           <View style={styles.monthRow}>
             <TouchableOpacity onPress={prevMonth} style={styles.arrowBtn}>
               <FlaticonIcon name="chevron-right" size={18} color="#1a2a3a" style={{ transform: [{ rotate: "180deg" }] }} />
@@ -131,10 +93,12 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             </TouchableOpacity>
           </View>
 
+          {/* Day Headers */}
           <View style={styles.dayHeaderRow}>
             {DAYS.map(d => <Text key={d} style={styles.dayHeader}>{d}</Text>)}
           </View>
 
+          {/* Days Grid */}
           <View style={styles.daysGrid}>
             {days.map((d, i) => {
               const isToday = d !== null && `${year}-${month}-${d}` === todayStr;
@@ -143,7 +107,10 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
               return (
                 <TouchableOpacity
                   key={i}
-                  style={[styles.dayCell, isSelected && styles.dayCellSelected]}
+                  style={[
+                    styles.dayCell,
+                    isSelected && styles.dayCellSelected,
+                  ]}
                   onPress={() => !isPast && setSelectedDay(d)}
                   disabled={isPast}
                 >
@@ -160,94 +127,46 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             })}
           </View>
 
+          {/* Time Section */}
           <Text style={styles.sectionLabel}>Time</Text>
-
-          {/* Time display */}
-          <View style={styles.timeDisplayRow}>
-            <TouchableOpacity
-              style={[styles.timePart, clockMode === "hour" && styles.timePartActive]}
-              onPress={() => setClockMode("hour")}
-            >
-              <Text style={[styles.timePartText, clockMode === "hour" && styles.timePartTextActive]}>
-                {selectedHour !== null ? String(selectedHour).padStart(2, "0") : "–"}
-              </Text>
-            </TouchableOpacity>
-            <Text style={styles.timeColon}>:</Text>
-            <TouchableOpacity
-              style={[styles.timePart, clockMode === "minute" && styles.timePartActive]}
-              onPress={() => setClockMode("minute")}
-            >
-              <Text style={[styles.timePartText, clockMode === "minute" && styles.timePartTextActive]}>
-                {selectedMinute !== null ? String(selectedMinute).padStart(2, "0") : "–"}
-              </Text>
-            </TouchableOpacity>
-            <View style={styles.ampmCol}>
+          <View style={styles.timeRow}>
+            <View style={[styles.inputWrap, styles.timeInputWrap, !timeInput.trim() || parseTime() ? {} : styles.inputError]}>
+              <FlaticonIcon name="clock" size={18} color="#8a94a6" style={{ marginRight: 8 }} />
+              <TextInput
+                style={styles.timeInput}
+                placeholder="9:30"
+                placeholderTextColor="#c0c8d4"
+                value={timeInput}
+                onChangeText={setTimeInput}
+                keyboardType="numbers-and-punctuation"
+                testID="input-time"
+              />
+            </View>
+            <View style={styles.ampmRow}>
               <TouchableOpacity
                 style={[styles.ampmBtn, ampm === "AM" && styles.ampmBtnActive]}
-                onPress={() => { setAmpm("AM"); setSelectedHour(null); setSelectedMinute(null); setClockMode("hour"); }}
+                onPress={() => setAmpm("AM")}
               >
                 <Text style={[styles.ampmText, ampm === "AM" && styles.ampmTextActive]}>AM</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.ampmBtn, ampm === "PM" && styles.ampmBtnActive]}
-                onPress={() => { setAmpm("PM"); setSelectedHour(null); setSelectedMinute(null); setClockMode("hour"); }}
+                onPress={() => setAmpm("PM")}
               >
                 <Text style={[styles.ampmText, ampm === "PM" && styles.ampmTextActive]}>PM</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Clock Dial */}
-          <View style={styles.clockFace}>
-            <View style={styles.clockCenter} />
-            {selectedHour !== null && (
-              <View style={[styles.hand, { transform: [{ rotate: `${handDeg}deg` }] }]} />
-            )}
-            {(clockMode === "hour" ? HOURS : MINUTES).map((val, i) => {
-              const pos = position(i, 12);
-              const isSelected = clockMode === "hour"
-                ? val === selectedHour
-                : val === selectedMinute;
-              const disabled = clockMode === "hour" && isDisabledHour(val);
-              return (
-                <TouchableOpacity
-                  key={`${clockMode}-${val}`}
-                  style={[
-                    styles.dotBtn,
-                    { left: pos.left, top: pos.top },
-                    isSelected && styles.dotBtnSelected,
-                  ]}
-                  onPress={() => {
-                    if (disabled) return;
-                    if (clockMode === "hour") handleHourSelect(val as number);
-                    else {
-                      handleMinuteSelect(val as number);
-                      setClockMode("hour");
-                    }
-                  }}
-                  disabled={disabled}
-                >
-                  <Text style={[
-                    styles.dotText,
-                    isSelected && styles.dotTextSelected,
-                    disabled && styles.dotTextPast,
-                  ]}>
-                    {clockMode === "hour" ? val : String(val).padStart(2, "0")}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          {/* Bottom row: switch mode & confirm */}
+          {/* Buttons */}
           <View style={styles.btnRow}>
             <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.confirmBtn, (!selectedDay || selectedHour === null || selectedMinute === null) && styles.confirmBtnDisabled]}
+              style={[styles.confirmBtn, (!selectedDay || !timeInput.trim() || !parseTime()) && styles.confirmBtnDisabled]}
               onPress={handleConfirm}
-              disabled={!selectedDay || selectedHour === null || selectedMinute === null}
+              disabled={!selectedDay || !timeInput.trim() || !parseTime()}
             >
               <FlaticonIcon name="check" size={16} color="#fff" />
               <Text style={styles.confirmText}>Confirm</Text>
@@ -309,7 +228,7 @@ const styles = StyleSheet.create({
   },
   daysGrid: {
     flexDirection: "row", flexWrap: "wrap",
-    marginBottom: 16,
+    marginBottom: 20,
   },
   dayCell: {
     width: "14.28%", aspectRatio: 1,
@@ -331,92 +250,41 @@ const styles = StyleSheet.create({
   dayTextPast: {
     color: "#d0d5dd",
   },
-
-  /* Time display */
-  timeDisplayRow: {
+  inputWrap: {
     flexDirection: "row", alignItems: "center",
-    justifyContent: "center", gap: 4, marginBottom: 16,
+    borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 4,
+    borderColor: "#e2e8f0",
   },
-  timePart: {
-    paddingHorizontal: 14, paddingVertical: 8,
-    borderRadius: 10, borderWidth: 1.5, borderColor: "#e2e8f0",
-    backgroundColor: "#f8fafc",
+  inputError: {
+    borderColor: "#ef4444",
   },
-  timePartActive: {
-    borderColor: "#0A7474", backgroundColor: "#E8F5F4",
+  timeInput: {
+    flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
+    color: "#1a2a3a", paddingVertical: 10,
   },
-  timePartText: {
-    fontSize: 22, fontFamily: "Inter_700Bold", color: "#1a2a3a",
+  timeRow: {
+    flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 24,
   },
-  timePartTextActive: {
-    color: "#0A7474",
+  timeInputWrap: {
+    flex: 1,
   },
-  timeColon: {
-    fontSize: 22, fontFamily: "Inter_700Bold", color: "#1a2a3a",
-  },
-  ampmCol: {
-    marginLeft: 10, gap: 4,
+  ampmRow: {
+    flexDirection: "row", gap: 6,
   },
   ampmBtn: {
-    paddingHorizontal: 12, paddingVertical: 4,
-    borderRadius: 8, borderWidth: 1.5, borderColor: "#e2e8f0",
+    paddingHorizontal: 16, paddingVertical: 10,
+    borderRadius: 10, borderWidth: 1.5, borderColor: "#e2e8f0",
     backgroundColor: "#fff",
   },
   ampmBtnActive: {
     backgroundColor: "#0A7474", borderColor: "#0A7474",
   },
   ampmText: {
-    fontSize: 11, fontFamily: "Inter_700Bold", color: "#1a2a3a",
+    fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#1a2a3a",
   },
   ampmTextActive: {
     color: "#fff",
   },
-
-  /* Clock dial */
-  clockFace: {
-    width: CLOCK_SIZE, height: CLOCK_SIZE,
-    borderRadius: CLOCK_RADIUS,
-    backgroundColor: "#f1f5f9",
-    alignSelf: "center",
-    marginBottom: 20,
-    position: "relative",
-    justifyContent: "center", alignItems: "center",
-  },
-  clockCenter: {
-    width: 10, height: 10, borderRadius: 5,
-    backgroundColor: "#0A7474",
-    zIndex: 10,
-  },
-  hand: {
-    position: "absolute",
-    width: 3, height: DOT_RADIUS - 10,
-    backgroundColor: "#0A7474",
-    borderRadius: 2,
-    bottom: CLOCK_RADIUS - 4,
-    transformOrigin: "bottom center",
-    zIndex: 5,
-  },
-  dotBtn: {
-    position: "absolute",
-    width: BTN_SIZE, height: BTN_SIZE,
-    borderRadius: HALF_BTN,
-    alignItems: "center", justifyContent: "center",
-    zIndex: 20,
-  },
-  dotBtnSelected: {
-    backgroundColor: "#0A7474",
-  },
-  dotText: {
-    fontSize: 14, fontFamily: "Inter_700Bold", color: "#1a2a3a",
-  },
-  dotTextSelected: {
-    color: "#fff",
-  },
-  dotTextPast: {
-    color: "#d0d5dd",
-  },
-
-  /* Buttons */
   btnRow: {
     flexDirection: "row", gap: 10,
   },
