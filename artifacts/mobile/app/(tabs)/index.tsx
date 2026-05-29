@@ -1,9 +1,9 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
-import React, { useState, useRef, memo } from "react";
+import React, { useState, memo } from "react";
 import {
   ActivityIndicator, Dimensions, FlatList, Image, Modal, Platform,
-  RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
+  RefreshControl, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -55,10 +55,10 @@ function getServiceIcon(name: string) {
   return SERVICE_ICONS[key ?? "washing-machine"];
 }
 
-const ServicesGallery = memo(function ServicesGallery({ services, colors, onServicePress }: { services: any[]; colors: any; onServicePress: (s: any) => void }) {
-  const scrollRef = useRef<ScrollView>(null);
-  const offsetRef = useRef(0);
+const CARD_GAP = 8;
+const CARD_W = (SCREEN_W - 32 - CARD_GAP * 2) / 3;
 
+const ServicesGallery = memo(function ServicesGallery({ services, colors, onServicePress }: { services: any[]; colors: any; onServicePress: (s: any) => void }) {
   return (
     <View style={styles.servicesWrapper}>
       <View style={styles.sectionHeaderRow}>
@@ -67,16 +67,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
           <Text style={styles.seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.servicesContainer}
-        snapToInterval={SCREEN_W * 0.55 + 12}
-        decelerationRate="fast"
-        onScroll={(e) => { offsetRef.current = e.nativeEvent.contentOffset.x; }}
-        scrollEventThrottle={16}
-      >
+      <View style={styles.servicesContainer}>
         {services.map(s => (
           <TouchableOpacity
             key={s.id}
@@ -88,18 +79,16 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
               <Image source={{ uri: s.serviceImage }} style={styles.serviceImage} />
             ) : (
               <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
-                <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />
+                <FlaticonIcon name={getServiceIcon(s.name)} size={24} color={colors.primary} />
               </View>
             )}
             <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
-            <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]}>{s.description}</Text>
             <View style={styles.servicePriceRow}>
               <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
-              <FlaticonIcon name="arrow-left" size={12} color={colors.primary} style={{ transform: [{ rotate: "180deg" }], marginLeft: 4 }} />
             </View>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 });
@@ -405,33 +394,31 @@ const styles = StyleSheet.create({
     color: "#00C6B5",
   },
   servicesContainer: {
-    paddingHorizontal: 16, gap: 12,
+    flexDirection: "row", flexWrap: "wrap",
+    paddingHorizontal: 16, gap: CARD_GAP,
   },
   serviceCard: {
-    width: SCREEN_W * 0.55, borderRadius: 18,
-    padding: 18, borderWidth: 1, borderColor: "#e2e8f0",
+    width: CARD_W, borderRadius: 16,
+    padding: 12, borderWidth: 1, borderColor: "#e2e8f0",
   },
   serviceIconWrap: {
-    width: 52, height: 52, borderRadius: 14,
-    alignItems: "center", justifyContent: "center", marginBottom: 12,
+    width: 44, height: 44, borderRadius: 12,
+    alignItems: "center", justifyContent: "center", marginBottom: 8,
   },
   serviceImage: {
-    width: "100%", height: 120, borderRadius: 14,
-    marginBottom: 12, resizeMode: "cover",
+    width: "100%", height: 80, borderRadius: 10,
+    marginBottom: 8, resizeMode: "contain",
   },
   serviceName: {
-    fontSize: 15, fontFamily: "Inter_700Bold",
-  },
-  serviceDesc: {
-    fontSize: 11, fontFamily: "Inter_400Regular",
-    marginTop: 2,
+    fontSize: 12, fontFamily: "Inter_700Bold",
+    textAlign: "center",
   },
   servicePriceRow: {
-    flexDirection: "row", alignItems: "center",
-    marginTop: 10,
+    flexDirection: "row", justifyContent: "center",
+    marginTop: 4,
   },
   servicePrice: {
-    fontSize: 15, fontFamily: "Inter_800ExtraBold",
+    fontSize: 13, fontFamily: "Inter_800ExtraBold",
   },
 
   // Active Order
