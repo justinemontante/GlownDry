@@ -42,7 +42,7 @@ export function StepTracker({ currentStatus }: StepTrackerProps) {
                 <FlaticonIcon
                   name={isDone ? "check" : step.icon}
                   size={14}
-                  color={isDone || isActive ? "#fff" : colors.mutedForeground}
+                  color={isDone || isActive ? "#fff8f8" : colors.mutedForeground}
                 />
               </View>
               {idx < STEPS.length - 1 && (
