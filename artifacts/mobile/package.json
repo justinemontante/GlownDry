@@ -55,5 +55,7 @@
     "zod": "catalog:",
     "zod-validation-error": "^3.4.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@react-native-community/datetimepicker": "^9.1.0"
+  }
 }
