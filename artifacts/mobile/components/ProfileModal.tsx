@@ -1,11 +1,10 @@
 import { FlaticonIcon } from "./FlaticonIcon";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert, Dimensions, Image, KeyboardAvoidingView, Modal, Platform,
+  Alert, Animated, Dimensions, Image, Modal, Platform,
   ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,7 +12,8 @@ import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useUpdateCustomer } from "@workspace/api-client-react";
 
-const { height: SCREEN_H } = Dimensions.get("window");
+const { width: SCREEN_W } = Dimensions.get("window");
+const DRAWER_W = SCREEN_W * 0.82;
 
 interface ProfileModalProps {
   visible: boolean;
@@ -25,18 +25,31 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
   const insets = useSafeAreaInsets();
   const { customer, logout, updateProfile } = useAuth();
   const updateMutation = useUpdateCustomer();
+  const slideAnim = useRef(new Animated.Value(DRAWER_W)).current;
+  const [rendered, setRendered] = useState(visible);
 
   const [editing, setEditing] = useState(false);
   const [fullName, setFullName] = useState(customer?.fullName ?? "");
   const [phone, setPhone] = useState(customer?.phone ?? "");
   const [uploading, setUploading] = useState(false);
 
-  const initials = customer?.fullName
-    ?.split(" ")
-    .map(n => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2) ?? "?";
+  useEffect(() => {
+    if (visible) {
+      setRendered(true);
+      slideAnim.setValue(DRAWER_W);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: DRAWER_W,
+        duration: 250,
+        useNativeDriver: true,
+      }).start(() => setRendered(false));
+    }
+  }, [visible, slideAnim]);
 
   const joinDate = customer?.createdAt
     ? new Date(customer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long" })
@@ -97,19 +110,25 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
     ]);
   }
 
+  if (!rendered) return null;
+
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.overlay}
-      >
+    <Modal visible={rendered} transparent animationType="none" onRequestClose={onClose}>
+      <View style={styles.overlay}>
         <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose} />
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
-          <View style={styles.handleRow}>
-            <View style={styles.handle} />
+        <Animated.View
+          style={[
+            styles.drawer,
+            { paddingTop: insets.top, paddingBottom: insets.bottom + 20, transform: [{ translateX: slideAnim }] },
+          ]}
+        >
+          <View style={styles.drawerHeader}>
+            <Text style={styles.drawerTitle}>Profile</Text>
+            <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
+              <FlaticonIcon name="x" size={20} color="#1a2a3a" />
+            </TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {/* Profile Header */}
             <View style={styles.profileHeader}>
               <TouchableOpacity onPress={handlePickImage} disabled={uploading} activeOpacity={0.8}>
                 <View style={styles.avatarOuter}>
@@ -144,7 +163,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               </View>
             </View>
 
-            {/* Personal Info Card */}
             <View style={styles.sectionCard}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>Personal Information</Text>
@@ -218,7 +236,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               </View>
             </View>
 
-            {/* Quick Links */}
             <View style={styles.sectionCard}>
               <Text style={[styles.cardTitle, { paddingHorizontal: 16, paddingTop: 16 }]}>Quick Links</Text>
               <View style={[styles.divider, { marginTop: 12 }]} />
@@ -226,7 +243,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 { label: "Booking History", icon: "archive" as const, route: "/(tabs)/notifications" as const },
                 { label: "Track Current Order", icon: "map-pin" as const, route: "/(tabs)/track" as const },
                 { label: "New Booking", icon: "plus-circle" as const, route: "/(tabs)/booking" as const },
-              ].map((item, i) => (
+              ].map((item) => (
                 <TouchableOpacity
                   key={item.label}
                   style={styles.menuItem}
@@ -242,42 +259,46 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               ))}
             </View>
 
-            {/* Logout */}
             <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
               <FlaticonIcon name="log-out" size={18} color="#fff" />
               <Text style={styles.logoutText}>Logout</Text>
             </TouchableOpacity>
           </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
+        </Animated.View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1, justifyContent: "flex-end",
+    flex: 1, flexDirection: "row",
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.45)",
   },
-  sheet: {
-    maxHeight: SCREEN_H * 0.85,
+  drawer: {
+    position: "absolute", top: 0, right: 0, bottom: 0,
+    width: DRAWER_W,
     backgroundColor: "#EBF3F6",
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
     paddingHorizontal: 20,
-    paddingTop: 8,
-    shadowColor: "#000", shadowOffset: { width: 0, height: -8 },
+    shadowColor: "#000", shadowOffset: { width: -8, height: 0 },
     shadowOpacity: 0.15, shadowRadius: 24, elevation: 16,
   },
-  handleRow: {
-    alignItems: "center", paddingVertical: 4, marginBottom: 4,
+  drawerHeader: {
+    flexDirection: "row", justifyContent: "space-between",
+    alignItems: "center", paddingVertical: 16,
   },
-  handle: {
-    width: 40, height: 5, borderRadius: 3,
-    backgroundColor: "#d0d5dd",
+  drawerTitle: {
+    fontSize: 20, fontFamily: "Inter_800ExtraBold",
+    color: "#1a2a3a",
+  },
+  closeBtn: {
+    width: 36, height: 36, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1, borderColor: "#e2e8f0",
   },
   profileHeader: {
     alignItems: "center", paddingVertical: 16, gap: 6,
