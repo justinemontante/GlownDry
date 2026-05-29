@@ -200,10 +200,9 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#E0EFFF", "#FFF2E3", "#F8F9FA"]}
-        locations={[0, 0.25, 1]}
+        colors={["#E0EFFF", "#F8F9FA"]}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
       {/* Brand Bar */}
