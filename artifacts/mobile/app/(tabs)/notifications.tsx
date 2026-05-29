@@ -25,16 +25,35 @@ export default function NotificationsScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [tab, setTab] = useState<"notifications" | "history">("notifications");
+  const [manualRefreshing, setManualRefreshing] = useState(false);
 
-  const { data: notifications, isLoading: loadingNotifs, refetch: refetchNotifs, isRefetching: isRefetchingNotifs } = useListNotifications(
+  const { data: notifications, isLoading: loadingNotifs, refetch: refetchNotifs } = useListNotifications(
     { customerId: customer?.id ?? 0 },
     { query: { queryKey: getListNotificationsQueryKey({ customerId: customer?.id ?? 0 }), enabled: !!customer?.id } },
   );
 
   const { data: bookings, isLoading: loadingBookings, refetch: refetchBookings } = useListBookings(
     { customerId: customer?.id },
-    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
+    { query: { enabled: !!customer?.id } },
   );
+
+  const onRefreshNotifs = async () => {
+    setManualRefreshing(true);
+    try {
+      await refetchNotifs();
+    } finally {
+      setManualRefreshing(false);
+    }
+  };
+
+  const onRefreshBookings = async () => {
+    setManualRefreshing(true);
+    try {
+      await refetchBookings();
+    } finally {
+      setManualRefreshing(false);
+    }
+  };
 
   const markRead = useMarkNotificationRead();
 
@@ -119,7 +138,7 @@ export default function NotificationsScreen() {
             )}
             contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 100 }]}
             refreshControl={
-              <RefreshControl refreshing={isRefetchingNotifs} onRefresh={refetchNotifs} tintColor={colors.primary} />
+              <RefreshControl refreshing={manualRefreshing} onRefresh={onRefreshNotifs} tintColor={colors.primary} />
             }
             ListEmptyComponent={
               <View style={styles.empty}>
@@ -149,7 +168,7 @@ export default function NotificationsScreen() {
             )}
             contentContainerStyle={[styles.list, { paddingBottom: bottomPad + 100 }]}
             refreshControl={
-              <RefreshControl refreshing={false} onRefresh={refetchBookings} tintColor={colors.primary} />
+              <RefreshControl refreshing={manualRefreshing} onRefresh={onRefreshBookings} tintColor={colors.primary} />
             }
             ListEmptyComponent={
               <View style={styles.empty}>

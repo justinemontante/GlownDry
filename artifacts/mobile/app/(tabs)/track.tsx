@@ -140,9 +140,10 @@ export default function TrackScreen() {
   const { customer } = useAuth();
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const { data: bookings, isLoading, refetch, isRefetching } = useListBookings(
+  const [manualRefreshing, setManualRefreshing] = useState(false);
+  const { data: bookings, isLoading, refetch } = useListBookings(
     { customerId: customer?.id },
-    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
+    { query: { enabled: !!customer?.id } },
   );
 
   const [receiptOpen, setReceiptOpen] = useState(false);
@@ -161,6 +162,15 @@ export default function TrackScreen() {
     setReceiptOpen(true);
   }
 
+  const onRefresh = async () => {
+    setManualRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setManualRefreshing(false);
+    }
+  };
+
   const statusCfg = activeBooking ? (STATUS_CONFIG[activeBooking.status] ?? STATUS_CONFIG.scheduled) : null;
 
   return (
@@ -176,7 +186,7 @@ export default function TrackScreen() {
         contentContainerStyle={[styles.container, { paddingTop: 8, paddingBottom: bottomPad + 100 }]}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.primary} />
+          <RefreshControl refreshing={manualRefreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Order Tracker</Text>
