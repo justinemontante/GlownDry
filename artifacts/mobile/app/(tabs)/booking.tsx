@@ -145,11 +145,8 @@ export default function BookingScreen() {
                     name={getServiceIcon(svc.name)}
                     size={22}
                     color={selectedService === svc.id ? colors.primary : colors.mutedForeground}
-        />
-      </View>
-      {weightError && (
-        <Text style={styles.errorHint}>Minimum of {MIN_WEIGHT} kg required</Text>
-      )}
+                  />
+                </View>
               )}
               <Text style={[styles.svcName, { color: selectedService === svc.id ? colors.primary : colors.foreground }]}>
                 {svc.name}
@@ -201,6 +198,9 @@ export default function BookingScreen() {
           testID="input-weight"
         />
       </View>
+      {weightError && (
+        <Text style={styles.errorHint}>Minimum of {MIN_WEIGHT} kg required</Text>
+      )}
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Notes (optional)</Text>
       <View style={[styles.inputCard, { borderColor: colors.border, backgroundColor: colors.card, paddingVertical: 12 }]}>
