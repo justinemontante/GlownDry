@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CreditCard, DollarSign, ReceiptText, Plus } from "lucide-react";
+import { CreditCard, DollarSign, ReceiptText, Plus, Printer, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ export default function AdminPayments() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
   const [form, setForm] = useState({ bookingId: "", amount: "", cashReceived: "" });
 
   const token = () => localStorage.getItem("adminToken");
@@ -189,7 +190,7 @@ export default function AdminPayments() {
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="icon" className="text-slate-400 hover:text-primary">
+                  <Button variant="ghost" size="icon" className="text-slate-400 hover:text-primary" onClick={() => setReceiptPayment(t)}>
                     <ReceiptText className="w-4 h-4" />
                   </Button>
                 </TableCell>
@@ -198,6 +199,79 @@ export default function AdminPayments() {
           </TableBody>
         </Table>
       </Card>
+
+      {/* Receipt Dialog */}
+      <Dialog open={!!receiptPayment} onOpenChange={() => setReceiptPayment(null)}>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+          <div className="bg-primary p-6 text-primary-foreground">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold">GlownDry</h2>
+                <p className="text-primary-foreground/80 text-sm">Laundry Service Receipt</p>
+              </div>
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/20" onClick={() => setReceiptPayment(null)}>
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+          {receiptPayment && (
+            <div className="p-6 space-y-6" id="receipt-content">
+              <div className="text-center border-b border-slate-100 pb-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">Transaction</p>
+                <p className="text-2xl font-bold text-foreground">TXN-{String(receiptPayment.id).padStart(4, "0")}</p>
+                <p className="text-xs text-muted-foreground mt-1">{new Date(receiptPayment.createdAt).toLocaleString("en-PH", { dateStyle: "medium", timeStyle: "short" })}</p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Order Reference</span>
+                  <span className="font-medium">ORD-{String(receiptPayment.bookingId).padStart(4, "0")}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Customer</span>
+                  <span className="font-medium">{receiptPayment.customerName || "—"}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Payment Method</span>
+                  <span className="font-medium capitalize">{receiptPayment.method}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Amount Paid</span>
+                  <span className="font-bold text-lg text-green-600">₱{receiptPayment.amount.toFixed(2)}</span>
+                </div>
+                {receiptPayment.method === "cash" && (
+                  <>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Cash Received</span>
+                      <span className="font-medium">₱{receiptPayment.cashReceived.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Change</span>
+                      <span className="font-bold text-primary">₱{receiptPayment.change.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Status</span>
+                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Success</Badge>
+                </div>
+              </div>
+
+              <div className="text-center pt-2 border-t border-slate-100">
+                <p className="text-xs text-muted-foreground">Thank you for choosing GlownDry!</p>
+                <p className="text-xs text-muted-foreground mt-1">₱{receiptPayment.amount.toFixed(2)} • {receiptPayment.method.toUpperCase()} • {new Date(receiptPayment.createdAt).toLocaleDateString("en-PH")}</p>
+              </div>
+
+              <div className="flex gap-3">
+                <Button variant="outline" className="flex-1 gap-2" onClick={() => { window.print(); }}>
+                  <Printer className="w-4 h-4" /> Print
+                </Button>
+                <Button className="flex-1" onClick={() => setReceiptPayment(null)}>Done</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

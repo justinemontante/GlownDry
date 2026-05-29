@@ -1,8 +1,8 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
-  ActivityIndicator, Platform, RefreshControl,
+  ActivityIndicator, Modal, Platform, RefreshControl,
   ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,6 +11,128 @@ import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { StepTracker } from "@/components/StepTracker";
 import { useListBookings, getListBookingsQueryKey } from "@workspace/api-client-react";
+
+const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
+  scheduled: { label: "Scheduled", color: "#3b82f6" },
+  received: { label: "Received", color: "#8b5cf6" },
+  in_progress: { label: "In Progress", color: "#f59e0b" },
+  ready: { label: "Ready for Pickup", color: "#22c55e" },
+  claimed: { label: "Claimed", color: "#6b7280" },
+};
+
+function getEstimatedReady(scheduledDate: string) {
+  const d = new Date(scheduledDate);
+  d.setHours(d.getHours() + 24);
+  return d;
+}
+
+function ReceiptModal({ booking, onClose }: { booking: any; onClose: () => void }) {
+  const colors = useColors();
+  const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.scheduled;
+  const readyDate = getEstimatedReady(booking.scheduledDate);
+
+  return (
+    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
+      <View style={receiptStyles.overlay}>
+        <TouchableOpacity style={receiptStyles.backdrop} activeOpacity={1} onPress={onClose} />
+        <View style={[receiptStyles.sheet, { backgroundColor: "#fff" }]}>
+          <View style={receiptStyles.handleRow}>
+            <View style={receiptStyles.handle} />
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Receipt Header */}
+            <View style={[receiptStyles.receiptHeader, { backgroundColor: colors.primary }]}>
+              <View style={receiptStyles.receiptHeaderRow}>
+                <View>
+                  <Text style={receiptStyles.receiptBrand}>GlownDry</Text>
+                  <Text style={receiptStyles.receiptSub}>Official Receipt</Text>
+                </View>
+                <TouchableOpacity onPress={onClose} style={receiptStyles.closeBtn}>
+                  <FlaticonIcon name="x" size={18} color={colors.primary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Receipt Body */}
+            <View style={receiptStyles.receiptBody}>
+              <View style={receiptStyles.receiptMeta}>
+                <Text style={receiptStyles.receiptMetaLabel}>Order Number</Text>
+                <Text style={receiptStyles.receiptMetaValue}>#{booking.id}</Text>
+              </View>
+              <View style={receiptStyles.receiptMeta}>
+                <Text style={receiptStyles.receiptMetaLabel}>Date</Text>
+                <Text style={receiptStyles.receiptMetaValue}>
+                  {new Date(booking.scheduledDate).toLocaleDateString("en-PH", { dateStyle: "long" })}
+                </Text>
+              </View>
+
+              <View style={[receiptStyles.receiptDivider, { backgroundColor: colors.border }]} />
+
+              <View style={receiptStyles.receiptRow}>
+                <Text style={receiptStyles.receiptLabel}>Service</Text>
+                <Text style={receiptStyles.receiptValue}>{booking.serviceName ?? "Laundry Service"}</Text>
+              </View>
+              <View style={receiptStyles.receiptRow}>
+                <Text style={receiptStyles.receiptLabel}>Weight</Text>
+                <Text style={receiptStyles.receiptValue}>{booking.weightKg ? `${booking.weightKg} kg` : "—"}</Text>
+              </View>
+              <View style={receiptStyles.receiptRow}>
+                <Text style={receiptStyles.receiptLabel}>Status</Text>
+                <View style={[receiptStyles.statusBadge, { backgroundColor: statusCfg.color + "15" }]}>
+                  <Text style={[receiptStyles.statusText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
+                </View>
+              </View>
+
+              <View style={[receiptStyles.receiptDivider, { backgroundColor: colors.border }]} />
+
+              <View style={receiptStyles.receiptRow}>
+                <Text style={receiptStyles.receiptLabel}>Total Amount</Text>
+                <Text style={[receiptStyles.receiptAmount, { color: colors.primary }]}>
+                  ₱{booking.totalAmount?.toFixed(2) ?? "0.00"}
+                </Text>
+              </View>
+
+              <View style={[receiptStyles.receiptDivider, { backgroundColor: colors.border }]} />
+
+              <View style={receiptStyles.receiptSchedule}>
+                <Text style={receiptStyles.scheduleTitle}>Schedule</Text>
+                <View style={receiptStyles.scheduleRow}>
+                  <FlaticonIcon name="calendar" size={14} color={colors.mutedForeground} />
+                  <Text style={receiptStyles.scheduleText}>
+                    Drop off: {new Date(booking.scheduledDate).toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                  </Text>
+                </View>
+                {booking.status !== "claimed" && (
+                  <View style={receiptStyles.scheduleRow}>
+                    <FlaticonIcon name="clock" size={14} color="#22c55e" />
+                    <Text style={[receiptStyles.scheduleText, { color: "#22c55e" }]}>
+                      Est. Ready: {readyDate.toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                    </Text>
+                  </View>
+                )}
+                {booking.status === "claimed" && (
+                  <View style={receiptStyles.scheduleRow}>
+                    <FlaticonIcon name="check-circle" size={14} color="#6b7280" />
+                    <Text style={[receiptStyles.scheduleText, { color: "#6b7280" }]}>
+                      Claimed: {new Date().toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              <View style={[receiptStyles.receiptFooter]}>
+                <Text style={receiptStyles.receiptFooterText}>Thank you for choosing GlownDry!</Text>
+                <Text style={receiptStyles.receiptFooterSub}>
+                  ₱{booking.totalAmount?.toFixed(2)} • Order #{booking.id} • {new Date(booking.scheduledDate).toLocaleDateString("en-PH")}
+                </Text>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
 
 export default function TrackScreen() {
   const colors = useColors();
@@ -23,11 +145,23 @@ export default function TrackScreen() {
     { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id } },
   );
 
+  const [receiptOpen, setReceiptOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+
   const activeBooking = bookings
     ?.slice()
     .reverse()
     .find(b => ["scheduled", "received", "in_progress", "ready"].includes(b.status))
     ?? bookings?.[bookings.length - 1];
+
+  const readyDate = activeBooking ? getEstimatedReady(activeBooking.scheduledDate) : null;
+
+  function openReceipt(b: any) {
+    setSelectedBooking(b);
+    setReceiptOpen(true);
+  }
+
+  const statusCfg = activeBooking ? (STATUS_CONFIG[activeBooking.status] ?? STATUS_CONFIG.scheduled) : null;
 
   return (
     <View style={{ flex: 1 }}>
@@ -59,18 +193,17 @@ export default function TrackScreen() {
         </View>
       )}
 
-      {activeBooking && (
+      {activeBooking && statusCfg && (
         <>
+          {/* Order Card */}
           <View style={[styles.orderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.orderRow}>
               <View>
                 <Text style={[styles.orderLabel, { color: colors.mutedForeground }]}>Order Number</Text>
                 <Text style={[styles.orderNum, { color: colors.foreground }]}>#{activeBooking.id}</Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: colors.tealLight }]}>
-                <Text style={[styles.statusText, { color: colors.primary }]}>
-                  {activeBooking.status.replace("_", " ")}
-                </Text>
+              <View style={[styles.statusBadge, { backgroundColor: statusCfg.color + "15" }]}>
+                <Text style={[styles.statusText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
               </View>
             </View>
 
@@ -79,11 +212,11 @@ export default function TrackScreen() {
             <View style={styles.detailsGrid}>
               {[
                 { label: "Service", value: activeBooking.serviceName ?? "—" },
-                { label: "Total", value: `₱${activeBooking.totalAmount.toFixed(2)}` },
+                { label: "Total", value: `₱${activeBooking.totalAmount?.toFixed(2) ?? "0.00"}` },
                 {
-                  label: "Scheduled",
+                  label: "Drop off",
                   value: new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", {
-                    month: "short", day: "numeric",
+                    month: "short", day: "numeric", year: "numeric",
                   }),
                 },
                 { label: "Weight", value: activeBooking.weightKg ? `${activeBooking.weightKg} kg` : "—" },
@@ -96,11 +229,69 @@ export default function TrackScreen() {
             </View>
           </View>
 
+          {/* Pickup Schedule Card */}
+          {activeBooking.status !== "claimed" && (
+            <View style={[styles.scheduleCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.scheduleCardHeader}>
+                <Text style={[styles.scheduleCardTitle, { color: colors.foreground }]}>Pickup Schedule</Text>
+              </View>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+              <View style={styles.scheduleRow}>
+                <View style={[styles.scheduleIconWrap, { backgroundColor: colors.tealLight }]}>
+                  <FlaticonIcon name="calendar" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.scheduleContent}>
+                  <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Drop Off</Text>
+                  <Text style={[styles.scheduleValue, { color: colors.foreground }]}>
+                    {new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                  </Text>
+                </View>
+              </View>
+              {activeBooking.status === "ready" ? (
+                <View style={styles.scheduleRow}>
+                  <View style={[styles.scheduleIconWrap, { backgroundColor: "#dcfce7" }]}>
+                    <FlaticonIcon name="check-circle" size={18} color="#22c55e" />
+                  </View>
+                  <View style={styles.scheduleContent}>
+                    <Text style={[styles.scheduleLabel, { color: "#22c55e" }]}>Ready for Pickup!</Text>
+                    <Text style={[styles.scheduleValue, { color: "#22c55e" }]}>
+                      Your laundry is ready. Please pick up at our store.
+                    </Text>
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.scheduleRow}>
+                  <View style={[styles.scheduleIconWrap, { backgroundColor: "#fef3c7" }]}>
+                    <FlaticonIcon name="clock" size={18} color="#f59e0b" />
+                  </View>
+                  <View style={styles.scheduleContent}>
+                    <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Est. Ready for Pickup</Text>
+                    <Text style={[styles.scheduleValue, { color: colors.foreground }]}>
+                      {readyDate?.toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Progress Tracker */}
           <View style={[styles.trackerCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.trackerTitle, { color: colors.foreground }]}>Progress</Text>
             <StepTracker currentStatus={activeBooking.status} />
           </View>
 
+          {/* Receipt Button */}
+          <TouchableOpacity
+            style={[styles.receiptBtn, { backgroundColor: colors.primary }]}
+            onPress={() => openReceipt(activeBooking)}
+            activeOpacity={0.85}
+          >
+            <FlaticonIcon name="receipt" size={18} color="#fff" />
+            <Text style={styles.receiptBtnText}>View Receipt</Text>
+          </TouchableOpacity>
+
+          {/* Notes */}
           {activeBooking.notes && (
             <View style={[styles.notesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <Text style={[styles.notesLabel, { color: colors.mutedForeground }]}>Notes</Text>
@@ -110,6 +301,10 @@ export default function TrackScreen() {
         </>
       )}
       </ScrollView>
+
+      {selectedBooking && (
+        <ReceiptModal booking={selectedBooking} onClose={() => setReceiptOpen(false)} />
+      )}
     </View>
   );
 }
@@ -128,7 +323,7 @@ const styles = StyleSheet.create({
   orderLabel: { fontSize: 12, fontFamily: "Inter_400Regular" },
   orderNum: { fontSize: 22, fontFamily: "Inter_700Bold", marginTop: 2 },
   statusBadge: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
-  statusText: { fontSize: 13, fontFamily: "Inter_600SemiBold", textTransform: "capitalize" },
+  statusText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
   divider: { height: 1, marginVertical: 14 },
   detailsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 16 },
   detailItem: { width: "45%" },
@@ -138,7 +333,75 @@ const styles = StyleSheet.create({
     borderRadius: 16, padding: 18, borderWidth: 1, marginBottom: 14,
   },
   trackerTitle: { fontSize: 16, fontFamily: "Inter_700Bold", marginBottom: 16 },
-  notesCard: { borderRadius: 16, padding: 18, borderWidth: 1 },
+  scheduleCard: {
+    borderRadius: 16, padding: 18, borderWidth: 1, marginBottom: 14,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
+  },
+  scheduleCardHeader: { marginBottom: 12 },
+  scheduleCardTitle: { fontSize: 16, fontFamily: "Inter_700Bold" },
+  scheduleRow: {
+    flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 10,
+  },
+  scheduleIconWrap: {
+    width: 38, height: 38, borderRadius: 10,
+    alignItems: "center", justifyContent: "center",
+  },
+  scheduleContent: { flex: 1 },
+  scheduleLabel: { fontSize: 11, fontFamily: "Inter_400Regular", textTransform: "uppercase", letterSpacing: 0.4 },
+  scheduleValue: { fontSize: 14, fontFamily: "Inter_500Medium", marginTop: 2 },
+  receiptBtn: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 8, paddingVertical: 14, borderRadius: 14, marginBottom: 14,
+  },
+  receiptBtnText: { fontSize: 15, fontFamily: "Inter_600SemiBold", color: "#fff" },
+  notesCard: {
+    borderRadius: 16, padding: 18, borderWidth: 1,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
+  },
   notesLabel: { fontSize: 12, fontFamily: "Inter_600SemiBold", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.4 },
   notesText: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 22 },
+});
+
+const receiptStyles = StyleSheet.create({
+  overlay: { flex: 1 },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.45)" },
+  sheet: {
+    position: "absolute", bottom: 0, left: 0, right: 0,
+    borderTopLeftRadius: 28, borderTopRightRadius: 28,
+    maxHeight: "90%",
+    shadowColor: "#000", shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.15, shadowRadius: 20, elevation: 16,
+  },
+  handleRow: { alignItems: "center", paddingVertical: 8, marginBottom: 4 },
+  handle: { width: 40, height: 5, borderRadius: 3, backgroundColor: "#d0d5dd" },
+  receiptHeader: {
+    padding: 20, borderTopLeftRadius: 28, borderTopRightRadius: 28,
+  },
+  receiptHeaderRow: {
+    flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",
+  },
+  receiptBrand: { fontSize: 22, fontFamily: "Inter_900Black", color: "#fff", letterSpacing: 1 },
+  receiptSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.8)", marginTop: 2 },
+  closeBtn: {
+    width: 32, height: 32, borderRadius: 8, backgroundColor: "#fff",
+    alignItems: "center", justifyContent: "center",
+  },
+  receiptBody: { padding: 20 },
+  receiptMeta: { marginBottom: 12 },
+  receiptMetaLabel: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#8a94a6", textTransform: "uppercase", letterSpacing: 0.5 },
+  receiptMetaValue: { fontSize: 18, fontFamily: "Inter_700Bold", color: "#1a2a3a", marginTop: 3 },
+  receiptDivider: { height: 1, marginVertical: 14 },
+  receiptRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
+  receiptLabel: { fontSize: 14, fontFamily: "Inter_400Regular", color: "#8a94a6" },
+  receiptValue: { fontSize: 14, fontFamily: "Inter_500Medium", color: "#1a2a3a" },
+  statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  statusText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  receiptAmount: { fontSize: 20, fontFamily: "Inter_800ExtraBold" },
+  receiptSchedule: { backgroundColor: "#f8fafc", borderRadius: 12, padding: 14, marginTop: 4 },
+  scheduleTitle: { fontSize: 13, fontFamily: "Inter_700Bold", color: "#1a2a3a", marginBottom: 10 },
+  scheduleRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 8 },
+  scheduleText: { fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a" },
+  receiptFooter: { alignItems: "center", paddingTop: 16, marginTop: 4 },
+  receiptFooterText: { fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a" },
+  receiptFooterSub: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#8a94a6", marginTop: 4 },
 });
