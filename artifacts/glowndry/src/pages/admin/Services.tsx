@@ -73,6 +73,7 @@ export default function AdminServices() {
   const [editing, setEditing] = useState<Service | null>(null);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Service | null>(null);
 
   const token = () => localStorage.getItem("adminToken");
 
@@ -118,14 +119,15 @@ export default function AdminServices() {
     }
   }
 
-  async function remove(id: number) {
-    if (!confirm("Delete this service?")) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/services/${id}`, {
+      const res = await fetch(`/api/services/${deleteTarget.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token()}` },
       });
       if (!res.ok) throw new Error(await res.text());
+      setDeleteTarget(null);
       load();
     } catch (e) {
       console.error("Delete failed", e);
@@ -208,7 +210,7 @@ export default function AdminServices() {
                   <Edit2 className="w-4 h-4 text-muted-foreground" />
                 </button>
                 <button
-                  onClick={() => remove(service.id)}
+                  onClick={() => setDeleteTarget(service)}
                   className="bg-white/90 hover:bg-white rounded-lg p-1.5 shadow-sm transition-colors"
                   title="Delete"
                 >
@@ -229,6 +231,21 @@ export default function AdminServices() {
           </Card>
         ))}
       </div>
+
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete Service</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
