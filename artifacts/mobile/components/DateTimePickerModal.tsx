@@ -57,7 +57,7 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     if (!/^\d{1,2}$/.test(hourInput.trim()) || h < 1 || h > 12) return null;
     if (!/^\d{2}$/.test(min)) return null;
     const hr24 = ampm === "PM" && h !== 12 ? h + 12 : ampm === "AM" && h === 12 ? 0 : h;
-    if (hr24 < 7 || hr24 > 20) return null;
+    if (hr24 < 7 || hr24 > 18) return null;
     return `${String(hr24).padStart(2, "0")}:${min}`;
   }
 
@@ -132,7 +132,7 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
           </View>
 
           {hourInput && minuteInput && !timeValid && (
-            <Text style={styles.errorHint}>Enter a valid time between 7:00 AM and 8:00 PM</Text>
+            <Text style={styles.errorHint}>Enter a valid time between 7:00 AM and 6:00 PM</Text>
           )}
 
           <Text style={styles.sectionLabel}>Date</Text>
