@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     color: "#00C6B5",
   },
   servicesContainer: {
-    paddingHorizontal: 16, gap: 12,
+    paddingHorizontal: 16, paddingVertical: 8, gap: 12,
   },
   serviceCard: {
     width: SCREEN_W * 0.55, borderRadius: 24,
