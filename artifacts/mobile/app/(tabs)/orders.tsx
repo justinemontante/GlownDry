@@ -20,8 +20,11 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   claimed: { label: "Claimed", color: "#6b7280" },
 };
 
-function getEstimatedReady(scheduledDate: string) {
+// FIX 1: Nilagyan ng safety check para hindi mag-crash kung walang date
+function getEstimatedReady(scheduledDate?: string) {
+  if (!scheduledDate) return new Date(); 
   const d = new Date(scheduledDate);
+  if (isNaN(d.getTime())) return new Date(); // Kapag Invalid Date
   d.setHours(d.getHours() + 24);
   return d;
 }
@@ -32,6 +35,7 @@ function ReceiptModal({ booking, visible, onClose }: { booking: any; visible: bo
 
   const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.scheduled;
   const readyDate = getEstimatedReady(booking.scheduledDate);
+  const scheduledDateFallback = booking.scheduledDate || Date.now();
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -65,7 +69,7 @@ function ReceiptModal({ booking, visible, onClose }: { booking: any; visible: bo
                 <View style={{ alignItems: "flex-end" }}>
                   <Text style={receiptStyles.receiptMetaLabel}>Date</Text>
                   <Text style={receiptStyles.receiptMetaValue}>
-                    {new Date(booking.scheduledDate).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+                    {new Date(scheduledDateFallback).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
                   </Text>
                 </View>
               </View>
@@ -109,7 +113,7 @@ function ReceiptModal({ booking, visible, onClose }: { booking: any; visible: bo
                 <View style={receiptStyles.scheduleRow}>
                   <FlaticonIcon name="calendar" size={14} color={colors.mutedForeground} />
                   <Text style={receiptStyles.scheduleText}>
-                    Drop off: {new Date(booking.scheduledDate).toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                    Drop off: {new Date(scheduledDateFallback).toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
                   </Text>
                 </View>
                 {booking.status !== "claimed" && (
@@ -124,7 +128,7 @@ function ReceiptModal({ booking, visible, onClose }: { booking: any; visible: bo
 
               <View style={receiptStyles.barcodeContainer}>
                 <FlaticonIcon name="package" size={40} color={colors.border} />
-                <Text style={receiptStyles.barcodeText}>GLN-{booking.id}-{new Date(booking.scheduledDate).getTime()}</Text>
+                <Text style={receiptStyles.barcodeText}>GLN-{booking.id}-{new Date(scheduledDateFallback).getTime()}</Text>
               </View>
 
               <View style={receiptStyles.receiptFooter}>
@@ -154,19 +158,27 @@ export default function TrackScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [manualRefreshing, setManualRefreshing] = useState(false);
-  const { data: bookings, isLoading, refetch } = useListBookings(
+ const { data: bookings, isLoading, refetch } = useListBookings(
     { customerId: customer?.id },
-    { query: { enabled: !!customer?.id } },
+    { 
+      query: { 
+        queryKey: getListBookingsQueryKey({ customerId: customer?.id }),
+        enabled: !!customer?.id 
+      } 
+    },
   );
 
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
 
-  const activeBooking = bookings
-    ?.slice()
-    .reverse()
-    .find(b => ["scheduled", "received", "in_progress", "ready"].includes(b.status))
-    ?? bookings?.[bookings.length - 1];
+  // FIX 2: Inayos ang logic dito para hindi maghanap ng "length" kapag undefined ang bookings
+  const activeBooking = bookings?.length
+    ? bookings
+        .slice()
+        .reverse()
+        .find((b) => ["scheduled", "received", "in_progress", "ready"].includes(b.status)) 
+        ?? bookings[bookings.length - 1] // Kukunin na lang ang pinakabago kung walang active
+    : null;
 
   const readyDate = activeBooking ? getEstimatedReady(activeBooking.scheduledDate) : null;
 
@@ -204,7 +216,7 @@ export default function TrackScreen() {
       >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Order Tracker</Text>
 
-        {isLoading && <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />}
+        {isLoading && <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} size="large" />}
 
         {!isLoading && !activeBooking && (
           <View style={styles.empty}>
@@ -238,7 +250,7 @@ export default function TrackScreen() {
                   { label: "Total", value: `₱${activeBooking.totalAmount?.toFixed(2) ?? "0.00"}` },
                   {
                     label: "Drop off",
-                    value: new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", {
+                    value: new Date(activeBooking.scheduledDate || Date.now()).toLocaleDateString("en-PH", {
                       month: "short", day: "numeric", year: "numeric",
                     }),
                   },
@@ -266,7 +278,7 @@ export default function TrackScreen() {
                   <View style={styles.scheduleContent}>
                     <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Drop Off</Text>
                     <Text style={[styles.scheduleValue, { color: colors.foreground }]}>
-                      {new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                      {new Date(activeBooking.scheduledDate || Date.now()).toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
                     </Text>
                   </View>
                 </View>
