@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Plus, Edit2, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -13,6 +13,56 @@ type Service = {
   pricePerKg: number;
   imageUrl?: string | null;
 };
+
+function ImageUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div>
+      <label className="text-sm font-medium">Service Image</label>
+      <div className="flex items-center gap-3 mt-1">
+        {value ? (
+          <div className="relative w-20 h-20 rounded-lg overflow-hidden border">
+            <img src={value} alt="preview" className="w-full h-full object-cover" />
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="absolute top-0.5 right-0.5 bg-black/50 rounded-full p-0.5"
+            >
+              <X className="w-3 h-3 text-white" />
+            </button>
+          </div>
+        ) : (
+          <div
+            onClick={() => inputRef.current?.click()}
+            className="w-20 h-20 rounded-lg border-2 border-dashed border-muted-foreground/40 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary/50 transition-colors"
+          >
+            <Upload className="w-5 h-5 text-muted-foreground/60" />
+            <span className="text-[10px] text-muted-foreground/60">Upload</span>
+          </div>
+        )}
+        <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+        {value && (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="text-xs text-primary hover:underline"
+          >
+            Change
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const emptyForm = { name: "", description: "", pricePerKg: 0, imageUrl: "" };
 
@@ -100,10 +150,7 @@ export default function AdminServices() {
                 <label className="text-sm font-medium">Price per kg (₱)</label>
                 <Input type="number" value={form.pricePerKg} onChange={e => setForm({ ...form, pricePerKg: Number(e.target.value) })} />
               </div>
-              <div>
-                <label className="text-sm font-medium">Image URL</label>
-                <Input value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/service-image.jpg" />
-              </div>
+              <ImageUpload value={form.imageUrl} onChange={url => setForm({ ...form, imageUrl: url })} />
               <Button onClick={save} className="w-full">{editing ? "Update" : "Create"}</Button>
             </div>
           </DialogContent>
