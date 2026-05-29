@@ -114,9 +114,6 @@ export default function HomeScreen() {
 
   const { data: services } = useListServices({ query: { refetchInterval: 1000, staleTime: 500 } });
 
-  const activeBooking = bookings?.find(b =>
-    ["scheduled", "received", "in_progress", "ready"].includes(b.status),
-  );
   const recentBookings = bookings?.slice().reverse().slice(0, 10) ?? [];
 
   const firstName = customer?.fullName?.split(" ")[0] ?? "there";
@@ -149,7 +146,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.statDot} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{activeBooking ? 1 : 0}</Text>
+              <Text style={styles.statNumber}>0</Text>
               <Text style={styles.statLabel}>Active Orders</Text>
             </View>
             <View style={styles.statDot} />
@@ -164,31 +161,7 @@ export default function HomeScreen() {
 
         <ServicesGallery services={services ?? []} colors={colors} onServicePress={setSelectedService} />
 
-        {/* Active Order */}
-        {activeBooking && (
-          <View style={styles.activeSection}>
-            <View style={[styles.activeCard, { backgroundColor: colors.primary }]}>
-              <View style={styles.activeCardRow}>
-                <View>
-                  <Text style={styles.activeLabel}>Active Order</Text>
-                  <Text style={styles.activeOrder}>Order #{activeBooking.id}</Text>
-                  <View style={styles.activeStatusBadge}>
-                    <View style={styles.activeStatusDot} />
-                    <Text style={styles.activeStatus}>{activeBooking.status.replace(/_/g, " ").toUpperCase()}</Text>
-                  </View>
-                </View>
-                <TouchableOpacity
-                  style={styles.trackBtn}
-                  onPress={() => router.push("/(tabs)/track")}
-                  testID="btn-track-order"
-                >
-                  <FlaticonIcon name="map-pin" size={16} color={colors.primary} />
-                  <Text style={[styles.trackBtnText, { color: colors.primary }]}>Track</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
+        
 
         {/* Recent Bookings Header */}
         <Text style={styles.recentHeader}>Recent Bookings</Text>
