@@ -26,13 +26,15 @@ function getEstimatedReady(scheduledDate: string) {
   return d;
 }
 
-function ReceiptModal({ booking, onClose }: { booking: any; onClose: () => void }) {
+function ReceiptModal({ booking, visible, onClose }: { booking: any; visible: boolean; onClose: () => void }) {
   const colors = useColors();
+  if (!booking) return null;
+
   const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.scheduled;
   const readyDate = getEstimatedReady(booking.scheduledDate);
 
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={receiptStyles.overlay}>
         <TouchableOpacity style={receiptStyles.backdrop} activeOpacity={1} onPress={onClose} />
         <View style={[receiptStyles.sheet, { backgroundColor: "#fff" }]}>
@@ -44,8 +46,8 @@ function ReceiptModal({ booking, onClose }: { booking: any; onClose: () => void 
             <View style={[receiptStyles.receiptHeader, { backgroundColor: colors.primary }]}>
               <View style={receiptStyles.receiptHeaderRow}>
                 <View>
-                  <Text style={receiptStyles.receiptBrand}>GlownDry</Text>
-                  <Text style={receiptStyles.receiptSub}>Official Receipt</Text>
+                  <Text style={receiptStyles.receiptBrand}>GLOWNDRY</Text>
+                  <Text style={receiptStyles.receiptSub}>Official Laundry Receipt</Text>
                 </View>
                 <TouchableOpacity onPress={onClose} style={receiptStyles.closeBtn}>
                   <FlaticonIcon name="x" size={18} color={colors.primary} />
@@ -55,47 +57,55 @@ function ReceiptModal({ booking, onClose }: { booking: any; onClose: () => void 
 
             {/* Receipt Body */}
             <View style={receiptStyles.receiptBody}>
-              <View style={receiptStyles.receiptMeta}>
-                <Text style={receiptStyles.receiptMetaLabel}>Order Number</Text>
-                <Text style={receiptStyles.receiptMetaValue}>#{booking.id}</Text>
-              </View>
-              <View style={receiptStyles.receiptMeta}>
-                <Text style={receiptStyles.receiptMetaLabel}>Date</Text>
-                <Text style={receiptStyles.receiptMetaValue}>
-                  {new Date(booking.scheduledDate).toLocaleDateString("en-PH", { dateStyle: "long" })}
-                </Text>
+              <View style={receiptStyles.receiptInfoRow}>
+                <View>
+                  <Text style={receiptStyles.receiptMetaLabel}>Order Number</Text>
+                  <Text style={receiptStyles.receiptMetaValue}>#{booking.id}</Text>
+                </View>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={receiptStyles.receiptMetaLabel}>Date</Text>
+                  <Text style={receiptStyles.receiptMetaValue}>
+                    {new Date(booking.scheduledDate).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
+                  </Text>
+                </View>
               </View>
 
-              <View style={[receiptStyles.receiptDivider, { backgroundColor: colors.border }]} />
+              <View style={receiptStyles.receiptDividerContainer}>
+                <View style={[receiptStyles.receiptDivider, { borderColor: colors.border }]} />
+              </View>
 
               <View style={receiptStyles.receiptRow}>
-                <Text style={receiptStyles.receiptLabel}>Service</Text>
+                <Text style={receiptStyles.receiptLabel}>Service Type</Text>
                 <Text style={receiptStyles.receiptValue}>{booking.serviceName ?? "Laundry Service"}</Text>
               </View>
               <View style={receiptStyles.receiptRow}>
-                <Text style={receiptStyles.receiptLabel}>Weight</Text>
+                <Text style={receiptStyles.receiptLabel}>Estimated Weight</Text>
                 <Text style={receiptStyles.receiptValue}>{booking.weightKg ? `${booking.weightKg} kg` : "—"}</Text>
               </View>
               <View style={receiptStyles.receiptRow}>
-                <Text style={receiptStyles.receiptLabel}>Status</Text>
+                <Text style={receiptStyles.receiptLabel}>Current Status</Text>
                 <View style={[receiptStyles.statusBadge, { backgroundColor: statusCfg.color + "15" }]}>
                   <Text style={[receiptStyles.statusText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
                 </View>
               </View>
 
-              <View style={[receiptStyles.receiptDivider, { backgroundColor: colors.border }]} />
+              <View style={receiptStyles.receiptDividerContainer}>
+                <View style={[receiptStyles.receiptDivider, { borderColor: colors.border }]} />
+              </View>
 
               <View style={receiptStyles.receiptRow}>
-                <Text style={receiptStyles.receiptLabel}>Total Amount</Text>
+                <Text style={receiptStyles.receiptLabel}>Total Amount Due</Text>
                 <Text style={[receiptStyles.receiptAmount, { color: colors.primary }]}>
                   ₱{booking.totalAmount?.toFixed(2) ?? "0.00"}
                 </Text>
               </View>
 
-              <View style={[receiptStyles.receiptDivider, { backgroundColor: colors.border }]} />
+              <View style={receiptStyles.receiptDividerContainer}>
+                <View style={[receiptStyles.receiptDivider, { borderColor: colors.border }]} />
+              </View>
 
               <View style={receiptStyles.receiptSchedule}>
-                <Text style={receiptStyles.scheduleTitle}>Schedule</Text>
+                <Text style={receiptStyles.scheduleTitle}>Laundry Schedule</Text>
                 <View style={receiptStyles.scheduleRow}>
                   <FlaticonIcon name="calendar" size={14} color={colors.mutedForeground} />
                   <Text style={receiptStyles.scheduleText}>
@@ -110,21 +120,24 @@ function ReceiptModal({ booking, onClose }: { booking: any; onClose: () => void 
                     </Text>
                   </View>
                 )}
-                {booking.status === "claimed" && (
-                  <View style={receiptStyles.scheduleRow}>
-                    <FlaticonIcon name="check-circle" size={14} color="#6b7280" />
-                    <Text style={[receiptStyles.scheduleText, { color: "#6b7280" }]}>
-                      Claimed: {new Date().toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
-                    </Text>
-                  </View>
-                )}
               </View>
 
-              <View style={[receiptStyles.receiptFooter]}>
+              <View style={receiptStyles.barcodeContainer}>
+                <FlaticonIcon name="package" size={40} color={colors.border} />
+                <Text style={receiptStyles.barcodeText}>GLN-{booking.id}-{new Date(booking.scheduledDate).getTime()}</Text>
+              </View>
+
+              <View style={receiptStyles.receiptFooter}>
                 <Text style={receiptStyles.receiptFooterText}>Thank you for choosing GlownDry!</Text>
                 <Text style={receiptStyles.receiptFooterSub}>
-                  ₱{booking.totalAmount?.toFixed(2)} • Order #{booking.id} • {new Date(booking.scheduledDate).toLocaleDateString("en-PH")}
+                  This is a digital receipt for your laundry service.
                 </Text>
+                <TouchableOpacity
+                  style={[receiptStyles.doneBtn, { backgroundColor: colors.primary }]}
+                  onPress={onClose}
+                >
+                  <Text style={receiptStyles.doneBtnText}>Close Receipt</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
@@ -191,129 +204,133 @@ export default function TrackScreen() {
       >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Order Tracker</Text>
 
-      {isLoading && <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />}
+        {isLoading && <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />}
 
-      {!isLoading && !activeBooking && (
-        <View style={styles.empty}>
-          <FlaticonIcon name="package" size={48} color={colors.mutedForeground} />
-          <Text style={[styles.emptyTitle, { color: colors.foreground }]}>No active orders</Text>
-          <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-            Book a laundry service to track your order here
-          </Text>
-        </View>
-      )}
-
-      {activeBooking && statusCfg && (
-        <>
-          {/* Order Card */}
-          <View style={[styles.orderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={styles.orderRow}>
-              <View>
-                <Text style={[styles.orderLabel, { color: colors.mutedForeground }]}>Order Number</Text>
-                <Text style={[styles.orderNum, { color: colors.foreground }]}>#{activeBooking.id}</Text>
-              </View>
-              <View style={[styles.statusBadge, { backgroundColor: statusCfg.color + "15" }]}>
-                <Text style={[styles.statusText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
-              </View>
-            </View>
-
-            <View style={[styles.divider, { backgroundColor: colors.border }]} />
-
-            <View style={styles.detailsGrid}>
-              {[
-                { label: "Service", value: activeBooking.serviceName ?? "—" },
-                { label: "Total", value: `₱${activeBooking.totalAmount?.toFixed(2) ?? "0.00"}` },
-                {
-                  label: "Drop off",
-                  value: new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", {
-                    month: "short", day: "numeric", year: "numeric",
-                  }),
-                },
-                { label: "Weight", value: activeBooking.weightKg ? `${activeBooking.weightKg} kg` : "—" },
-              ].map(d => (
-                <View key={d.label} style={styles.detailItem}>
-                  <Text style={[styles.detailLabel, { color: colors.mutedForeground }]}>{d.label}</Text>
-                  <Text style={[styles.detailValue, { color: colors.foreground }]}>{d.value}</Text>
-                </View>
-              ))}
-            </View>
+        {!isLoading && !activeBooking && (
+          <View style={styles.empty}>
+            <FlaticonIcon name="package" size={48} color={colors.mutedForeground} />
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>No active orders</Text>
+            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+              Book a laundry service to track your order here
+            </Text>
           </View>
+        )}
 
-          {/* Pickup Schedule Card */}
-          {activeBooking.status !== "claimed" && (
-            <View style={[styles.scheduleCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={styles.scheduleCardHeader}>
-                <Text style={[styles.scheduleCardTitle, { color: colors.foreground }]}>Pickup Schedule</Text>
+        {activeBooking && statusCfg && (
+          <>
+            {/* Order Card */}
+            <View style={[styles.orderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.orderRow}>
+                <View>
+                  <Text style={[styles.orderLabel, { color: colors.mutedForeground }]}>Order Number</Text>
+                  <Text style={[styles.orderNum, { color: colors.foreground }]}>#{activeBooking.id}</Text>
+                </View>
+                <View style={[styles.statusBadge, { backgroundColor: statusCfg.color + "15" }]}>
+                  <Text style={[styles.statusText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
+                </View>
               </View>
+
               <View style={[styles.divider, { backgroundColor: colors.border }]} />
-              <View style={styles.scheduleRow}>
-                <View style={[styles.scheduleIconWrap, { backgroundColor: colors.tealLight }]}>
-                  <FlaticonIcon name="calendar" size={18} color={colors.primary} />
-                </View>
-                <View style={styles.scheduleContent}>
-                  <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Drop Off</Text>
-                  <Text style={[styles.scheduleValue, { color: colors.foreground }]}>
-                    {new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-                  </Text>
-                </View>
+
+              <View style={styles.detailsGrid}>
+                {[
+                  { label: "Service", value: activeBooking.serviceName ?? "—" },
+                  { label: "Total", value: `₱${activeBooking.totalAmount?.toFixed(2) ?? "0.00"}` },
+                  {
+                    label: "Drop off",
+                    value: new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", {
+                      month: "short", day: "numeric", year: "numeric",
+                    }),
+                  },
+                  { label: "Weight", value: activeBooking.weightKg ? `${activeBooking.weightKg} kg` : "—" },
+                ].map(d => (
+                  <View key={d.label} style={styles.detailItem}>
+                    <Text style={[styles.detailLabel, { color: colors.mutedForeground }]}>{d.label}</Text>
+                    <Text style={[styles.detailValue, { color: colors.foreground }]}>{d.value}</Text>
+                  </View>
+                ))}
               </View>
-              {activeBooking.status === "ready" ? (
-                <View style={styles.scheduleRow}>
-                  <View style={[styles.scheduleIconWrap, { backgroundColor: "#dcfce7" }]}>
-                    <FlaticonIcon name="check-circle" size={18} color="#22c55e" />
-                  </View>
-                  <View style={styles.scheduleContent}>
-                    <Text style={[styles.scheduleLabel, { color: "#22c55e" }]}>Ready for Pickup!</Text>
-                    <Text style={[styles.scheduleValue, { color: "#22c55e" }]}>
-                      Your laundry is ready. Please pick up at our store.
-                    </Text>
-                  </View>
+            </View>
+
+            {/* Pickup Schedule Card */}
+            {activeBooking.status !== "claimed" && (
+              <View style={[styles.scheduleCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <View style={styles.scheduleCardHeader}>
+                  <Text style={[styles.scheduleCardTitle, { color: colors.foreground }]}>Pickup Schedule</Text>
                 </View>
-              ) : (
+                <View style={[styles.divider, { backgroundColor: colors.border }]} />
                 <View style={styles.scheduleRow}>
-                  <View style={[styles.scheduleIconWrap, { backgroundColor: "#fef3c7" }]}>
-                    <FlaticonIcon name="clock" size={18} color="#f59e0b" />
+                  <View style={[styles.scheduleIconWrap, { backgroundColor: colors.tealLight }]}>
+                    <FlaticonIcon name="calendar" size={18} color={colors.primary} />
                   </View>
                   <View style={styles.scheduleContent}>
-                    <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Est. Ready for Pickup</Text>
+                    <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Drop Off</Text>
                     <Text style={[styles.scheduleValue, { color: colors.foreground }]}>
-                      {readyDate?.toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                      {new Date(activeBooking.scheduledDate).toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
                     </Text>
                   </View>
                 </View>
-              )}
+                {activeBooking.status === "ready" ? (
+                  <View style={styles.scheduleRow}>
+                    <View style={[styles.scheduleIconWrap, { backgroundColor: "#dcfce7" }]}>
+                      <FlaticonIcon name="check-circle" size={18} color="#22c55e" />
+                    </View>
+                    <View style={styles.scheduleContent}>
+                      <Text style={[styles.scheduleLabel, { color: "#22c55e" }]}>Ready for Pickup!</Text>
+                      <Text style={[styles.scheduleValue, { color: "#22c55e" }]}>
+                        Your laundry is ready. Please pick up at our store.
+                      </Text>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={styles.scheduleRow}>
+                    <View style={[styles.scheduleIconWrap, { backgroundColor: "#fef3c7" }]}>
+                      <FlaticonIcon name="clock" size={18} color="#f59e0b" />
+                    </View>
+                    <View style={styles.scheduleContent}>
+                      <Text style={[styles.scheduleLabel, { color: colors.mutedForeground }]}>Est. Ready for Pickup</Text>
+                      <Text style={[styles.scheduleValue, { color: colors.foreground }]}>
+                        {readyDate?.toLocaleDateString("en-PH", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* Progress Tracker */}
+            <View style={[styles.trackerCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Text style={[styles.trackerTitle, { color: colors.foreground }]}>Progress</Text>
+              <StepTracker currentStatus={activeBooking.status} />
             </View>
-          )}
 
-          {/* Progress Tracker */}
-          <View style={[styles.trackerCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.trackerTitle, { color: colors.foreground }]}>Progress</Text>
-            <StepTracker currentStatus={activeBooking.status} />
-          </View>
+            {/* Receipt Button */}
+            <TouchableOpacity
+              style={[styles.receiptBtn, { backgroundColor: colors.primary }]}
+              onPress={() => openReceipt(activeBooking)}
+              activeOpacity={0.85}
+            >
+              <FlaticonIcon name="receipt" size={18} color="#fff" />
+              <Text style={styles.receiptBtnText}>View Receipt</Text>
+            </TouchableOpacity>
 
-          {/* Receipt Button */}
-          <TouchableOpacity
-            style={[styles.receiptBtn, { backgroundColor: colors.primary }]}
-            onPress={() => openReceipt(activeBooking)}
-            activeOpacity={0.85}
-          >
-            <FlaticonIcon name="receipt" size={18} color="#fff" />
-            <Text style={styles.receiptBtnText}>View Receipt</Text>
-          </TouchableOpacity>
-
-          {/* Notes */}
-          {activeBooking.notes && (
-            <View style={[styles.notesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.notesLabel, { color: colors.mutedForeground }]}>Notes</Text>
-              <Text style={[styles.notesText, { color: colors.foreground }]}>{activeBooking.notes}</Text>
-            </View>
-          )}
-        </>
-      )}
+            {/* Notes */}
+            {activeBooking.notes && (
+              <View style={[styles.notesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.notesLabel, { color: colors.mutedForeground }]}>Notes</Text>
+                <Text style={[styles.notesText, { color: colors.foreground }]}>{activeBooking.notes}</Text>
+              </View>
+            )}
+          </>
+        )}
       </ScrollView>
 
       {selectedBooking && (
-        <ReceiptModal booking={selectedBooking} onClose={() => setReceiptOpen(false)} />
+        <ReceiptModal
+          visible={receiptOpen}
+          booking={selectedBooking}
+          onClose={() => setReceiptOpen(false)}
+        />
       )}
     </View>
   );
@@ -374,44 +391,49 @@ const styles = StyleSheet.create({
 
 const receiptStyles = StyleSheet.create({
   overlay: { flex: 1 },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.45)" },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.6)" },
   sheet: {
     position: "absolute", bottom: 0, left: 0, right: 0,
-    borderTopLeftRadius: 28, borderTopRightRadius: 28,
-    maxHeight: "90%",
+    borderTopLeftRadius: 32, borderTopRightRadius: 32,
+    maxHeight: "92%",
     shadowColor: "#000", shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.15, shadowRadius: 20, elevation: 16,
+    shadowOpacity: 0.2, shadowRadius: 16, elevation: 20,
   },
-  handleRow: { alignItems: "center", paddingVertical: 8, marginBottom: 4 },
-  handle: { width: 40, height: 5, borderRadius: 3, backgroundColor: "#d0d5dd" },
+  handleRow: { alignItems: "center", paddingVertical: 12 },
+  handle: { width: 36, height: 5, borderRadius: 2.5, backgroundColor: "#e2e8f0" },
   receiptHeader: {
-    padding: 20, borderTopLeftRadius: 28, borderTopRightRadius: 28,
+    padding: 24, borderTopLeftRadius: 32, borderTopRightRadius: 32,
   },
   receiptHeaderRow: {
-    flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
   },
-  receiptBrand: { fontSize: 22, fontFamily: "Inter_900Black", color: "#fff", letterSpacing: 1 },
-  receiptSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.8)", marginTop: 2 },
+  receiptBrand: { fontSize: 24, fontFamily: "Inter_900Black", color: "#fff", letterSpacing: 2 },
+  receiptSub: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.85)", marginTop: 2 },
   closeBtn: {
-    width: 32, height: 32, borderRadius: 8, backgroundColor: "#fff",
+    width: 36, height: 36, borderRadius: 10, backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center", justifyContent: "center",
   },
-  receiptBody: { padding: 20 },
-  receiptMeta: { marginBottom: 12 },
-  receiptMetaLabel: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#8a94a6", textTransform: "uppercase", letterSpacing: 0.5 },
-  receiptMetaValue: { fontSize: 18, fontFamily: "Inter_700Bold", color: "#1a2a3a", marginTop: 3 },
-  receiptDivider: { height: 1, marginVertical: 14 },
-  receiptRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
-  receiptLabel: { fontSize: 14, fontFamily: "Inter_400Regular", color: "#8a94a6" },
-  receiptValue: { fontSize: 14, fontFamily: "Inter_500Medium", color: "#1a2a3a" },
-  statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
-  statusText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
-  receiptAmount: { fontSize: 20, fontFamily: "Inter_800ExtraBold" },
-  receiptSchedule: { backgroundColor: "#f8fafc", borderRadius: 12, padding: 14, marginTop: 4 },
-  scheduleTitle: { fontSize: 13, fontFamily: "Inter_700Bold", color: "#1a2a3a", marginBottom: 10 },
-  scheduleRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 8 },
-  scheduleText: { fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a" },
-  receiptFooter: { alignItems: "center", paddingTop: 16, marginTop: 4 },
-  receiptFooterText: { fontSize: 13, fontFamily: "Inter_500Medium", color: "#1a2a3a" },
-  receiptFooterSub: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#8a94a6", marginTop: 4 },
+  receiptBody: { padding: 24 },
+  receiptInfoRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 16 },
+  receiptMetaLabel: { fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 },
+  receiptMetaValue: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#1e293b", marginTop: 4 },
+  receiptDividerContainer: { marginVertical: 20 },
+  receiptDivider: { height: 1, borderStyle: "dashed", borderWidth: 1, borderRadius: 1 },
+  receiptRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
+  receiptLabel: { fontSize: 15, fontFamily: "Inter_400Regular", color: "#64748b" },
+  receiptValue: { fontSize: 15, fontFamily: "Inter_600SemiBold", color: "#1e293b" },
+  statusBadge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12 },
+  statusText: { fontSize: 12, fontFamily: "Inter_700Bold" },
+  receiptAmount: { fontSize: 24, fontFamily: "Inter_800ExtraBold" },
+  receiptSchedule: { backgroundColor: "#f8fafc", borderRadius: 16, padding: 18, marginTop: 4 },
+  scheduleTitle: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#1e293b", marginBottom: 12 },
+  scheduleRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 10 },
+  scheduleText: { fontSize: 14, fontFamily: "Inter_500Medium", color: "#334155" },
+  barcodeContainer: { alignItems: "center", marginTop: 32, opacity: 0.5 },
+  barcodeText: { fontSize: 10, fontFamily: "Inter_400Regular", color: "#94a3b8", marginTop: 8, letterSpacing: 2 },
+  receiptFooter: { alignItems: "center", marginTop: 32, paddingBottom: 20 },
+  receiptFooterText: { fontSize: 15, fontFamily: "Inter_700Bold", color: "#1e293b" },
+  receiptFooterSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#64748b", marginTop: 6, textAlign: "center" },
+  doneBtn: { width: "100%", paddingVertical: 16, borderRadius: 16, marginTop: 24, alignItems: "center" },
+  doneBtnText: { color: "#fff", fontSize: 16, fontFamily: "Inter_700Bold" },
 });
