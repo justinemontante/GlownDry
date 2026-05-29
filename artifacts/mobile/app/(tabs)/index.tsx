@@ -122,7 +122,12 @@ export default function HomeScreen() {
     return (
       <View>
         {/* Hero Section */}
-        <View style={[styles.heroSection, { paddingTop: 16 }]}>
+        <LinearGradient
+          colors={["#0A9C8C", "#0A7A74"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[styles.heroSection, { paddingTop: 16 }]}
+        >
           <View style={styles.heroBadge}>
             <Text style={styles.heroBadgeText}>{getGreeting()}</Text>
           </View>
@@ -147,7 +152,7 @@ export default function HomeScreen() {
               <Text style={styles.statLabel}>Done</Text>
             </View>
           </View>
-        </View>
+        </LinearGradient>
 
         <ServicesGallery services={services ?? []} colors={colors} onServicePress={setSelectedService} />
 
@@ -348,7 +353,6 @@ const styles = StyleSheet.create({
   heroSection: {
     marginHorizontal: 16, marginTop: 12, marginBottom: 6,
     padding: 16, borderRadius: 24,
-    backgroundColor: "#0A9C8C",
   },
   heroBadge: {
     alignSelf: "flex-start", backgroundColor: "rgba(255,255,255,0.15)",
