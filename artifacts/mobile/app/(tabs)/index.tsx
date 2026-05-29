@@ -406,6 +406,7 @@ const styles = StyleSheet.create({
     padding: 16, borderRadius: 24,
     shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2, shadowRadius: 12, elevation: 6,
+    position: "relative", overflow: "visible",
   },
   heroRow: {
     flexDirection: "row", alignItems: "center",
@@ -414,8 +415,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroImage: {
-    width: 90, height: 90,
-    marginLeft: 8, resizeMode: "contain",
+    width: 180, height: 180,
+    resizeMode: "contain",
+    position: "absolute", right: -10, top: -20,
   },
   heroBadge: {
     alignSelf: "flex-start", backgroundColor: "rgba(10,156,140,0.12)",
