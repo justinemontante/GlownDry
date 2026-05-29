@@ -38,7 +38,11 @@ export default function BookingScreen() {
     if (selectedDate && selectedTime) {
       const d = new Date(selectedDate + "T12:00:00");
       const dateStr = d.toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
-      return `${dateStr} at ${selectedTime}`;
+      const [h, m] = selectedTime.split(":");
+      const hour = parseInt(h, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      return `${dateStr} at ${hour12}:${m} ${ampm}`;
     }
     if (selectedDate) {
       const d = new Date(selectedDate + "T12:00:00");
@@ -53,11 +57,7 @@ export default function BookingScreen() {
     if (!selectedTime) { Alert.alert("Select drop-off schedule"); return; }
     if (!customer) { Alert.alert("Not logged in"); return; }
 
-    const timeMap: Record<string, string> = {
-      "8:00 AM": "08:00", "10:00 AM": "10:00", "12:00 PM": "12:00",
-      "2:00 PM": "14:00", "4:00 PM": "16:00", "6:00 PM": "18:00",
-    };
-    const phDate = new Date(`${selectedDate}T${timeMap[selectedTime] || "08:00"}:00+08:00`);
+    const phDate = new Date(`${selectedDate}T${selectedTime}:00+08:00`);
 
     try {
       await createBooking.mutateAsync({
