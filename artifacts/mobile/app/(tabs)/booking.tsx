@@ -4,7 +4,7 @@ import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert, Platform, ScrollView, StyleSheet,
+  Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -88,10 +88,16 @@ export default function BookingScreen() {
         end={{ x: 1, y: 0 }}
         style={StyleSheet.absoluteFill}
       />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      >
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={[styles.container, { paddingTop: 8, paddingBottom: bottomPad + 20 }]}
+        contentContainerStyle={[styles.container, { paddingTop: 8, paddingBottom: bottomPad + 140 }]}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>New Booking</Text>
 
@@ -198,6 +204,7 @@ export default function BookingScreen() {
         </Text>
       </TouchableOpacity>
       </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
