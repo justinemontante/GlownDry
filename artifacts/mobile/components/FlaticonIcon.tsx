@@ -31,6 +31,7 @@ const PATHS: Record<string, string> = {
   archive: "M21 8v13a2 2 0 01-2 2H5a2 2 0 01-2-2V8 M4 8h16 M8 3h8l2 3H6l2-3z M10 12h4",
   "chevron-right": "M9 18l6-6-6-6",
   "alert-circle": "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 8v4 M12 16h.01",
+  camera: "M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2v11z M9 14a3 3 0 106 0 3 3 0 00-6 0z",
 };
 
 const ICON_MAP: Record<string, string> = {
@@ -63,6 +64,7 @@ const ICON_MAP: Record<string, string> = {
   archive: "archive",
   "chevron-right": "chevron-right",
   "alert-circle": "alert-circle",
+  camera: "camera",
 };
 
 interface FlaticonIconProps {
