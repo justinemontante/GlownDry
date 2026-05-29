@@ -74,6 +74,7 @@ const brandStyles = StyleSheet.create({
   bar: {
     justifyContent: "flex-end", paddingBottom: 8,
     paddingHorizontal: 20,
+    borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
   },
   row: {
     flexDirection: "row", justifyContent: "space-between", alignItems: "center",
