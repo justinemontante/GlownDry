@@ -123,24 +123,28 @@ export default function HomeScreen() {
       <View>
         {/* Hero Section */}
         <View style={[styles.heroSection, { paddingTop: 16 }]}>
-          <Text style={styles.greetingLabel}>{getGreeting()}, <Text style={styles.greetingName}>{firstName}</Text></Text>
+          <View style={styles.heroBadge}>
+            <Text style={styles.heroBadgeText}>{getGreeting()}</Text>
+          </View>
+          <Text style={styles.heroTitle}>Hey, <Text style={styles.heroName}>{firstName}</Text></Text>
           <Text style={styles.heroSub}>Ready to freshen up your laundry?</Text>
+          <View style={styles.heroDivider} />
           <View style={styles.heroStats}>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{bookings?.length ?? 0}</Text>
-              <Text style={styles.statLabel}>Total{'\n'}Orders</Text>
+              <Text style={styles.statLabel}>Orders</Text>
             </View>
-            <View style={styles.statDivider} />
+            <View style={styles.statDot} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{activeBooking ? 1 : 0}</Text>
-              <Text style={styles.statLabel}>Active{'\n'}Now</Text>
+              <Text style={styles.statLabel}>Active</Text>
             </View>
-            <View style={styles.statDivider} />
+            <View style={styles.statDot} />
             <View style={styles.statItem}>
-              <Text style={[styles.statNumber, { color: colors.success }]}>
+              <Text style={[styles.statNumber, { color: "#4ade80" }]}>
                 {bookings?.filter(b => b.status === "completed").length ?? 0}
               </Text>
-              <Text style={styles.statLabel}>Completed</Text>
+              <Text style={styles.statLabel}>Done</Text>
             </View>
           </View>
         </View>
@@ -342,41 +346,51 @@ const styles = StyleSheet.create({
 
   // Hero Section
   heroSection: {
-    marginHorizontal: 16, marginTop: 16, marginBottom: 8,
-    padding: 20, borderRadius: 20,
+    marginHorizontal: 16, marginTop: 12, marginBottom: 6,
+    padding: 16, borderRadius: 24,
     backgroundColor: "#0A7474",
   },
-  greetingLabel: {
-    fontSize: 22, fontFamily: "Inter_700Bold",
+  heroBadge: {
+    alignSelf: "flex-start", backgroundColor: "rgba(255,255,255,0.15)",
+    paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20,
+    marginBottom: 10,
+  },
+  heroBadgeText: {
+    fontSize: 11, fontFamily: "Inter_600SemiBold",
+    color: "rgba(255,255,255,0.9)", letterSpacing: 0.3,
+  },
+  heroTitle: {
+    fontSize: 24, fontFamily: "Inter_700Bold",
     color: "#fff",
   },
-  greetingName: {
+  heroName: {
     color: "#fff",
   },
   heroSub: {
-    fontSize: 13, fontFamily: "Inter_400Regular",
-    color: "rgba(255,255,255,0.8)", marginTop: 4,
+    fontSize: 12, fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.7)", marginTop: 2,
+  },
+  heroDivider: {
+    height: 1, backgroundColor: "rgba(255,255,255,0.12)",
+    marginVertical: 12,
   },
   heroStats: {
     flexDirection: "row", alignItems: "center",
-    marginTop: 20, paddingTop: 16,
-    borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.2)",
   },
   statItem: {
     flex: 1, alignItems: "center",
   },
   statNumber: {
-    fontSize: 22, fontFamily: "Inter_900Black",
+    fontSize: 20, fontFamily: "Inter_900Black",
     color: "#fff",
   },
   statLabel: {
     fontSize: 10, fontFamily: "Inter_500Medium",
-    color: "rgba(255,255,255,0.75)", textAlign: "center", marginTop: 2,
+    color: "rgba(255,255,255,0.65)", marginTop: 1,
   },
-  statDivider: {
-    width: 1, height: 32,
-    backgroundColor: "rgba(255,255,255,0.2)",
-  },
+  statDot: {
+    width: 4, height: 4, borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.25)",
 
   // Services Gallery
   servicesWrapper: {
