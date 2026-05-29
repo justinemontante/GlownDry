@@ -62,7 +62,7 @@ const ServicesGallery = memo(function ServicesGallery({ services, colors, onServ
   return (
     <View style={styles.servicesWrapper}>
       <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionLabel}>Services</Text>
+        <Text style={styles.sectionLabel}>Our Services</Text>
         <TouchableOpacity onPress={() => router.push("/(tabs)/booking")}>
           <Text style={styles.seeAll}>See All</Text>
         </TouchableOpacity>
