@@ -70,7 +70,6 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     onSelect(`${year}-${mm}-${dd}`, parsed);
   }
 
-  const todayStr = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
   const timeValid = parseTime() !== null;
 
   return (
@@ -104,7 +103,6 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
 
           <View style={styles.daysGrid}>
             {days.map((d, i) => {
-              const isToday = d !== null && `${year}-${month}-${d}` === todayStr;
               const isSelected = d === selectedDay;
               const isPast = d !== null && new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
               return (
@@ -117,12 +115,10 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
                   onPress={() => !isPast && setSelectedDay(d)}
                   disabled={isPast}
                 >
-                  {isToday && !isSelected && <View style={styles.todayDot} />}
                   <Text style={[
                     styles.dayText,
                     isSelected && styles.dayTextSelected,
                     isPast && styles.dayTextPast,
-                    isToday && !isSelected && styles.dayTextToday,
                   ]}>
                     {d ?? ""}
                   </Text>
@@ -269,16 +265,8 @@ const styles = StyleSheet.create({
   dayTextSelected: {
     color: "#fff", fontFamily: "Inter_700Bold",
   },
-  dayTextToday: {
-    color: TEAL, fontFamily: "Inter_700Bold",
-  },
   dayTextPast: {
     color: "#d0d5dd",
-  },
-  todayDot: {
-    position: "absolute", bottom: 4,
-    width: 5, height: 5, borderRadius: 3,
-    backgroundColor: TEAL,
   },
   divider: {
     height: 1, backgroundColor: "#f0f2f5",
