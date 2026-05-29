@@ -84,19 +84,16 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="h-screen w-full flex overflow-hidden relative"
-      style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center" }}
-    >
-      {/* Gradient overlay: left transparent → right khaki */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to right, transparent 50%, #C3B091)" }}></div>
-
-      {/* Left - Image (solid, no overlay) */}
+    <div className="h-screen w-full flex overflow-hidden">
+      {/* Left - Image Background */}
       <motion.div
         variants={slideLeft}
         initial="hidden"
         animate="visible"
-        className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative z-10 overflow-hidden"
+        className="hidden lg:flex flex-1 flex-col items-center justify-end pb-16 text-white p-12 relative overflow-hidden"
+        style={{ backgroundImage: "url(/images/admin/loginImage.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#00C6B5" }}
       >
+        <div className="absolute inset-0 bg-black/40"></div>
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -131,8 +128,8 @@ export default function AdminLogin() {
         variants={slideRight}
         initial="hidden"
         animate="visible"
-        className="flex-1 flex items-center justify-center p-4 lg:p-8 h-full relative z-10"
-        style={{ backgroundColor: "#C3B091" }}
+        className="flex-1 flex items-center justify-center p-4 lg:p-8 h-full"
+        style={{ backgroundColor: "#f0f4f8" }}
       >
         <div className="w-full max-w-md max-h-full">
           <div className="bg-white rounded-2xl p-5 lg:p-8 space-y-4 lg:space-y-6"
@@ -201,11 +198,11 @@ export default function AdminLogin() {
               <h2 className="text-lg lg:text-xl font-bold" style={{ color: "#1a2a3a" }}>Welcome back</h2>
               <p className="text-xs lg:text-sm" style={{ color: "#8a94a6" }}>Sign in to your admin account to continue.</p>
               <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: "80%", opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                className="h-[2px] mt-3 mx-auto"
-                style={{ background: "linear-gradient(to right, #00C6B5, transparent)" }}
+                initial={{ width: 0 }}
+                animate={{ width: 32 }}
+                transition={{ duration: 0.4, delay: 0.6 }}
+                className="h-0.5 rounded-full mt-3 mx-auto"
+                style={{ backgroundColor: "#00C6B5" }}
               ></motion.div>
             </motion.div>
 

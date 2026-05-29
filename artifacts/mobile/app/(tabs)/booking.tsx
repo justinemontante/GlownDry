@@ -4,7 +4,7 @@ import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert, Image, Platform, ScrollView, StyleSheet,
+  Alert, Platform, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
@@ -13,20 +13,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
 import { useListServices, useCreateBooking } from "@workspace/api-client-react";
-
-const SERVICE_ICONS: Record<string, string> = {
-  "wash": "washing-machine",
-  "dry": "wind",
-  "express": "clock",
-  "delicate": "star",
-  "regular": "washing-machine",
-};
-
-function getServiceIcon(name: string) {
-  const lower = name.toLowerCase();
-  const key = Object.keys(SERVICE_ICONS).find(k => lower.includes(k));
-  return SERVICE_ICONS[key ?? "washing-machine"];
-}
 
 export default function BookingScreen() {
   const colors = useColors();
@@ -104,49 +90,41 @@ export default function BookingScreen() {
         style={StyleSheet.absoluteFill}
       />
       <KeyboardAwareScrollViewCompat
-        contentContainerStyle={[styles.container, { paddingTop: 20, paddingBottom: bottomPad + 140, flexGrow: 1 }]}
+        contentContainerStyle={[styles.container, { paddingTop: 8, paddingBottom: bottomPad + 140 }]}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
         bottomOffset={20}
       >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>New Booking</Text>
 
-      <View style={styles.sectionHeaderRow}>
-        <Text style={[styles.sectionLabel, { color: colors.mutedForeground, marginTop: 0, marginBottom: 0 }]}>Choose Service</Text>
-      </View>
+      <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Choose Service</Text>
       {loadingServices ? (
         <Text style={[styles.loading, { color: colors.mutedForeground }]}>Loading services…</Text>
       ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.serviceGallery}>
+        <View style={styles.serviceGrid}>
           {(services ?? []).map(svc => (
             <TouchableOpacity
               key={svc.id}
               style={[
                 styles.serviceCard,
-                selectedService === svc.id && { borderColor: colors.primary, backgroundColor: colors.tealLight },
+                { backgroundColor: colors.card, borderColor: selectedService === svc.id ? colors.primary : colors.border },
+                selectedService === svc.id && { backgroundColor: colors.tealLight },
               ]}
               onPress={() => setSelectedService(svc.id)}
-              activeOpacity={0.85}
+              activeOpacity={0.75}
               testID={`btn-service-${svc.id}`}
             >
-              {svc.serviceImage ? (
-                <Image source={{ uri: svc.serviceImage }} style={styles.svcImage} />
-              ) : (
-                <View style={[styles.svcIconWrap, { backgroundColor: colors.tealLight }]}>
-                  <FlaticonIcon
-                    name={getServiceIcon(svc.name)}
-                    size={22}
-                    color={selectedService === svc.id ? colors.primary : colors.mutedForeground}
-                  />
-                </View>
-              )}
+              <FlaticonIcon
+                name="wind"
+                size={22}
+                color={selectedService === svc.id ? colors.primary : colors.mutedForeground}
+              />
               <Text style={[styles.svcName, { color: selectedService === svc.id ? colors.primary : colors.foreground }]}>
                 {svc.name}
               </Text>
               <Text style={[styles.svcPrice, { color: colors.mutedForeground }]}>₱{svc.pricePerKg}/kg</Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </View>
       )}
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop off Schedule</Text>
@@ -227,28 +205,16 @@ export default function BookingScreen() {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 20, gap: 0 },
-  sectionHeaderRow: {
-    flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", marginTop: 4, marginBottom: 10,
-  },
-  pageTitle: { fontSize: 26, fontFamily: "Inter_700Bold", marginBottom: 8 },
+  pageTitle: { fontSize: 26, fontFamily: "Inter_700Bold", marginBottom: 24 },
   sectionLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", marginTop: 20, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
   loading: { fontSize: 14 },
-  serviceGallery: { paddingRight: 20, gap: 12, paddingVertical: 8 },
+  serviceGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   serviceCard: {
-    width: 130, padding: 14, borderRadius: 20, borderWidth: 1.5,
-    borderColor: "#e2e8f0", backgroundColor: "#fff",
-    alignItems: "center", gap: 8,
-    shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12, shadowRadius: 8, elevation: 4,
+    width: "47%", padding: 14, borderRadius: 14, borderWidth: 1.5,
+    alignItems: "center", gap: 6,
   },
-  svcImage: { width: 60, height: 60, borderRadius: 12, resizeMode: "contain" },
-  svcIconWrap: {
-    width: 60, height: 60, borderRadius: 16,
-    alignItems: "center", justifyContent: "center",
-  },
-  svcName: { fontSize: 12, fontFamily: "Inter_700Bold", textAlign: "center", color: "#1a2a3a" },
-  svcPrice: { fontSize: 11, fontFamily: "Inter_600SemiBold", color: "#0A9C8C" },
+  svcName: { fontSize: 13, fontFamily: "Inter_600SemiBold", textAlign: "center" },
+  svcPrice: { fontSize: 12, fontFamily: "Inter_400Regular" },
   scheduleBtn: {
     flexDirection: "row", alignItems: "center",
     borderWidth: 1.5, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 14,
