@@ -123,10 +123,10 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
           ]}
         >
           <View style={styles.drawerHeader}>
-            <Text style={styles.drawerTitle}>Profile</Text>
             <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-              <FlaticonIcon name="x" size={20} color="#1a2a3a" />
+              <FlaticonIcon name="arrow-left" size={20} color="#1a2a3a" />
             </TouchableOpacity>
+            <Text style={styles.drawerTitle}>Profile</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.profileHeader}>
