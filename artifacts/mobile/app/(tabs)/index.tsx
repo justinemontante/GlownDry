@@ -126,11 +126,16 @@ export default function HomeScreen() {
           end={{ x: 1, y: 0 }}
           style={[styles.heroSection, { paddingTop: 16 }]}
         >
-          <View style={styles.heroBadge}>
-            <Text style={styles.heroBadgeText}>{getGreeting()}</Text>
+          <View style={styles.heroRow}>
+            <View style={styles.heroLeft}>
+              <View style={styles.heroBadge}>
+                <Text style={styles.heroBadgeText}>{getGreeting()}</Text>
+              </View>
+              <Text style={styles.heroTitle}>Hey, <Text style={styles.heroName}>{firstName}</Text></Text>
+              <Text style={styles.heroSub}>Ready to freshen up your laundry?</Text>
+            </View>
+            <Image source={require("@/assets/images/imageGreeting.png")} style={styles.heroImage} />
           </View>
-          <Text style={styles.heroTitle}>Hey, <Text style={styles.heroName}>{firstName}</Text></Text>
-          <Text style={styles.heroSub}>Ready to freshen up your laundry?</Text>
           <View style={styles.heroDivider} />
           <View style={styles.heroStats}>
             <View style={styles.statItem}>
@@ -401,6 +406,16 @@ const styles = StyleSheet.create({
     padding: 16, borderRadius: 24,
     shadowColor: "#0A9C8C", shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2, shadowRadius: 12, elevation: 6,
+  },
+  heroRow: {
+    flexDirection: "row", alignItems: "center",
+  },
+  heroLeft: {
+    flex: 1,
+  },
+  heroImage: {
+    width: 100, height: 100, borderRadius: 50,
+    marginLeft: 12, resizeMode: "contain",
   },
   heroBadge: {
     alignSelf: "flex-start", backgroundColor: "rgba(10,156,140,0.12)",
