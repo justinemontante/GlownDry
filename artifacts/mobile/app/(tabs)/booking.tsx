@@ -1,4 +1,5 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -22,6 +23,10 @@ function to24h(slot: string) {
   return map[slot] ?? "08:00";
 }
 
+function formatDate(d: Date) {
+  return d.toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
+}
+
 export default function BookingScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -37,16 +42,49 @@ export default function BookingScreen() {
   const [weight, setWeight] = useState("");
   const [notes, setNotes] = useState("");
 
+  const [scheduleDate, setScheduleDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
   const selectedSvc = services?.find(s => s.id === selectedService);
   const estimatedTotal = selectedSvc && weight ? parseFloat(weight) * selectedSvc.pricePerKg : 0;
 
+  function onDateChange(_: DateTimePickerEvent, d?: Date) {
+    if (Platform.OS === "android") setShowDatePicker(false);
+    if (!d) return;
+    setScheduleDate(d);
+    if (Platform.OS === "ios") {
+      setShowDatePicker(false);
+    } else {
+      setTimeout(() => setShowTimePicker(true), 300);
+    }
+  }
+
+  function onTimeChange(_: DateTimePickerEvent, d?: Date) {
+    setShowTimePicker(false);
+    if (!d) return;
+    const merged = new Date(scheduleDate);
+    merged.setHours(d.getHours(), d.getMinutes(), 0, 0);
+    setScheduleDate(merged);
+  }
+
+  function formatSchedule(d: Date) {
+    const timeStr = d.toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit", hour12: true });
+    return `${formatDate(d)} at ${timeStr}`;
+  }
+
   async function handleBook() {
     if (!selectedService) { Alert.alert("Select a service"); return; }
-    if (!selectedDate) { Alert.alert("Select drop-off date"); return; }
-    if (!selectedTime) { Alert.alert("Select drop-off time"); return; }
+    if (!selectedTime && Platform.OS === "web") { Alert.alert("Select a time"); return; }
     if (!customer) { Alert.alert("Not logged in"); return; }
 
-    const phDate = new Date(`${selectedDate}T${to24h(selectedTime)}:00+08:00`);
+    let phDate: Date;
+    if (Platform.OS === "web") {
+      if (!selectedDate) { Alert.alert("Select a date"); return; }
+      phDate = new Date(`${selectedDate}T${to24h(selectedTime)}:00+08:00`);
+    } else {
+      phDate = new Date(scheduleDate.getTime() + 8 * 60 * 60 * 1000);
+    }
 
     try {
       await createBooking.mutateAsync({
@@ -116,33 +154,70 @@ export default function BookingScreen() {
       )}
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop off Schedule</Text>
-      <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
-        <FlaticonIcon name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
-        <TextInput
-          style={[styles.input, { color: colors.foreground }]}
-          placeholder="YYYY-MM-DD"
-          placeholderTextColor={colors.mutedForeground}
-          value={selectedDate}
-          onChangeText={setSelectedDate}
-          testID="input-date"
-        />
-      </View>
 
-      <View style={styles.timeGrid}>
-        {DROP_OFF_SLOTS.map(slot => (
+      {Platform.OS === "web" ? (
+        <>
+          <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
+            <FlaticonIcon name="calendar" size={18} color={colors.mutedForeground} style={styles.inputIcon} />
+            <TextInput
+              style={[styles.input, { color: colors.foreground }]}
+              placeholder="YYYY-MM-DD"
+              placeholderTextColor={colors.mutedForeground}
+              value={selectedDate}
+              onChangeText={setSelectedDate}
+              testID="input-date"
+            />
+          </View>
+          <View style={styles.timeGrid}>
+            {DROP_OFF_SLOTS.map(slot => (
+              <TouchableOpacity
+                key={slot}
+                style={[
+                  styles.timeChip,
+                  { borderColor: selectedTime === slot ? colors.primary : colors.border, backgroundColor: selectedTime === slot ? colors.primary : colors.card },
+                ]}
+                onPress={() => setSelectedTime(slot)}
+                testID={`btn-time-${slot}`}
+              >
+                <Text style={[styles.timeText, { color: selectedTime === slot ? "#fff" : colors.foreground }]}>{slot}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </>
+      ) : (
+        <>
           <TouchableOpacity
-            key={slot}
-            style={[
-              styles.timeChip,
-              { borderColor: selectedTime === slot ? colors.primary : colors.border, backgroundColor: selectedTime === slot ? colors.primary : colors.card },
-            ]}
-            onPress={() => setSelectedTime(slot)}
-            testID={`btn-time-${slot}`}
+            style={[styles.datePickerBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={() => setShowDatePicker(true)}
           >
-            <Text style={[styles.timeText, { color: selectedTime === slot ? "#fff" : colors.foreground }]}>{slot}</Text>
+            <FlaticonIcon name="calendar" size={18} color={colors.primary} style={styles.inputIcon} />
+            <Text style={[styles.datePickerText, { color: colors.foreground }]}>
+              {formatSchedule(scheduleDate)}
+            </Text>
+            <FlaticonIcon name="chevron-right" size={16} color={colors.mutedForeground} />
           </TouchableOpacity>
-        ))}
-      </View>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={scheduleDate}
+              mode={Platform.OS === "ios" ? "datetime" : "date"}
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              minimumDate={new Date()}
+              onChange={onDateChange}
+            />
+          )}
+
+          {showTimePicker && Platform.OS === "android" && (
+            <DateTimePicker
+              value={scheduleDate}
+              mode="time"
+              display="default"
+              is24Hour={false}
+              onChange={onTimeChange}
+            />
+          )}
+        </>
+      )}
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Weight (kg)</Text>
       <View style={[styles.inputWrap, { borderColor: colors.border, backgroundColor: colors.card }]}>
@@ -187,7 +262,7 @@ export default function BookingScreen() {
       >
         <FlaticonIcon name="check-circle" size={18} color="#fff" />
         <Text style={styles.btnBookText}>
-          {createBooking.isPending ? "Booking…" : "Confirm Dropoff"}
+          {createBooking.isPending ? "Booking…" : "Confirm Drop-off"}
         </Text>
       </TouchableOpacity>
       </ScrollView>
@@ -219,6 +294,13 @@ const styles = StyleSheet.create({
     borderRadius: 20, borderWidth: 1.5,
   },
   timeText: { fontSize: 13, fontFamily: "Inter_500Medium" },
+  datePickerBtn: {
+    flexDirection: "row", alignItems: "center",
+    borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 16,
+  },
+  datePickerText: {
+    flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
+  },
   estimateCard: {
     marginTop: 20, padding: 16, borderRadius: 14, borderWidth: 1,
     flexDirection: "row", justifyContent: "space-between", alignItems: "center",
