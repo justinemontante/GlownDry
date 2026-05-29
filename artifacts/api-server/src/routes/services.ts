@@ -11,25 +11,26 @@ router.get("/services", async (_req, res) => {
 });
 
 router.post("/services", async (req, res) => {
-  const { name, description, pricePerKg } = req.body as {
-    name?: string; description?: string; pricePerKg?: number;
+  const { name, description, pricePerKg, imageUrl } = req.body as {
+    name?: string; description?: string; pricePerKg?: number; imageUrl?: string;
   };
   if (!name || !description || pricePerKg == null) {
     return res.status(400).json({ error: "name, description, pricePerKg are required" });
   }
-  const [svc] = await db.insert(servicesTable).values({ name, description, pricePerKg }).returning();
+  const [svc] = await db.insert(servicesTable).values({ name, description, pricePerKg, imageUrl }).returning();
   return res.status(201).json(svc);
 });
 
 router.patch("/services/:id", async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const { name, description, pricePerKg } = req.body as {
-    name?: string; description?: string; pricePerKg?: number;
+  const { name, description, pricePerKg, imageUrl } = req.body as {
+    name?: string; description?: string; pricePerKg?: number; imageUrl?: string;
   };
   const updates: Partial<typeof servicesTable.$inferInsert> = {};
   if (name) updates.name = name;
   if (description) updates.description = description;
   if (pricePerKg != null) updates.pricePerKg = pricePerKg;
+  if (imageUrl !== undefined) updates.imageUrl = imageUrl;
 
   const [svc] = await db.update(servicesTable).set(updates)
     .where(eq(servicesTable.id, id)).returning();

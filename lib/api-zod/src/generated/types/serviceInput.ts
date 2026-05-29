@@ -10,4 +10,5 @@ export interface ServiceInput {
   name: string;
   description: string;
   pricePerKg: number;
+  imageUrl?: string;
 }

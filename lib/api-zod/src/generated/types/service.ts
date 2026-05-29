@@ -11,5 +11,6 @@ export interface Service {
   name: string;
   description: string;
   pricePerKg: number;
+  imageUrl?: string | null;
   createdAt: Date;
 }

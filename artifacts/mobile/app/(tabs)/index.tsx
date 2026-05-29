@@ -2,7 +2,7 @@ import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
 import React from "react";
 import {
-  ActivityIndicator, Dimensions, FlatList, Platform,
+  ActivityIndicator, Dimensions, FlatList, Image, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
@@ -125,9 +125,13 @@ export default function HomeScreen() {
                 onPress={() => router.push("/(tabs)/booking")}
                 activeOpacity={0.85}
               >
-                <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
-                  <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />
-                </View>
+                {s.imageUrl ? (
+                  <Image source={{ uri: s.imageUrl }} style={styles.serviceImage} />
+                ) : (
+                  <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
+                    <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />
+                  </View>
+                )}
                 <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
                 <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]}>{s.description}</Text>
                 <View style={styles.servicePriceRow}>
@@ -362,6 +366,10 @@ const styles = StyleSheet.create({
   serviceIconWrap: {
     width: 52, height: 52, borderRadius: 14,
     alignItems: "center", justifyContent: "center", marginBottom: 12,
+  },
+  serviceImage: {
+    width: "100%", height: 120, borderRadius: 14,
+    marginBottom: 12, resizeMode: "cover",
   },
   serviceName: {
     fontSize: 15, fontFamily: "Inter_700Bold",

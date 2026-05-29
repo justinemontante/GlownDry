@@ -11,9 +11,10 @@ type Service = {
   name: string;
   description: string;
   pricePerKg: number;
+  imageUrl?: string | null;
 };
 
-const emptyForm = { name: "", description: "", pricePerKg: 0 };
+const emptyForm = { name: "", description: "", pricePerKg: 0, imageUrl: "" };
 
 export default function AdminServices() {
   const [services, setServices] = useState<Service[]>([]);
@@ -40,7 +41,7 @@ export default function AdminServices() {
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token()}` },
-      body: JSON.stringify(isEdit ? form : { ...form, pricePerKg: Number(form.pricePerKg) }),
+      body: JSON.stringify(isEdit ? form : { ...form, pricePerKg: Number(form.pricePerKg), imageUrl: form.imageUrl || undefined }),
     });
 
     setOpen(false);
@@ -59,7 +60,7 @@ export default function AdminServices() {
 
   function openEdit(s: Service) {
     setEditing(s);
-    setForm({ name: s.name, description: s.description, pricePerKg: s.pricePerKg });
+    setForm({ name: s.name, description: s.description, pricePerKg: s.pricePerKg, imageUrl: s.imageUrl ?? "" });
     setOpen(true);
   }
 
@@ -99,6 +100,10 @@ export default function AdminServices() {
                 <label className="text-sm font-medium">Price per kg (₱)</label>
                 <Input type="number" value={form.pricePerKg} onChange={e => setForm({ ...form, pricePerKg: Number(e.target.value) })} />
               </div>
+              <div>
+                <label className="text-sm font-medium">Image URL</label>
+                <Input value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/service-image.jpg" />
+              </div>
               <Button onClick={save} className="w-full">{editing ? "Update" : "Create"}</Button>
             </div>
           </DialogContent>
@@ -107,7 +112,12 @@ export default function AdminServices() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {services.map(service => (
-          <Card key={service.id} className="border-none shadow-sm hover:shadow-md transition-shadow relative group">
+          <Card key={service.id} className="border-none shadow-sm hover:shadow-md transition-shadow relative group overflow-hidden">
+            {service.imageUrl && (
+              <div className="w-full h-40 overflow-hidden">
+                <img src={service.imageUrl} alt={service.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+              </div>
+            )}
             <CardHeader className="pb-3">
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg">{service.name}</CardTitle>
