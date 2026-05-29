@@ -4,7 +4,7 @@ import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert, Platform, StyleSheet,
+  Alert, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
@@ -100,7 +100,7 @@ export default function BookingScreen() {
       {loadingServices ? (
         <Text style={[styles.loading, { color: colors.mutedForeground }]}>Loading services…</Text>
       ) : (
-        <View style={styles.serviceGrid}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.serviceGallery}>
           {(services ?? []).map(svc => (
             <TouchableOpacity
               key={svc.id}
@@ -115,7 +115,7 @@ export default function BookingScreen() {
             >
               <FlaticonIcon
                 name="wind"
-                size={22}
+                size={20}
                 color={selectedService === svc.id ? colors.primary : colors.mutedForeground}
               />
               <Text style={[styles.svcName, { color: selectedService === svc.id ? colors.primary : colors.foreground }]}>
@@ -124,7 +124,7 @@ export default function BookingScreen() {
               <Text style={[styles.svcPrice, { color: colors.mutedForeground }]}>₱{svc.pricePerKg}/kg</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
       )}
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Drop off Schedule</Text>
@@ -208,13 +208,13 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 26, fontFamily: "Inter_700Bold", marginBottom: 24 },
   sectionLabel: { fontSize: 13, fontFamily: "Inter_600SemiBold", marginTop: 20, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
   loading: { fontSize: 14 },
-  serviceGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  serviceGallery: { paddingRight: 20, gap: 10 },
   serviceCard: {
-    width: "47%", padding: 14, borderRadius: 14, borderWidth: 1.5,
+    width: 120, padding: 12, borderRadius: 14, borderWidth: 1.5,
     alignItems: "center", gap: 6,
   },
-  svcName: { fontSize: 13, fontFamily: "Inter_600SemiBold", textAlign: "center" },
-  svcPrice: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  svcName: { fontSize: 12, fontFamily: "Inter_600SemiBold", textAlign: "center" },
+  svcPrice: { fontSize: 11, fontFamily: "Inter_400Regular" },
   scheduleBtn: {
     flexDirection: "row", alignItems: "center",
     borderWidth: 1.5, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 14,
