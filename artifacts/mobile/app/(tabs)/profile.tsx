@@ -1,4 +1,5 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
