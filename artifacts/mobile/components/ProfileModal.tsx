@@ -234,12 +234,12 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                   </View>
                 </View>
               </View>
-              <View style={styles.divider} />
-              <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
-                <FlaticonIcon name="log-out" size={18} color="#fff" />
-                <Text style={styles.logoutText}>Logout</Text>
-              </TouchableOpacity>
             </View>
+
+            <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
+              <FlaticonIcon name="log-out" size={18} color="#fff" />
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
             </View>
           </ScrollView>
         </Animated.View>
@@ -336,7 +336,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     marginTop: 20,
-    paddingBottom: 4,
     borderWidth: 1, borderColor: "#e2e8f0",
     overflow: "hidden",
   },
@@ -417,7 +416,7 @@ const styles = StyleSheet.create({
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
     gap: 8, paddingVertical: 16, borderRadius: 14,
-    backgroundColor: "#ef4444", marginTop: 16,
+    backgroundColor: "#ef4444", marginTop: 20,
   },
   logoutText: {
     fontSize: 15, fontFamily: "Inter_600SemiBold",
