@@ -104,7 +104,7 @@ export default function BookingScreen() {
         style={StyleSheet.absoluteFill}
       />
       <KeyboardAwareScrollViewCompat
-        contentContainerStyle={[styles.container, { paddingTop: 20, paddingBottom: bottomPad + 40 }]}
+        contentContainerStyle={[styles.container, { paddingTop: 20, paddingBottom: bottomPad + 140, flexGrow: 1 }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         bottomOffset={20}
