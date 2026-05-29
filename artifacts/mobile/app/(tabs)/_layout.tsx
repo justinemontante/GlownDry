@@ -4,6 +4,7 @@ import { Redirect, Tabs, router } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
@@ -34,7 +35,12 @@ function BrandHeader() {
   const { customer } = useAuth();
   const insets = useSafeAreaInsets();
   return (
-    <View style={[brandStyles.bar, { paddingTop: insets.top }]}>
+    <LinearGradient
+      colors={["#EBF3F6", "#E0EDE6"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={[brandStyles.bar, { paddingTop: insets.top }]}
+    >
       <View style={brandStyles.row}>
         <View style={brandStyles.left}>
           <GradientWashingMachine size={28} />
@@ -60,14 +66,12 @@ function BrandHeader() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const brandStyles = StyleSheet.create({
   bar: {
-    backgroundColor: "#fff",
-    borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
     justifyContent: "flex-end", paddingBottom: 8,
     paddingHorizontal: 20,
   },
