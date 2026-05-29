@@ -188,32 +188,6 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* Quick Actions */}
-        <View style={styles.quickSection}>
-          <Text style={styles.sectionLabel}>Quick Actions</Text>
-          <View style={styles.quickRow}>
-            {[
-              { icon: "plus-circle" as const, label: "Book Now", route: "/(tabs)/booking" as const },
-              { icon: "package" as const, label: "Track", route: "/(tabs)/track" as const },
-              { icon: "bell" as const, label: "Alerts", route: "/(tabs)/notifications" as const },
-              { icon: "user" as const, label: "Profile", route: "/(tabs)/profile" as const },
-            ].map(a => (
-              <TouchableOpacity
-                key={a.label}
-                style={[styles.quickItem, { backgroundColor: colors.card, borderColor: colors.border }]}
-                onPress={() => router.push(a.route)}
-                activeOpacity={0.7}
-                testID={`btn-quick-${a.label.toLowerCase().replace(/\s+/g, "-")}`}
-              >
-                <View style={[styles.quickIconWrap, { backgroundColor: colors.tealLight }]}>
-                  <FlaticonIcon name={a.icon} size={20} color={colors.primary} />
-                </View>
-                <Text style={[styles.quickLabel, { color: colors.foreground }]}>{a.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
         {/* Recent Bookings Header */}
         <Text style={styles.recentHeader}>Recent Bookings</Text>
       </View>
@@ -533,23 +507,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   trackBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
-
-  // Quick Actions
-  quickSection: {
-    paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8,
-  },
-  quickRow: {
-    flexDirection: "row", gap: 10, marginTop: 12,
-  },
-  quickItem: {
-    flex: 1, alignItems: "center", gap: 8,
-    padding: 12, borderRadius: 14, borderWidth: 1,
-  },
-  quickIconWrap: {
-    width: 44, height: 44, borderRadius: 12,
-    alignItems: "center", justifyContent: "center",
-  },
-  quickLabel: { fontSize: 11, fontFamily: "Inter_500Medium", textAlign: "center" },
 
   // Recent Bookings
   recentHeader: {
