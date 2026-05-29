@@ -8,7 +8,6 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 const TEAL = "#0A7474";
-const TEAL_LIGHT = "#E8F5F4";
 const SLATE = "#1a2a3a";
 const MUTED = "#8a94a6";
 const BORDER = "#e2e8f0";
@@ -231,6 +230,9 @@ const styles = StyleSheet.create({
   closeBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: BG_LIGHT, alignItems: "center", justifyContent: "center",
+  },
+  sectionLabelRow: {
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
   },
   sectionLabel: {
     fontSize: 11, fontFamily: "Inter_600SemiBold", color: MUTED,
