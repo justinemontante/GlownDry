@@ -1,6 +1,6 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator, Dimensions, FlatList, Image, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
@@ -56,12 +56,14 @@ export default function HomeScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const { data: bookings, isLoading, refetch, isRefetching } = useListBookings(
+  const [manualRefreshing, setManualRefreshing] = useState(false);
+
+  const { data: bookings, isLoading, refetch } = useListBookings(
     { customerId: customer?.id },
-    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id, refetchInterval: 3000 } },
+    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id, refetchInterval: 3000, staleTime: 2000 } },
   );
 
-  const { data: services } = useListServices({ query: { refetchInterval: 3000 } });
+  const { data: services } = useListServices({ query: { refetchInterval: 3000, staleTime: 2000 } });
 
   function getServiceIcon(name: string) {
     const lower = name.toLowerCase();
@@ -247,8 +249,11 @@ export default function HomeScreen() {
           contentContainerStyle={{ paddingBottom: bottomPad + 100 }}
           refreshControl={
             <RefreshControl
-              refreshing={isRefetching}
-              onRefresh={refetch}
+              refreshing={manualRefreshing}
+              onRefresh={() => {
+                setManualRefreshing(true);
+                refetch().finally(() => setManualRefreshing(false));
+              }}
               tintColor={colors.primary}
             />
           }
