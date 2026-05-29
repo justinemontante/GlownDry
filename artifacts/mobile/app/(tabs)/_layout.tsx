@@ -192,7 +192,7 @@ function ClassicTabLayout() {
           name={screen.name}
           options={{
             title: screen.title,
-            headerShown: true,
+            headerShown: screen.name !== "index",
             header: () => <BrandHeader />,
             tabBarIcon: ({ color }) =>
               isIOS ? (
