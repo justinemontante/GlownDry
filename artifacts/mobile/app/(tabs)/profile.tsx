@@ -117,13 +117,16 @@ export default function ProfileScreen() {
               <Image source={{ uri: customer.profileImage }} style={styles.avatarImage} />
             ) : (
               <View style={[styles.avatar, { backgroundColor: "#0A7474" }]}>
-                <Text style={styles.initials}>{initials}</Text>
+                <FlaticonIcon name="camera" size={34} color="#fff" />
               </View>
             )}
-            <View style={styles.cameraOverlay}>
-              <FlaticonIcon name="camera" size={16} color="#fff" />
+            <View style={[styles.cameraOverlay, !customer?.profileImage && styles.cameraOverlayEmpty]}>
+              <FlaticonIcon name="camera" size={16} color={customer?.profileImage ? "#fff" : "#0A7474"} />
             </View>
           </View>
+          <Text style={styles.changePhotoText}>
+            {uploading ? "Uploading..." : customer?.profileImage ? "Change Photo" : "Tap to Add Photo"}
+          </Text>
         </TouchableOpacity>
         <Text style={styles.name}>{customer?.fullName}</Text>
         <Text style={styles.email}>{customer?.email}</Text>
@@ -282,26 +285,35 @@ const styles = StyleSheet.create({
     alignItems: "center", paddingBottom: 24, gap: 6,
   },
   avatarOuter: {
-    width: 92, height: 92, borderRadius: 46,
+    width: 110, height: 110, borderRadius: 55,
     backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
-    marginBottom: 4, borderWidth: 2, borderColor: "#e2e8f0",
+    marginBottom: 4, borderWidth: 3, borderColor: "#e2e8f0",
+    shadowColor: "#000", shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1, shadowRadius: 8, elevation: 4,
   },
   avatar: {
-    width: 84, height: 84, borderRadius: 42,
+    width: 100, height: 100, borderRadius: 50,
     alignItems: "center", justifyContent: "center",
-  },
-  initials: {
-    fontSize: 30, fontFamily: "Inter_700Bold", color: "#fff",
+    overflow: "hidden",
   },
   avatarImage: {
-    width: 84, height: 84, borderRadius: 42,
+    width: 100, height: 100, borderRadius: 50,
   },
   cameraOverlay: {
-    position: "absolute", bottom: 0, right: 0,
-    width: 30, height: 30, borderRadius: 15,
+    position: "absolute", bottom: -2, right: -2,
+    width: 38, height: 38, borderRadius: 19,
     backgroundColor: "#0A7474",
     alignItems: "center", justifyContent: "center",
-    borderWidth: 2, borderColor: "#fff",
+    borderWidth: 2.5, borderColor: "#fff",
+    shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15, shadowRadius: 4, elevation: 5,
+  },
+  cameraOverlayEmpty: {
+    backgroundColor: "#fff",
+  },
+  changePhotoText: {
+    fontSize: 13, fontFamily: "Inter_500Medium",
+    color: "#0A7474", textAlign: "center", marginTop: 6,
   },
   name: {
     fontSize: 22, fontFamily: "Inter_700Bold",
