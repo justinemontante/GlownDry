@@ -239,17 +239,19 @@ export default function HomeScreen() {
           data={recentBookings}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
-            <BookingCard
-              id={item.id}
-              serviceName={item.serviceName}
-              scheduledDate={String(item.scheduledDate)}
-              status={item.status}
-              totalAmount={item.totalAmount}
-              onPress={() => router.push("/(tabs)/track")}
-            />
+            <View style={{ paddingHorizontal: 16 }}>
+              <BookingCard
+                id={item.id}
+                serviceName={item.serviceName}
+                scheduledDate={String(item.scheduledDate)}
+                status={item.status}
+                totalAmount={item.totalAmount}
+                onPress={() => router.push("/(tabs)/track")}
+              />
+            </View>
           )}
           ListHeaderComponent={ListHeader}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: bottomPad + 100 }}
+          contentContainerStyle={{ paddingBottom: bottomPad + 100 }}
           refreshControl={
             <RefreshControl
               refreshing={manualRefreshing}
