@@ -3,6 +3,7 @@ import { Search, Mail, Phone, ExternalLink, Calendar, Weight } from "lucide-reac
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -68,7 +69,37 @@ export default function AdminCustomers() {
       )
     : customers;
 
-  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading customers...</div>;
+  if (loading) return (
+    <div className="space-y-6 p-8">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-10 w-96 rounded-lg" />
+        <Skeleton className="h-10 w-28 rounded-lg" />
+      </div>
+      <Card className="border-none shadow-sm overflow-hidden">
+        <div className="p-6 space-y-4">
+          <div className="flex gap-4 pb-4 border-b">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-16 ml-auto" />
+          </div>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4 py-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-48" />
+              </div>
+              <Skeleton className="h-4 w-8" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-8 w-28 rounded-md" />
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
 
   return (
     <div className="space-y-6">

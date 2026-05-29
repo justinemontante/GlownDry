@@ -1,8 +1,9 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
+import { Skeleton } from "@/components/Skeleton";
 import { router } from "expo-router";
 import React, { useState, memo } from "react";
 import {
-  ActivityIndicator, Dimensions, FlatList, Image, Modal, Platform,
+  Dimensions, FlatList, Image, Modal, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import Svg, { Defs, LinearGradient as SvgGradient, Path, Stop } from "react-native-svg";
@@ -251,7 +252,32 @@ export default function HomeScreen() {
       </View>
 
       {isLoading ? (
-        <ActivityIndicator color={colors.primary} style={{ marginTop: 80 }} />
+        <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+          <Skeleton height={180} borderRadius={24} style={{ marginBottom: 16 }} />
+          <View style={{ flexDirection: "row", gap: 12, marginBottom: 16 }}>
+            <Skeleton height={140} width={SCREEN_W * 0.55} borderRadius={16} />
+            <Skeleton height={140} width={SCREEN_W * 0.55} borderRadius={16} />
+          </View>
+          <View style={{ flexDirection: "row", gap: 10, marginBottom: 16 }}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <View key={i} style={{ flex: 1, alignItems: "center", gap: 8 }}>
+                <Skeleton height={44} width={44} borderRadius={12} />
+                <Skeleton height={11} width={44} borderRadius={6} />
+              </View>
+            ))}
+          </View>
+          <Skeleton height={16} width={140} borderRadius={6} style={{ marginBottom: 12 }} />
+          {Array.from({ length: 3 }).map((_, i) => (
+            <View key={i} style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <Skeleton height={40} width={40} borderRadius={20} />
+              <View style={{ flex: 1, gap: 4 }}>
+                <Skeleton height={14} width={160} borderRadius={6} />
+                <Skeleton height={11} width={100} borderRadius={6} />
+              </View>
+              <Skeleton height={14} width={60} borderRadius={6} />
+            </View>
+          ))}
+        </View>
       ) : (
         <FlatList
           data={recentBookings}

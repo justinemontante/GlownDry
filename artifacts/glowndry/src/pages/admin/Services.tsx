@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Service = {
   id: number;
@@ -167,7 +168,32 @@ export default function AdminServices() {
     setOpen(true);
   }
 
-  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading services...</div>;
+  if (loading) return (
+    <div className="space-y-6 p-8">
+      <div className="flex justify-between items-center">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <Skeleton className="h-10 w-36 rounded-lg" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Card key={i} className="overflow-hidden">
+            <Skeleton className="h-48 w-full rounded-none" />
+            <CardContent className="p-5 space-y-3">
+              <div className="flex justify-between">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-5 w-16" />
+              </div>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
