@@ -5,6 +5,7 @@ import {
   ActivityIndicator, Platform, RefreshControl,
   ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
@@ -29,7 +30,13 @@ export default function TrackScreen() {
     ?? bookings?.[bookings.length - 1];
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#EBF3F6", "#E0EDE6"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={[styles.container, { paddingTop: 8, paddingBottom: bottomPad + 100 }]}

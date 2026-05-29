@@ -6,6 +6,7 @@ import {
   ActivityIndicator, FlatList, Platform, RefreshControl,
   StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { useColors } from "@/hooks/useColors";
@@ -48,7 +49,13 @@ export default function NotificationsScreen() {
   const sortedBookings = [...(bookings ?? [])].reverse();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={["#EBF3F6", "#E0EDE6"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
       <View style={[styles.header, { paddingTop: 4 }]}>
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>
           {tab === "notifications" ? "Notifications" : "History"}
