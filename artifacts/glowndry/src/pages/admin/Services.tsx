@@ -20,9 +20,21 @@ function ImageUpload({ value, onChange }: { value: string; onChange: (url: strin
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result as string);
-    reader.readAsDataURL(file);
+
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 800, maxH = 800;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = h * maxW / w; w = maxW; }
+      if (h > maxH) { w = w * maxH / h; h = maxH; }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, w, h);
+      onChange(canvas.toDataURL("image/jpeg", 0.7));
+    };
+    img.src = URL.createObjectURL(file);
   }
 
   return (
@@ -96,8 +108,16 @@ export default function AdminServices() {
       name: form.name.trim(),
       description: form.description.trim(),
       pricePerKg: Number(form.pricePerKg),
+      serviceImage: form.serviceImage || null,
     };
-    if (form.serviceImage) body.serviceImage = form.serviceImage;
+
+    // Optimistic update
+    if (isEdit) {
+      setServices(prev => prev.map(s => s.id === editing!.id ? { ...s, ...body } as Service : s));
+    }
+    setOpen(false);
+    setForm(emptyForm);
+    setEditing(null);
 
     try {
       const res = await fetch(url, {
@@ -106,13 +126,11 @@ export default function AdminServices() {
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error(await res.text());
-      setOpen(false);
-      setForm(emptyForm);
-      setEditing(null);
       load();
     } catch (e) {
       console.error("Save failed", e);
       alert("Error: " + (e as Error).message);
+      load();
     } finally {
       setSaving(false);
     }
@@ -120,16 +138,20 @@ export default function AdminServices() {
 
   async function confirmDelete() {
     if (!deleteTarget) return;
+    const id = deleteTarget.id;
+    setServices(prev => prev.filter(s => s.id !== id));
+    setDeleteTarget(null);
+
     try {
-      const res = await fetch(`/api/services/${deleteTarget.id}`, {
+      const res = await fetch(`/api/services/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token()}` },
       });
       if (!res.ok) throw new Error(await res.text());
-      setDeleteTarget(null);
       load();
     } catch (e) {
       console.error("Delete failed", e);
+      load();
     }
   }
 
