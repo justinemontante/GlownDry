@@ -130,7 +130,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <StatCard title="Total Bookings" value={String(stats.totalBookings)} icon={<ShoppingBag />} change="All time orders" accent="bg-teal-500/10 text-teal-600" />
         <StatCard title="Active Orders" value={String(stats.activeOrders)} icon={<Package />} change="Current in system" accent="bg-orange-500/10 text-orange-600" />
         <StatCard title="Daily Revenue" value={`₱${stats.dailyRevenue.toFixed(2)}`} icon={<CreditCard />} change="Today's earnings" accent="bg-green-500/10 text-green-600" />
         <StatCard title="Total Customers" value={String(stats.totalCustomers)} icon={<Users />} change="Registered users" accent="bg-blue-500/10 text-blue-600" />
