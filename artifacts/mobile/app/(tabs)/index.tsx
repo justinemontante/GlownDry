@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     marginBottom: 8, resizeMode: "contain",
   },
   serviceName: {
-    fontSize: 15, fontWeight: "900", color: "#000",
+    fontSize: 15, fontFamily: "Inter_900Black", fontWeight: "900", color: "#000",
   },
   serviceDesc: {
     fontSize: 11, fontFamily: "Inter_400Regular",
