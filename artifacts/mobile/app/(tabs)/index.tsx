@@ -1,6 +1,6 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useRef, memo } from "react";
 import {
   ActivityIndicator, Dimensions, FlatList, Image, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
@@ -49,6 +49,61 @@ function getGreeting() {
   return "Good evening";
 }
 
+function getServiceIcon(name: string) {
+  const lower = name.toLowerCase();
+  const key = Object.keys(SERVICE_ICONS).find(k => lower.includes(k));
+  return SERVICE_ICONS[key ?? "washing-machine"];
+}
+
+const ServicesGallery = memo(function ServicesGallery({ services, colors }: { services: any[]; colors: any }) {
+  const scrollRef = useRef<ScrollView>(null);
+  const offsetRef = useRef(0);
+
+  return (
+    <View style={styles.servicesWrapper}>
+      <View style={styles.sectionHeaderRow}>
+        <Text style={styles.sectionLabel}>Services</Text>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/booking")}>
+          <Text style={styles.seeAll}>See All</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.servicesContainer}
+        snapToInterval={SCREEN_W * 0.55 + 12}
+        decelerationRate="fast"
+        onScroll={(e) => { offsetRef.current = e.nativeEvent.contentOffset.x; }}
+        scrollEventThrottle={16}
+      >
+        {services.map(s => (
+          <TouchableOpacity
+            key={s.id}
+            style={[styles.serviceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={() => router.push("/(tabs)/booking")}
+            activeOpacity={0.85}
+          >
+            {s.serviceImage ? (
+              <Image source={{ uri: s.serviceImage }} style={styles.serviceImage} />
+            ) : (
+              <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
+                <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />
+              </View>
+            )}
+            <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
+            <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]}>{s.description}</Text>
+            <View style={styles.servicePriceRow}>
+              <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
+              <FlaticonIcon name="arrow-left" size={12} color={colors.primary} style={{ transform: [{ rotate: "180deg" }], marginLeft: 4 }} />
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  );
+});
+
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -60,16 +115,10 @@ export default function HomeScreen() {
 
   const { data: bookings, isLoading, refetch } = useListBookings(
     { customerId: customer?.id },
-    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id, refetchInterval: 3000, staleTime: 2000 } },
+    { query: { queryKey: getListBookingsQueryKey({ customerId: customer?.id }), enabled: !!customer?.id, refetchInterval: 1000, staleTime: 500 } },
   );
 
-  const { data: services } = useListServices({ query: { refetchInterval: 3000, staleTime: 2000 } });
-
-  function getServiceIcon(name: string) {
-    const lower = name.toLowerCase();
-    const key = Object.keys(SERVICE_ICONS).find(k => lower.includes(k));
-    return SERVICE_ICONS[key ?? "washing-machine"];
-  }
+  const { data: services } = useListServices({ query: { refetchInterval: 1000, staleTime: 500 } });
 
   const activeBooking = bookings?.find(b =>
     ["scheduled", "received", "in_progress", "ready"].includes(b.status),
@@ -105,45 +154,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Services Gallery */}
-        <View style={styles.servicesWrapper}>
-          <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionLabel}>Services</Text>
-            <TouchableOpacity onPress={() => router.push("/(tabs)/booking")}>
-              <Text style={styles.seeAll}>See All</Text>
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.servicesContainer}
-            snapToInterval={SCREEN_W * 0.55 + 12}
-            decelerationRate="fast"
-          >
-            {(services ?? []).map(s => (
-              <TouchableOpacity
-                key={s.id}
-                style={[styles.serviceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                onPress={() => router.push("/(tabs)/booking")}
-                activeOpacity={0.85}
-              >
-                {s.serviceImage ? (
-                  <Image source={{ uri: s.serviceImage }} style={styles.serviceImage} />
-                ) : (
-                  <View style={[styles.serviceIconWrap, { backgroundColor: colors.tealLight }]}>
-                    <FlaticonIcon name={getServiceIcon(s.name)} size={28} color={colors.primary} />
-                  </View>
-                )}
-                <Text style={[styles.serviceName, { color: colors.foreground }]}>{s.name}</Text>
-                <Text style={[styles.serviceDesc, { color: colors.mutedForeground }]}>{s.description}</Text>
-                <View style={styles.servicePriceRow}>
-                  <Text style={[styles.servicePrice, { color: colors.primary }]}>₱{s.pricePerKg}/kg</Text>
-                  <FlaticonIcon name="arrow-left" size={12} color={colors.primary} style={{ transform: [{ rotate: "180deg" }], marginLeft: 4 }} />
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+        <ServicesGallery services={services ?? []} colors={colors} />
 
         {/* Active Order */}
         {activeBooking && (
