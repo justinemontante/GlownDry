@@ -475,8 +475,8 @@ const styles = StyleSheet.create({
   serviceCard: {
     width: SCREEN_W * 0.55, borderRadius: 16,
     padding: 14, backgroundColor: "#fff",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08, shadowRadius: 8, elevation: 3,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1, shadowRadius: 4, elevation: 4,
   },
   serviceIconWrap: {
     width: 44, height: 44, borderRadius: 12,
