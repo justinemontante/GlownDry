@@ -86,50 +86,9 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.sectionLabel}>Date</Text>
-          <View style={styles.monthRow}>
-            <TouchableOpacity onPress={prevMonth} style={styles.arrowBtn}>
-              <FlaticonIcon name="chevron-right" size={16} color={SLATE} style={{ transform: [{ rotate: "180deg" }] }} />
-            </TouchableOpacity>
-            <Text style={styles.monthText}>{MONTHS[month]} {year}</Text>
-            <TouchableOpacity onPress={nextMonth} style={styles.arrowBtn}>
-              <FlaticonIcon name="chevron-right" size={16} color={SLATE} />
-            </TouchableOpacity>
+          <View style={styles.sectionLabelRow}>
+            <Text style={styles.sectionLabel}>Time</Text>
           </View>
-
-          <View style={styles.dayHeaderRow}>
-            {DAYS.map(d => <Text key={d} style={styles.dayHeader}>{d}</Text>)}
-          </View>
-
-          <View style={styles.daysGrid}>
-            {days.map((d, i) => {
-              const isSelected = d === selectedDay;
-              const isPast = d !== null && new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-              return (
-                <TouchableOpacity
-                  key={i}
-                  style={[
-                    styles.dayCell,
-                    isSelected && styles.dayCellSelected,
-                  ]}
-                  onPress={() => !isPast && setSelectedDay(d)}
-                  disabled={isPast}
-                >
-                  <Text style={[
-                    styles.dayText,
-                    isSelected && styles.dayTextSelected,
-                    isPast && styles.dayTextPast,
-                  ]}>
-                    {d ?? ""}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          <View style={styles.divider} />
-
-          <Text style={styles.sectionLabel}>Time</Text>
           <View style={styles.timeRow}>
             <View style={[styles.inputWrap, styles.hourInputWrap, hourInput && !timeValid && styles.inputError]}>
               <TextInput
@@ -176,6 +135,47 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
             <Text style={styles.errorHint}>Enter a valid time between 7:00 AM and 8:00 PM</Text>
           )}
 
+          <Text style={styles.sectionLabel}>Date</Text>
+          <View style={styles.monthRow}>
+            <TouchableOpacity onPress={prevMonth} style={styles.arrowBtn}>
+              <FlaticonIcon name="chevron-right" size={16} color={SLATE} style={{ transform: [{ rotate: "180deg" }] }} />
+            </TouchableOpacity>
+            <Text style={styles.monthText}>{MONTHS[month]} {year}</Text>
+            <TouchableOpacity onPress={nextMonth} style={styles.arrowBtn}>
+              <FlaticonIcon name="chevron-right" size={16} color={SLATE} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.dayHeaderRow}>
+            {DAYS.map(d => <Text key={d} style={styles.dayHeader}>{d}</Text>)}
+          </View>
+
+          <View style={styles.daysGrid}>
+            {days.map((d, i) => {
+              const isSelected = d === selectedDay;
+              const isPast = d !== null && new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+              return (
+                <TouchableOpacity
+                  key={i}
+                  style={[
+                    styles.dayCell,
+                    isSelected && styles.dayCellSelected,
+                  ]}
+                  onPress={() => !isPast && setSelectedDay(d)}
+                  disabled={isPast}
+                >
+                  <Text style={[
+                    styles.dayText,
+                    isSelected && styles.dayTextSelected,
+                    isPast && styles.dayTextPast,
+                  ]}>
+                    {d ?? ""}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
           <View style={styles.btnRow}>
             <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
               <Text style={styles.cancelText}>Cancel</Text>
@@ -210,11 +210,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",
-    marginBottom: 24,
-  },
-  headerAccent: {
-    width: 32, height: 4, borderRadius: 2,
-    backgroundColor: TEAL, marginBottom: 10,
+    marginBottom: 20,
   },
   title: {
     fontSize: 20, fontFamily: "Inter_700Bold", color: SLATE,
@@ -225,7 +221,7 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: 11, fontFamily: "Inter_600SemiBold", color: MUTED,
-    textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 12,
+    textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 10,
   },
   monthRow: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
@@ -249,7 +245,7 @@ const styles = StyleSheet.create({
   },
   daysGrid: {
     flexDirection: "row", flexWrap: "wrap",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   dayCell: {
     width: "14.28%", aspectRatio: 1,
@@ -267,10 +263,6 @@ const styles = StyleSheet.create({
   },
   dayTextPast: {
     color: "#d0d5dd",
-  },
-  divider: {
-    height: 1, backgroundColor: "#f0f2f5",
-    marginBottom: 20,
   },
 
   /* Time */
@@ -290,7 +282,7 @@ const styles = StyleSheet.create({
     fontSize: 22, fontFamily: "Inter_700Bold", color: MUTED,
   },
   timeRow: {
-    flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 6,
+    flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 16,
   },
   hourInputWrap: {
     width: 72, flex: 0,
@@ -322,7 +314,7 @@ const styles = StyleSheet.create({
 
   /* Buttons */
   btnRow: {
-    flexDirection: "row", gap: 10, marginTop: 16,
+    flexDirection: "row", gap: 10, marginTop: 12,
   },
   cancelBtn: {
     flex: 1, paddingVertical: 14, borderRadius: 14,
