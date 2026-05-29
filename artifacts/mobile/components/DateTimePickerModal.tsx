@@ -1,13 +1,25 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
-  Modal, StyleSheet, Text, TextInput, TouchableOpacity, View,
+  Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 import { FlaticonIcon } from "./FlaticonIcon";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-const TIME_REGEX = /^[0-9]{1,2}:[0-5][0-9]$/;
+const TIME_SLOTS = (() => {
+  const slots: { label: string; value: string }[] = [];
+  for (let h = 7; h <= 20; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const hr24 = String(h).padStart(2, "0");
+      const min = String(m).padStart(2, "0");
+      const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      const ampm = h < 12 ? "AM" : "PM";
+      slots.push({ label: `${hour12}:${min} ${ampm}`, value: `${hr24}:${min}` });
+    }
+  }
+  return slots;
+})();
 
 interface DateTimePickerModalProps {
   visible: boolean;
@@ -17,11 +29,11 @@ interface DateTimePickerModalProps {
 
 export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePickerModalProps) {
   const now = new Date();
+  const scrollRef = useRef<ScrollView>(null);
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [timeInput, setTimeInput] = useState("");
-  const [ampm, setAmpm] = useState<"AM" | "PM">("AM");
+  const [selectedTime, setSelectedTime] = useState("");
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startDay = new Date(year, month, 1).getDay();
@@ -45,24 +57,11 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
     setSelectedDay(null);
   }
 
-  function parseTime(): string | null {
-    const m = timeInput.trim().match(TIME_REGEX);
-    if (!m) return null;
-    const [hStr, min] = timeInput.trim().split(":");
-    const h = parseInt(hStr, 10);
-    if (h < 1 || h > 12) return null;
-    const hr24 = ampm === "PM" && h !== 12 ? h + 12 : ampm === "AM" && h === 12 ? 0 : h;
-    if (hr24 < 7 || hr24 > 20) return null;
-    return `${String(hr24).padStart(2, "0")}:${min}`;
-  }
-
   function handleConfirm() {
-    if (!selectedDay || !timeInput.trim()) return;
-    const parsed = parseTime();
-    if (!parsed) return;
+    if (!selectedDay || !selectedTime) return;
     const mm = String(month + 1).padStart(2, "0");
     const dd = String(selectedDay).padStart(2, "0");
-    onSelect(`${year}-${mm}-${dd}`, parsed);
+    onSelect(`${year}-${mm}-${dd}`, selectedTime);
   }
 
   const todayStr = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
@@ -129,34 +128,25 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
 
           {/* Time Section */}
           <Text style={styles.sectionLabel}>Time</Text>
-          <View style={styles.timeRow}>
-            <View style={[styles.inputWrap, styles.timeInputWrap, !timeInput.trim() || parseTime() ? {} : styles.inputError]}>
-              <FlaticonIcon name="clock" size={18} color="#8a94a6" style={{ marginRight: 8 }} />
-              <TextInput
-                style={styles.timeInput}
-                placeholder="9:30"
-                placeholderTextColor="#c0c8d4"
-                value={timeInput}
-                onChangeText={setTimeInput}
-                keyboardType="numbers-and-punctuation"
-                testID="input-time"
-              />
-            </View>
-            <View style={styles.ampmRow}>
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.timeScroll}
+            contentContainerStyle={styles.timeScrollContent}
+          >
+            {TIME_SLOTS.map(slot => (
               <TouchableOpacity
-                style={[styles.ampmBtn, ampm === "AM" && styles.ampmBtnActive]}
-                onPress={() => setAmpm("AM")}
+                key={slot.value}
+                style={[styles.timeSlot, selectedTime === slot.value && styles.timeSlotActive]}
+                onPress={() => setSelectedTime(slot.value)}
               >
-                <Text style={[styles.ampmText, ampm === "AM" && styles.ampmTextActive]}>AM</Text>
+                <Text style={[styles.timeSlotText, selectedTime === slot.value && styles.timeSlotTextActive]}>
+                  {slot.label}
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.ampmBtn, ampm === "PM" && styles.ampmBtnActive]}
-                onPress={() => setAmpm("PM")}
-              >
-                <Text style={[styles.ampmText, ampm === "PM" && styles.ampmTextActive]}>PM</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+            ))}
+          </ScrollView>
 
           {/* Buttons */}
           <View style={styles.btnRow}>
@@ -164,9 +154,9 @@ export function DateTimePickerModal({ visible, onClose, onSelect }: DateTimePick
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.confirmBtn, (!selectedDay || !timeInput.trim() || !parseTime()) && styles.confirmBtnDisabled]}
+              style={[styles.confirmBtn, (!selectedDay || !selectedTime) && styles.confirmBtnDisabled]}
               onPress={handleConfirm}
-              disabled={!selectedDay || !timeInput.trim() || !parseTime()}
+              disabled={!selectedDay || !selectedTime}
             >
               <FlaticonIcon name="check" size={16} color="#fff" />
               <Text style={styles.confirmText}>Confirm</Text>
@@ -250,39 +240,24 @@ const styles = StyleSheet.create({
   dayTextPast: {
     color: "#d0d5dd",
   },
-  inputWrap: {
-    flexDirection: "row", alignItems: "center",
-    borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 4,
-    borderColor: "#e2e8f0",
+  timeScroll: {
+    maxHeight: 48, marginBottom: 24,
   },
-  inputError: {
-    borderColor: "#ef4444",
+  timeScrollContent: {
+    gap: 8, paddingRight: 8,
   },
-  timeInput: {
-    flex: 1, fontSize: 15, fontFamily: "Inter_500Medium",
-    color: "#1a2a3a", paddingVertical: 10,
-  },
-  timeRow: {
-    flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 24,
-  },
-  timeInputWrap: {
-    flex: 1,
-  },
-  ampmRow: {
-    flexDirection: "row", gap: 6,
-  },
-  ampmBtn: {
-    paddingHorizontal: 16, paddingVertical: 10,
-    borderRadius: 10, borderWidth: 1.5, borderColor: "#e2e8f0",
+  timeSlot: {
+    paddingHorizontal: 18, paddingVertical: 10,
+    borderRadius: 12, borderWidth: 1.5, borderColor: "#e2e8f0",
     backgroundColor: "#fff",
   },
-  ampmBtnActive: {
+  timeSlotActive: {
     backgroundColor: "#0A7474", borderColor: "#0A7474",
   },
-  ampmText: {
+  timeSlotText: {
     fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#1a2a3a",
   },
-  ampmTextActive: {
+  timeSlotTextActive: {
     color: "#fff",
   },
   btnRow: {
