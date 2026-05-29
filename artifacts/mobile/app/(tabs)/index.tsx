@@ -196,12 +196,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={["#EBF3F6", "#E0EDE6"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={StyleSheet.absoluteFill}
-      />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0C3B2E" }]} />
       {/* Brand Bar */}
       <View style={[styles.brandBar, { paddingTop: topPad }]}>
         <View style={styles.brandRow}>
@@ -340,7 +335,8 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
     brandBar: {
     flexDirection: "row", justifyContent: "space-between",
-    alignItems: "center", paddingHorizontal: 20, paddingBottom: 8,
+    alignItems: "center", paddingHorizontal: 20, paddingVertical: 8,
+    backgroundColor: "#fff",
     borderBottomWidth: 1.5, borderBottomColor: "#d4dce8",
   },
   brandRow: {
