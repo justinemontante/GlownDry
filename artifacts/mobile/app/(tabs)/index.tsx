@@ -1,7 +1,7 @@
 import { FlaticonIcon } from "@/components/FlaticonIcon";
 import { Skeleton } from "@/components/Skeleton";
 import { router } from "expo-router";
-import React, { useState, memo } from "react";
+import React, { useRef, useState, memo } from "react";
 import {
   Dimensions, FlatList, Image, Modal, Platform,
   RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View,
@@ -58,15 +58,17 @@ function getServiceIcon(name: string) {
 }
 
 const ServicesGallery = memo(function ServicesGallery({ services, colors, onServicePress }: { services: any[]; colors: any; onServicePress: (s: any) => void }) {
+  const scrollRef = useRef<ScrollView>(null);
+  const CARD_W = SCREEN_W * 0.55 + 12;
   return (
     <View style={styles.servicesWrapper}>
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionLabel}>Our Services</Text>
-        <TouchableOpacity onPress={() => router.push("/(tabs)/booking")}>
+        <TouchableOpacity onPress={() => scrollRef.current?.scrollTo({ x: CARD_W, animated: true })}>
           <FlaticonIcon name="chevron-right" size={20} color="#00C6B5" />
         </TouchableOpacity>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.servicesContainer}>
+      <ScrollView ref={scrollRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.servicesContainer}>
         {services.map(s => (
           <TouchableOpacity
             key={s.id}
