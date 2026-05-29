@@ -115,17 +115,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Greeting Hero */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-600 to-teal-400 p-8 text-white">
-        <div className="absolute inset-0 bg-white/10" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 60%)" }} />
-        <div className="relative z-10">
-          <p className="text-teal-50/80 text-sm font-medium mb-1">{getCurrentDate()}</p>
-          <h1 className="text-3xl font-bold mb-2">{getGreeting()}, Admin</h1>
-          <p className="text-teal-50/80 text-sm">Here's what's happening with your business today.</p>
-        </div>
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden sm:block">
-          <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center">
-            <Package className="w-10 h-10 text-white/60" />
+      {/* Greeting */}
+      <div className="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-400 mb-1">{getCurrentDate()}</p>
+            <h1 className="text-3xl font-bold text-slate-900 mb-1">{getGreeting()}, Admin</h1>
+            <p className="text-sm text-slate-500">Here's what's happening with your business today.</p>
+          </div>
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <Package className="w-7 h-7 text-primary" />
           </div>
         </div>
       </div>
