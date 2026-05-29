@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroImage: {
-    width: 130, height: 100,
+    width: 160, height: 120,
     marginLeft: 12, resizeMode: "contain",
   },
   heroBadge: {
